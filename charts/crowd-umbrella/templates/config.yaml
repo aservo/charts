@@ -1,0 +1,2737 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crowd-config
+  labels:
+  {{- include "umbrella.labels" . | nindent 4 }}
+data:
+  restore-db.sh: |-
+    #! /bin/bash -xe
+    until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/{{ include "postgresql.hostname" . }}/{{ include "postgresql.port" .Subcharts.postgresql }}'; do echo "WAITING: db host {{ include "postgresql.hostname" . }} port {{ include "postgresql.port" .Subcharts.postgresql }}"; sleep 1; done
+    psql -h {{ include "postgresql.hostname" . }} -p {{ include "postgresql.port" .Subcharts.postgresql }} -U {{ include "postgresql.username" .Subcharts.postgresql }} -d {{ include "postgresql.database" .Subcharts.postgresql }} -c 'SELECT 1 FROM cwd_user' && exit 0
+    psql -h {{ include "postgresql.hostname" . }} -p {{ include "postgresql.port" .Subcharts.postgresql }} -U {{ include "postgresql.username" .Subcharts.postgresql }} -d {{ include "postgresql.database" .Subcharts.postgresql }} < /tmp/db.dump
+    unset PGPASSWORD
+
+  crowd.cfg.xml: |-
+    <?xml version="1.0" encoding="UTF-8"?>
+
+    <application-configuration>
+    <setupStep>complete</setupStep>
+    <setupType>install.new</setupType>
+    <buildNumber>1581</buildNumber>
+    <properties>
+        <property name="crowd.clustering.enabled">false</property>
+        <property name="crowd.server.id">{{ include "umbrella.serverId" . }}</property>
+        <property name="hibernate.c3p0.acquire_increment">1</property>
+        <property name="hibernate.c3p0.idle_test_period">100</property>
+        <property name="hibernate.c3p0.max_size">30</property>
+        <property name="hibernate.c3p0.max_statements">0</property>
+        <property name="hibernate.c3p0.min_size">0</property>
+        <property name="hibernate.c3p0.timeout">30</property>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://{{ include "postgresql.hostname" . }}:{{ include "postgresql.port" .Subcharts.postgresql }}/{{ include "postgresql.database" .Subcharts.postgresql }}?reWriteBatchedInserts=true</property>
+        <property name="hibernate.connection.username">{{ include "postgresql.username" .Subcharts.postgresql }}</property>
+        <property name="hibernate.connection.password">{{ .Values.postgresql.postgresqlPassword }}</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.setup">true</property>
+        <property name="license">AAABgQ0ODAoPeNp1kstuwjAQRff5CktdB4XXAqQsIHELLS+RQCvUjWMGcBvsaJxA+fuaQNQkopJX19d3zsz4aaokCSAhzQ5pdvutVr/dJTQISctxelbEjpFSjYngIDXQrUiFki6dhXS5WI4Dau2EPsAFCkd4ScB9Nhq9wGef+HCCWCWAFo/VCbBi83Kp4pplxwhwvltpQO12La7krsF4Kk7gppiBtciQH5gGn6XgXgltc5odq5Q7Y0dwfbqmk/mCLosb+pMIvOTPFu1R0Vc5OgA0OGPfHb70Qvtjte7Yb5vNyB46zXfrSyCrwL+OlwNCZQqYoNC1Xq/UlU6NEGcg+QNf0bIXZ9qkzdQWtOvUBp+nDHPpv6Jlwgd74phxEcXVRXl3sRI0ZcJUkMzQ1obGUZ23tQCjVF7fb80YV/JbqrO05rhnUmiWEw3SmGktmPwDKu/AQ8h99fXeKpedxb8raz5ojiLJC4WgUxLfYMhOIUnibC8k2Rak+jax8vv7Hy1Lv3FyG1gwLAIUHEP4zbqEf1DeOWKb7SpxQ1MEd8ACFGxZV5doE27OtsuNDT50k2xIhAozX02im</property>
+    </properties>
+    </application-configuration>
+
+binaryData:
+{{- $root := . }}
+{{- range $path, $bytes := .Files.Glob "secretkeyspec/javax.*" }}
+  javax.crypto.spec.SecretKeySpec: {{ $root.Files.Get $path | b64enc | quote }}
+{{- end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dump-config
+  labels:
+  {{- include "umbrella.labels" . | nindent 4 }}
+data:
+  db.dump: |-
+    --
+    -- PostgreSQL database dump
+    --
+
+    -- Dumped from database version 11.12
+    -- Dumped by pg_dump version 11.12
+
+    SET statement_timeout = 0;
+    SET lock_timeout = 0;
+    SET idle_in_transaction_session_timeout = 0;
+    SET client_encoding = 'UTF8';
+    SET standard_conforming_strings = on;
+    SELECT pg_catalog.set_config('search_path', '', false);
+    SET check_function_bodies = false;
+    SET xmloption = content;
+    SET client_min_messages = warning;
+    SET row_security = off;
+
+    SET default_tablespace = '';
+
+    SET default_with_oids = false;
+
+    --
+    -- Name: cwd_app_dir_default_groups; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_app_dir_default_groups (
+        id bigint NOT NULL,
+        application_mapping_id bigint NOT NULL,
+        group_name character varying(255) NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_app_dir_default_groups OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_app_dir_group_mapping; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_app_dir_group_mapping (
+        id bigint NOT NULL,
+        app_dir_mapping_id bigint NOT NULL,
+        application_id bigint NOT NULL,
+        directory_id bigint NOT NULL,
+        group_name character varying(255) NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_app_dir_group_mapping OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_app_dir_mapping; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_app_dir_mapping (
+        id bigint NOT NULL,
+        application_id bigint NOT NULL,
+        directory_id bigint NOT NULL,
+        allow_all character(1) NOT NULL,
+        list_index integer
+    );
+
+
+    ALTER TABLE public.cwd_app_dir_mapping OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_app_dir_operation; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_app_dir_operation (
+        app_dir_mapping_id bigint NOT NULL,
+        operation_type character varying(32) NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_app_dir_operation OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_app_licensed_user; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_app_licensed_user (
+        id bigint NOT NULL,
+        username character varying(255) NOT NULL,
+        full_name character varying(255),
+        email character varying(255),
+        last_active timestamp without time zone,
+        directory_id bigint NOT NULL,
+        lower_username character varying(255) NOT NULL,
+        lower_full_name character varying(255),
+        lower_email character varying(255)
+    );
+
+
+    ALTER TABLE public.cwd_app_licensed_user OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_app_licensing; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_app_licensing (
+        id bigint NOT NULL,
+        generated_on timestamp without time zone NOT NULL,
+        version bigint NOT NULL,
+        application_id bigint NOT NULL,
+        application_subtype character varying(32) NOT NULL,
+        total_users integer NOT NULL,
+        max_user_limit integer NOT NULL,
+        total_crowd_users integer NOT NULL,
+        active character(1) NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_app_licensing OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_app_licensing_dir_info; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_app_licensing_dir_info (
+        id bigint NOT NULL,
+        name character varying(255) NOT NULL,
+        directory_id bigint,
+        licensing_summary_id bigint NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_app_licensing_dir_info OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_application; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_application (
+        id bigint NOT NULL,
+        application_name character varying(255) NOT NULL,
+        lower_application_name character varying(255) NOT NULL,
+        created_date timestamp without time zone NOT NULL,
+        updated_date timestamp without time zone NOT NULL,
+        active character(1) NOT NULL,
+        description character varying(255),
+        application_type character varying(32) NOT NULL,
+        credential character varying(255) NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_application OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_application_address; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_application_address (
+        application_id bigint NOT NULL,
+        remote_address character varying(255) NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_application_address OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_application_alias; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_application_alias (
+        id bigint NOT NULL,
+        application_id bigint NOT NULL,
+        user_name character varying(255) NOT NULL,
+        lower_user_name character varying(255) NOT NULL,
+        alias_name character varying(255) NOT NULL,
+        lower_alias_name character varying(255) NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_application_alias OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_application_attribute; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_application_attribute (
+        application_id bigint NOT NULL,
+        attribute_name character varying(255) NOT NULL,
+        attribute_value text
+    );
+
+
+    ALTER TABLE public.cwd_application_attribute OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_application_saml_config; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_application_saml_config (
+        application_id bigint NOT NULL,
+        assertion_consumer_service character varying(255) NOT NULL,
+        audience character varying(255) NOT NULL,
+        enabled character(1) NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_application_saml_config OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_audit_log_changeset; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_audit_log_changeset (
+        id bigint NOT NULL,
+        audit_timestamp bigint NOT NULL,
+        author_type character varying(255) NOT NULL,
+        author_id bigint,
+        author_name character varying(255),
+        event_type character varying(255) NOT NULL,
+        ip_address character varying(45),
+        event_message character varying(255),
+        event_source character varying(255) NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_audit_log_changeset OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_audit_log_entity; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_audit_log_entity (
+        id bigint NOT NULL,
+        entity_type character varying(255) NOT NULL,
+        entity_id bigint,
+        entity_name character varying(255),
+        is_primary character(1) NOT NULL,
+        changeset_id bigint NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_audit_log_entity OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_audit_log_entry; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_audit_log_entry (
+        id bigint NOT NULL,
+        property_name character varying(255) NOT NULL,
+        changeset_id bigint NOT NULL,
+        old_value text,
+        new_value text
+    );
+
+
+    ALTER TABLE public.cwd_audit_log_entry OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_cluster_heartbeat; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_cluster_heartbeat (
+        node_id character varying(36) NOT NULL,
+        node_name character varying(255),
+        hearbeat_timestamp bigint NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_cluster_heartbeat OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_cluster_info; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_cluster_info (
+        node_id character varying(255) NOT NULL,
+        ip_address character varying(255),
+        hostname character varying(255),
+        current_heap bigint,
+        max_heap bigint,
+        load_average double precision,
+        uptime bigint,
+        info_timestamp bigint NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_cluster_info OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_cluster_job; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_cluster_job (
+        id character varying(255) NOT NULL,
+        runner_key character varying(255) NOT NULL,
+        job_interval bigint,
+        cron_expression character varying(120),
+        time_zone character varying(80),
+        next_run_timestamp bigint,
+        version bigint NOT NULL,
+        job_parameters bytea,
+        claim_node_id character varying(36),
+        claim_timestamp bigint
+    );
+
+
+    ALTER TABLE public.cwd_cluster_job OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_cluster_lock; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_cluster_lock (
+        lock_name character varying(255) NOT NULL,
+        lock_timestamp bigint,
+        node_id character varying(36)
+    );
+
+
+    ALTER TABLE public.cwd_cluster_lock OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_cluster_message; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_cluster_message (
+        id bigint NOT NULL,
+        channel character varying(64),
+        msg_text character varying(1024),
+        msg_timestamp bigint,
+        sender_node_id character varying(36)
+    );
+
+
+    ALTER TABLE public.cwd_cluster_message OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_cluster_message_id; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_cluster_message_id (
+        next_val bigint
+    );
+
+
+    ALTER TABLE public.cwd_cluster_message_id OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_cluster_safety; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_cluster_safety (
+        entry_key character varying(255) NOT NULL,
+        entry_value character varying(255),
+        node_id character varying(255),
+        ip_address character varying(255),
+        "timestamp" bigint NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_cluster_safety OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_databasechangelog; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_databasechangelog (
+        id character varying(255) NOT NULL,
+        author character varying(255) NOT NULL,
+        filename character varying(255) NOT NULL,
+        dateexecuted timestamp without time zone NOT NULL,
+        orderexecuted integer NOT NULL,
+        exectype character varying(10) NOT NULL,
+        md5sum character varying(35),
+        description character varying(255),
+        comments character varying(255),
+        tag character varying(255),
+        liquibase character varying(20),
+        contexts character varying(255),
+        labels character varying(255),
+        deployment_id character varying(10)
+    );
+
+
+    ALTER TABLE public.cwd_databasechangelog OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_databasechangeloglock; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_databasechangeloglock (
+        id integer NOT NULL,
+        locked boolean NOT NULL,
+        lockgranted timestamp without time zone,
+        lockedby character varying(255)
+    );
+
+
+    ALTER TABLE public.cwd_databasechangeloglock OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_directory; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_directory (
+        id bigint NOT NULL,
+        directory_name character varying(255) NOT NULL,
+        lower_directory_name character varying(255) NOT NULL,
+        created_date timestamp without time zone NOT NULL,
+        updated_date timestamp without time zone NOT NULL,
+        active character(1) NOT NULL,
+        description character varying(255),
+        impl_class character varying(255) NOT NULL,
+        lower_impl_class character varying(255) NOT NULL,
+        directory_type character varying(32) NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_directory OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_directory_attribute; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_directory_attribute (
+        directory_id bigint NOT NULL,
+        attribute_name character varying(255) NOT NULL,
+        attribute_value text
+    );
+
+
+    ALTER TABLE public.cwd_directory_attribute OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_directory_operation; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_directory_operation (
+        directory_id bigint NOT NULL,
+        operation_type character varying(32) NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_directory_operation OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_expirable_user_token; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_expirable_user_token (
+        id bigint NOT NULL,
+        token character varying(255) NOT NULL,
+        user_name character varying(255),
+        email_address character varying(255),
+        expiry_date bigint NOT NULL,
+        directory_id bigint NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_expirable_user_token OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_granted_perm; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_granted_perm (
+        id bigint NOT NULL,
+        created_date timestamp without time zone NOT NULL,
+        permission_id integer NOT NULL,
+        app_dir_mapping_id bigint NOT NULL,
+        group_name character varying(255) NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_granted_perm OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_group; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_group (
+        id bigint NOT NULL,
+        group_name character varying(255) NOT NULL,
+        lower_group_name character varying(255) NOT NULL,
+        active character(1) NOT NULL,
+        created_date timestamp without time zone NOT NULL,
+        updated_date timestamp without time zone NOT NULL,
+        description character varying(255),
+        group_type character varying(32) NOT NULL,
+        directory_id bigint NOT NULL,
+        is_local character(1) NOT NULL,
+        external_id character varying(255)
+    );
+
+
+    ALTER TABLE public.cwd_group OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_group_admin_group; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_group_admin_group (
+        id bigint NOT NULL,
+        group_id bigint NOT NULL,
+        target_group_id bigint NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_group_admin_group OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_group_admin_user; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_group_admin_user (
+        id bigint NOT NULL,
+        user_id bigint NOT NULL,
+        target_group_id bigint NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_group_admin_user OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_group_attribute; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_group_attribute (
+        id bigint NOT NULL,
+        group_id bigint NOT NULL,
+        directory_id bigint NOT NULL,
+        attribute_name character varying(255) NOT NULL,
+        attribute_value character varying(255),
+        attribute_lower_value character varying(255)
+    );
+
+
+    ALTER TABLE public.cwd_group_attribute OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_membership; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_membership (
+        id bigint NOT NULL,
+        parent_id bigint,
+        child_id bigint,
+        membership_type character varying(32),
+        group_type character varying(32) NOT NULL,
+        parent_name character varying(255) NOT NULL,
+        lower_parent_name character varying(255) NOT NULL,
+        child_name character varying(255) NOT NULL,
+        lower_child_name character varying(255) NOT NULL,
+        directory_id bigint NOT NULL,
+        created_date timestamp without time zone
+    );
+
+
+    ALTER TABLE public.cwd_membership OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_property; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_property (
+        property_key character varying(255) NOT NULL,
+        property_name character varying(255) NOT NULL,
+        property_value text
+    );
+
+
+    ALTER TABLE public.cwd_property OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_remember_me_token; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_remember_me_token (
+        id bigint NOT NULL,
+        username character varying(255) NOT NULL,
+        remote_address character varying(255),
+        token character varying(64) NOT NULL,
+        series character varying(64) NOT NULL,
+        created_date timestamp(6) without time zone NOT NULL,
+        used_date timestamp(6) without time zone,
+        directory_id bigint NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_remember_me_token OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_saml_trust_entity_idp; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_saml_trust_entity_idp (
+        id bigint NOT NULL,
+        certificate character varying(4000) NOT NULL,
+        created_date timestamp without time zone NOT NULL,
+        expiration_date timestamp without time zone NOT NULL,
+        private_key character varying(4000) NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_saml_trust_entity_idp OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_synchronisation_status; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_synchronisation_status (
+        id integer NOT NULL,
+        directory_id bigint NOT NULL,
+        node_id character varying(36),
+        sync_start bigint NOT NULL,
+        sync_end bigint,
+        sync_status character varying(255),
+        status_parameters text,
+        incremental_sync_error text,
+        full_sync_error text,
+        node_name character varying(255)
+    );
+
+
+    ALTER TABLE public.cwd_synchronisation_status OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_synchronisation_token; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_synchronisation_token (
+        directory_id bigint NOT NULL,
+        sync_status_token text
+    );
+
+
+    ALTER TABLE public.cwd_synchronisation_token OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_token; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_token (
+        id bigint NOT NULL,
+        directory_id bigint NOT NULL,
+        entity_name character varying(255) NOT NULL,
+        random_number bigint NOT NULL,
+        identifier_hash character varying(255) NOT NULL,
+        random_hash character varying(255) NOT NULL,
+        created_date timestamp without time zone NOT NULL,
+        last_accessed_date timestamp without time zone NOT NULL,
+        last_accessed_time bigint DEFAULT 0 NOT NULL,
+        duration bigint
+    );
+
+
+    ALTER TABLE public.cwd_token OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_tombstone; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_tombstone (
+        id bigint NOT NULL,
+        tombstone_type character varying(255) NOT NULL,
+        tombstone_timestamp bigint NOT NULL,
+        entity_name character varying(255),
+        directory_id bigint,
+        parent character varying(255),
+        application_id bigint
+    );
+
+
+    ALTER TABLE public.cwd_tombstone OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_user; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_user (
+        id bigint NOT NULL,
+        user_name character varying(255) NOT NULL,
+        lower_user_name character varying(255) NOT NULL,
+        active character(1) NOT NULL,
+        created_date timestamp without time zone NOT NULL,
+        updated_date timestamp without time zone NOT NULL,
+        first_name character varying(255),
+        lower_first_name character varying(255),
+        last_name character varying(255),
+        lower_last_name character varying(255),
+        display_name character varying(255),
+        lower_display_name character varying(255),
+        email_address character varying(255),
+        lower_email_address character varying(255),
+        directory_id bigint NOT NULL,
+        credential character varying(255),
+        external_id character varying(255)
+    );
+
+
+    ALTER TABLE public.cwd_user OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_user_attribute; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_user_attribute (
+        id bigint NOT NULL,
+        user_id bigint NOT NULL,
+        directory_id bigint NOT NULL,
+        attribute_name character varying(255) NOT NULL,
+        attribute_value character varying(255),
+        attribute_lower_value character varying(255),
+        attribute_numeric_value bigint
+    );
+
+
+    ALTER TABLE public.cwd_user_attribute OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_user_credential_record; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_user_credential_record (
+        id bigint NOT NULL,
+        user_id bigint NOT NULL,
+        password_hash character varying(255) NOT NULL,
+        list_index integer
+    );
+
+
+    ALTER TABLE public.cwd_user_credential_record OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: cwd_webhook; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.cwd_webhook (
+        id bigint NOT NULL,
+        endpoint_url character varying(255) NOT NULL,
+        application_id bigint NOT NULL,
+        token character varying(255),
+        oldest_failure_date timestamp without time zone,
+        failures_since_last_success bigint NOT NULL
+    );
+
+
+    ALTER TABLE public.cwd_webhook OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Name: hibernate_unique_key; Type: TABLE; Schema: public; Owner: crowd
+    --
+
+    CREATE TABLE public.hibernate_unique_key (
+        next_hi bigint
+    );
+
+
+    ALTER TABLE public.hibernate_unique_key OWNER TO {{ include "postgresql.username" .Subcharts.postgresql }};
+
+    --
+    -- Data for Name: cwd_app_dir_default_groups; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_app_dir_group_mapping; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_app_dir_group_mapping VALUES (360449, 327681, 2, 131073, 'crowd-administrators');
+
+
+    --
+    -- Data for Name: cwd_app_dir_mapping; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_app_dir_mapping VALUES (327681, 2, 131073, 'F', 0);
+
+
+    --
+    -- Data for Name: cwd_app_dir_operation; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'CREATE_USER');
+    INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'UPDATE_ROLE');
+    INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'DELETE_ROLE');
+    INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'CREATE_GROUP');
+    INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'UPDATE_GROUP');
+    INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'UPDATE_USER_ATTRIBUTE');
+    INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'DELETE_USER');
+    INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'UPDATE_USER');
+    INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'CREATE_ROLE');
+    INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'UPDATE_ROLE_ATTRIBUTE');
+    INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'DELETE_GROUP');
+    INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'UPDATE_GROUP_ATTRIBUTE');
+
+
+    --
+    -- Data for Name: cwd_app_licensed_user; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_app_licensing; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_app_licensing_dir_info; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_application; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_application VALUES (1, 'google-apps', 'google-apps', '2021-07-07 14:46:28.885', '2021-07-07 14:47:36.916', 'T', 'Google Applications Connector', 'PLUGIN', '{PKCS5S2}L3DYnJAmQUdDSpDZawJQAOOTE/vFrzGexd0TX/WPIXREAuMKKWnYpRUmFSn9PpjE');
+    INSERT INTO public.cwd_application VALUES (2, 'crowd', 'crowd', '2021-07-07 14:47:34.47', '2021-07-07 14:47:36.949', 'T', 'Crowd console', 'CROWD', '{PKCS5S2}b/1heBxixZNgxvS40Aviu9Nb5MM8PSYUz7tiAyZ42lo0vKblikkZQSnTNBzd0sFw');
+
+
+    --
+    -- Data for Name: cwd_application_address; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_application_alias; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_application_attribute; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_application_attribute VALUES (1, 'atlassian_sha1_applied', 'true');
+    INSERT INTO public.cwd_application_attribute VALUES (2, 'atlassian_sha1_applied', 'true');
+    INSERT INTO public.cwd_application_attribute VALUES (2, 'aggregateMemberships', 'false');
+    INSERT INTO public.cwd_application_attribute VALUES (2, 'lowerCaseOutput', 'false');
+    INSERT INTO public.cwd_application_attribute VALUES (2, 'aliasingEnabled', 'false');
+    INSERT INTO public.cwd_application_attribute VALUES (2, 'optimizeCachedDirectoriesAuthenticationAuthenticationOrder', 'false');
+    INSERT INTO public.cwd_application_attribute VALUES (1, 'aggregateMemberships', 'false');
+    INSERT INTO public.cwd_application_attribute VALUES (1, 'lowerCaseOutput', 'false');
+    INSERT INTO public.cwd_application_attribute VALUES (1, 'aliasingEnabled', 'false');
+    INSERT INTO public.cwd_application_attribute VALUES (1, 'optimizeCachedDirectoriesAuthenticationAuthenticationOrder', 'false');
+
+
+    --
+    -- Data for Name: cwd_application_saml_config; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_audit_log_changeset; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32769, 1625669189447, 'OTHER', NULL, '', 'APPLICATION_CREATED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32770, 1625669217365, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32771, 1625669217373, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32772, 1625669217377, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32773, 1625669217384, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32774, 1625669217391, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32775, 1625669217395, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32776, 1625669217400, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32777, 1625669217406, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32778, 1625669217410, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32779, 1625669233392, 'OTHER', NULL, '', 'DIRECTORY_CREATED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32780, 1625669254337, 'OTHER', NULL, '', 'USER_CREATED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32781, 1625669254417, 'OTHER', NULL, '', 'GROUP_CREATED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32782, 1625669254444, 'OTHER', NULL, '', 'ADDED_TO_GROUP', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32783, 1625669254531, 'OTHER', NULL, '', 'APPLICATION_CREATED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32784, 1625669254554, 'OTHER', NULL, '', 'APPLICATION_UPDATED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32785, 1625669256846, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32786, 1625669256850, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32787, 1625669256854, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32788, 1625669256858, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32789, 1625669256861, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32790, 1625669256864, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32791, 1625669256933, 'OTHER', NULL, '', 'APPLICATION_UPDATED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (32792, 1625669257009, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (458753, 1625669257114, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (458754, 1625669257285, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (458755, 1625669257289, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+    INSERT INTO public.cwd_audit_log_changeset VALUES (458756, 1625669257311, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
+
+
+    --
+    -- Data for Name: cwd_audit_log_entity; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_audit_log_entity VALUES (98305, 'APPLICATION', 1, 'google-apps', 'T', 32769);
+    INSERT INTO public.cwd_audit_log_entity VALUES (98306, 'DIRECTORY', 131073, 'Crowd server', 'T', 32779);
+    INSERT INTO public.cwd_audit_log_entity VALUES (98307, 'USER', 163841, 'admin', 'T', 32780);
+    INSERT INTO public.cwd_audit_log_entity VALUES (98308, 'DIRECTORY', 131073, 'Crowd server', 'F', 32780);
+    INSERT INTO public.cwd_audit_log_entity VALUES (98309, 'GROUP', 262145, 'crowd-administrators', 'T', 32781);
+    INSERT INTO public.cwd_audit_log_entity VALUES (98310, 'DIRECTORY', 131073, 'Crowd server', 'F', 32781);
+    INSERT INTO public.cwd_audit_log_entity VALUES (98311, 'GROUP', 262145, 'crowd-administrators', 'T', 32782);
+    INSERT INTO public.cwd_audit_log_entity VALUES (98312, 'USER', 163841, 'admin', 'F', 32782);
+    INSERT INTO public.cwd_audit_log_entity VALUES (98313, 'DIRECTORY', 131073, 'Crowd server', 'F', 32782);
+    INSERT INTO public.cwd_audit_log_entity VALUES (98314, 'APPLICATION', 2, 'crowd', 'T', 32783);
+    INSERT INTO public.cwd_audit_log_entity VALUES (98315, 'APPLICATION', 2, 'crowd', 'T', 32784);
+    INSERT INTO public.cwd_audit_log_entity VALUES (98316, 'APPLICATION', 1, 'google-apps', 'T', 32791);
+
+
+    --
+    -- Data for Name: cwd_audit_log_entry; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_audit_log_entry VALUES (65537, 'Type', 32769, '', 'PLUGIN');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65538, 'Created Date', 32769, '', '2021-07-07T14:46:28.885+0000');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65539, 'Name', 32769, '', 'google-apps');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65540, 'Description', 32769, '', 'Google Applications Connector');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65541, 'Attribute: atlassian_sha1_applied', 32769, '', 'true');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65542, 'Is permanent', 32769, '', 'true');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65543, 'Active', 32769, '', 'true');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65544, 'Password', 32769, '', '*****');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65545, 'deployment.title', 32770, '', 'Crowd server');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65546, 'des.encryption.key', 32771, '', '*****');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65547, 'session.time', 32772, '', '1800000');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65548, 'cache.enabled', 32773, 'false', 'true');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65549, 'base.url', 32774, '', 'http://127.0.0.1:8080/crowd');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65550, 'mailserver.message.template', 32775, '', 'Hello $firstname $lastname,
+
+    You (or someone else) have requested to reset your password for $deploymenttitle on $date.
+
+    If you follow the link below you will be able to personally reset your password.
+    $resetlink
+
+    This password reset request is valid for the next 24 hours.
+
+    Here are the details of your account:
+
+    Username: $username
+    Full name: $firstname $lastname
+    Your account is currently: $active
+
+    $deploymenttitle administrator');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65551, 'email.template.forgotten.username', 32776, '', 'Hello $firstname $lastname,
+
+    You have requested the username for your email address: $email.
+
+    Your username(s) are: $username
+
+    If you think this email was sent incorrectly, please contact one of the administrators at: $admincontact
+
+    $deploymenttitle administrator');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65552, 'mailserver.prefix', 32777, '', '[Crowd server - Atlassian Crowd]');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65553, 'email.template.password.expiration.reminder', 32778, '', 'Hello $username,
+
+    your password will expire in $daysToPasswordExpiration day(s). Use the following link to change your password to avoid losing access to Crowd and connected applications.
+
+    $changePasswordlink
+
+    $deploymenttitle administrator');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65554, 'Encryption type', 32779, '', 'atlassian-security');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65555, 'Created date', 32779, '', '2021-07-07T14:47:13.365+0000');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65556, 'Allowed operations', 32779, '[]', '[CREATE_GROUP, CREATE_USER, DELETE_GROUP, DELETE_USER, UPDATE_GROUP, UPDATE_GROUP_ATTRIBUTE, UPDATE_USER, UPDATE_USER_ATTRIBUTE]');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65557, 'Attribute: password_max_change_time', 32779, '', '0');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65558, 'Directory type', 32779, '', 'INTERNAL');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65559, 'Name', 32779, '', 'Crowd server');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65560, 'Attribute: password_max_attempts', 32779, '', '0');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65561, 'Attribute: user_encryption_method', 32779, '', 'atlassian-security');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65562, 'Attribute: password_history_count', 32779, '', '0');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65563, 'Active', 32779, '', 'true');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65564, 'Implementation class', 32779, '', 'com.atlassian.crowd.directory.InternalDirectory');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65565, 'Email', 32780, '', 'admin@admin.com');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65566, 'Last name', 32780, '', 'Admin');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65567, 'Display name', 32780, '', 'Crowd Admin');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65568, 'Username', 32780, '', 'admin');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65569, 'First name', 32780, '', 'Crowd');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65570, 'External id', 32780, '', '211ade80-a976-421e-9c10-70223e602c53');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65571, 'Active', 32780, '', 'true');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65572, 'Password', 32780, '', '*****');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65573, 'Name', 32781, '', 'crowd-administrators');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65574, 'Local', 32781, '', 'false');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65575, 'Active', 32781, '', 'true');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65576, 'Created Date', 32783, '', '2021-07-07T14:47:34.470+0000');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65577, 'Type', 32783, '', 'CROWD');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65578, 'Name', 32783, '', 'crowd');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65579, 'Description', 32783, '', 'Crowd console');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65580, 'Attribute: atlassian_sha1_applied', 32783, '', 'true');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65581, 'Is permanent', 32783, '', 'true');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65582, 'Active', 32783, '', 'true');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65583, 'Password', 32783, '', '*****');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65584, 'Attribute: aggregateMemberships', 32784, '', 'false');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65585, 'Attribute: optimizeCachedDirectoriesAuthenticationAuthenticationOrder', 32784, '', 'false');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65586, 'Attribute: aliasingEnabled', 32784, '', 'false');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65587, 'Attribute: lowerCaseOutput', 32784, '', 'false');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65588, 'com.sun.jndi.ldap.connect.pool.initsize', 32785, '', '1');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65589, 'com.sun.jndi.ldap.connect.pool.prefsize', 32786, '', '10');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65590, 'com.sun.jndi.ldap.connect.pool.maxsize', 32787, '', '0');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65591, 'com.sun.jndi.ldap.connect.pool.timeout', 32788, '', '30000');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65592, 'com.sun.jndi.ldap.connect.pool.protocol', 32789, '', 'plain ssl');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65593, 'com.sun.jndi.ldap.connect.pool.authentication', 32790, '', 'simple');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65594, 'Attribute: aggregateMemberships', 32791, '', 'false');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65595, 'Attribute: optimizeCachedDirectoriesAuthenticationAuthenticationOrder', 32791, '', 'false');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65596, 'Attribute: aliasingEnabled', 32791, '', 'false');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65597, 'Attribute: lowerCaseOutput', 32791, '', 'false');
+    INSERT INTO public.cwd_audit_log_entry VALUES (65598, 'mailserver.timeout', 32792, '', '60');
+    INSERT INTO public.cwd_audit_log_entry VALUES (491521, 'notification.email', 458753, '', '[""]');
+    INSERT INTO public.cwd_audit_log_entry VALUES (491522, 'crowd.encryption.encryptor.AES.keyPath', 458754, '', 'KEY_DIR/javax.crypto.spec.SecretKeySpec_1625669257214');
+    INSERT INTO public.cwd_audit_log_entry VALUES (491523, 'crowd.encryption.encryptor.default', 458755, '', 'AES_CBC_PKCS5Padding');
+    INSERT INTO public.cwd_audit_log_entry VALUES (491524, 'build.number', 458756, '', '1581');
+
+
+    --
+    -- Data for Name: cwd_cluster_heartbeat; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_cluster_heartbeat VALUES ('8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0', '', 1625669369479);
+
+
+    --
+    -- Data for Name: cwd_cluster_info; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_cluster_info VALUES ('8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0', '10.244.0.10', 'crowd-0', 320, 683, 10.5, 622220, 1625669378411);
+
+
+    --
+    -- Data for Name: cwd_cluster_job; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_cluster_job VALUES ('heartbeat-cleanup', 'com.atlassian.crowd.manager.cluster.heartbeat.CrowdClusterNodeHeartbeatService', NULL, '0 0 0/4 * * ?', NULL, 1625673600000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('LocalPluginLicenseNotificationJob-job', 'LocalPluginLicenseNotificationJob-runner', 86400000, NULL, NULL, 1625755657359, 2, NULL, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0', 1625669257361);
+    INSERT INTO public.cwd_cluster_job VALUES ('PluginUpdateCheckJob-job', 'PluginUpdateCheckJob-runner', 86400000, NULL, NULL, 1625708533951, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('PluginRequestCheckJob-job', 'PluginRequestCheckJob-runner', 3600000, NULL, NULL, 1625672857375, 2, NULL, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0', 1625669257382);
+    INSERT INTO public.cwd_cluster_job VALUES ('InstanceTopologyJob-job', 'InstanceTopologyJob-runner', 86400000, NULL, NULL, 1625743767223, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('Service Provider Session Remover', 'com.atlassian.oauth.serviceprovider.internal.ExpiredSessionRemover', 28800000, NULL, NULL, 1625698057404, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('applink-status-analytics-job', 'com.atlassian.applinks.analytics.ApplinkStatusJob', 86400000, NULL, NULL, 1625755657521, 2, NULL, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0', 1625669257525);
+    INSERT INTO public.cwd_cluster_job VALUES ('auditLogPrunerJob', 'auditLogPrunerJob', NULL, '0 0 0 */1 * ?', NULL, 1625702400000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('clusterNodeInformationPrunerJob', 'clusterNodeInformationPrunerJob', NULL, '0 0 3 */1 * ?', NULL, 1625713200000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('com.atlassian.crowd.analytics.statistics.StatisticsCollectionScheduler-job', 'com.atlassian.crowd.analytics.statistics.StatisticsCollectionScheduler', NULL, '0 0 23 * * ?', NULL, 1625698800000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('tombstoneReaperTrigger', 'TombstoneReaperJob', NULL, '0 0 */6 * * ?', NULL, 1625680800000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('sessionTokenReaperTrigger', 'SessionTokenReaperJob', NULL, '0 0 * * * ?', NULL, 1625670000000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('rememberMeTokenReaperTrigger', 'RememberMeTokenReaperJob', NULL, '0 0 * * * ?', NULL, 1625670000000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('clusterMessageReaperTrigger', 'clusterMessageReaperJob', NULL, '0 0 */6 * * ?', NULL, 1625680800000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('licenseResourceTrigger', 'LicenseResourceJob', NULL, '0 0 */6 * * ?', NULL, 1625680800000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('userTokenReaperTrigger', 'UserTokenReaperJob', NULL, '0 0 * * * ?', NULL, 1625670000000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('AutomatedBackup', 'AutomatedBackup', NULL, '0 0 2 * * ?', NULL, 1625709600000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('applicationSyncMonitor', 'ApplicationStatusSyncRefresherJobRunner', NULL, '0 */10 * * * ?', NULL, 1625669400000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('stalledSynchronisationsHandlerJob', 'stalledSynchronisationsHandlerJob', NULL, '0 */5 * * * ?', NULL, 1625669400000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('passwordExpirationMailNotificationJob', 'passwordExpirationMailNotificationJob', NULL, '0 0 */1 * * ?', NULL, 1625670000000, 1, NULL, NULL, NULL);
+    INSERT INTO public.cwd_cluster_job VALUES ('com.atlassian.crowd.manager.directory.monitor.DirectoryMonitorRefresherStarter-job', 'com.atlassian.crowd.manager.directory.monitor.DirectoryMonitorRefresherJob-runner', 120000, NULL, NULL, 1625669498379, 3, NULL, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0', 1625669378382);
+
+
+    --
+    -- Data for Name: cwd_cluster_lock; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_cluster_lock VALUES ('CROWD_ENCRYPTION', 1625669257279, NULL);
+    INSERT INTO public.cwd_cluster_lock VALUES ('com.atlassian.crowd.manager.upgrade.UpgradeManagerImpl', 1625669257299, NULL);
+    INSERT INTO public.cwd_cluster_lock VALUES ('com.atlassian.upm.impl.PluginManagerPluginAsynchronousTaskStatusStoreImpl', 1625669257349, NULL);
+    INSERT INTO public.cwd_cluster_lock VALUES ('com.atlassian.upm.request.PluginSettingsPluginRequestStore', 1625669257407, NULL);
+    INSERT INTO public.cwd_cluster_lock VALUES ('sal.upgrade.com.atlassian.upm.atlassian-universal-plugin-manager-plugin', 1625669258223, NULL);
+    INSERT INTO public.cwd_cluster_lock VALUES ('sal.upgrade.crowd-saml-plugin', 1625669258241, NULL);
+    INSERT INTO public.cwd_cluster_lock VALUES ('com.atlassian.upm.notification.PluginSettingsNotificationCache', 1625669262423, NULL);
+    INSERT INTO public.cwd_cluster_lock VALUES ('com.atlassian.crowd.manager.directory.monitor.DirectoryMonitorRefresherJob-lock', 1625669378391, NULL);
+
+
+    --
+    -- Data for Name: cwd_cluster_message; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_cluster_message VALUES (1, 'ClusterAwareUserAuthorisationCache', 'clear', 1625669254544, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
+    INSERT INTO public.cwd_cluster_message VALUES (2, 'ClusterAwareUserAuthorisationCache', 'clear', 1625669256655, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
+    INSERT INTO public.cwd_cluster_message VALUES (3, 'ClusterAwareUserAuthorisationCache', 'clear', 1625669256708, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
+    INSERT INTO public.cwd_cluster_message VALUES (4, 'ClusterAwareUserAuthorisationCache', 'clear', 1625669256735, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
+    INSERT INTO public.cwd_cluster_message VALUES (5, 'ClusterAwareUserAuthorisationCache', 'clear', 1625669256782, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
+    INSERT INTO public.cwd_cluster_message VALUES (6, 'ClusterAwareUserAuthorisationCache', 'clear', 1625669256920, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
+    INSERT INTO public.cwd_cluster_message VALUES (7, 'ClusterAwareUserAuthorisationCache', 'clear', 1625669256928, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
+    INSERT INTO public.cwd_cluster_message VALUES (8, 'ANALYTICS_CACHE', 'EXPIRE_CACHE', 1625669258266, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
+    INSERT INTO public.cwd_cluster_message VALUES (9, 'ANALYTICS_CACHE', 'EXPIRE_CACHE', 1625669258305, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
+    INSERT INTO public.cwd_cluster_message VALUES (10, 'ANALYTICS_CACHE', 'EXPIRE_CACHE', 1625669269751, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
+
+
+    --
+    -- Data for Name: cwd_cluster_message_id; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_cluster_message_id VALUES (11);
+
+
+    --
+    -- Data for Name: cwd_cluster_safety; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_databasechangelog; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_databasechangelog VALUES ('Clean liquibase changelog', 'crowd', 'liquibase/drop.xml', '2021-07-07 14:46:07.664773', 45, 'EXECUTED', '7:ea8b0312b091e956938886ff3b6eccb1', 'delete tableName=CWD_DATABASECHANGELOG', '', NULL, '3.5.3', NULL, NULL, '5669167082');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_token', 'crowd', 'liquibase/bootstrap/02_cwd_token.xml', '2021-07-07 14:46:08.463806', 46, 'EXECUTED', '7:b0c100012b28201504b3ee2579225986', 'createTable tableName=cwd_token; addUniqueConstraint constraintName=uk_token_id_hash, tableName=cwd_token; createIndex indexName=idx_token_dir_id, tableName=cwd_token; createIndex indexName=idx_token_key, tableName=cwd_token; createIndex indexName...', 'Creates the cwd_token table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('CWD-3028-1', 'crowd', 'liquibase/bootstrap/02_cwd_token.xml', '2021-07-07 14:46:08.476195', 47, 'EXECUTED', '7:9e88c90fe3b0de5b80ded78a7362de93', 'addColumn tableName=cwd_token', 'Create cwd_token.last_accessed_time column', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('CWD-3028-2', 'crowd', 'liquibase/bootstrap/02_cwd_token.xml', '2021-07-07 14:46:08.480968', 48, 'EXECUTED', '7:9b7d0da59a4b6368c1a46bee935dc6ea', 'addColumn tableName=cwd_token', 'Create cwd_token.duration column', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_directory', 'crowd', 'liquibase/bootstrap/03_cwd_directory.xml', '2021-07-07 14:46:08.512103', 49, 'EXECUTED', '7:50f523d69015ead189f3e90383181035', 'createTable tableName=cwd_directory; addUniqueConstraint constraintName=uk_dir_l_name, tableName=cwd_directory; createIndex indexName=idx_dir_active, tableName=cwd_directory; createIndex indexName=idx_dir_l_impl_class, tableName=cwd_directory; cre...', 'Creates the cwd_directory table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_directory_attribute', 'crowd', 'liquibase/bootstrap/03_cwd_directory.xml', '2021-07-07 14:46:08.538428', 50, 'EXECUTED', '7:70ae6be71d594e18873a4cc84eea38d9', 'createTable tableName=cwd_directory_attribute; addPrimaryKey tableName=cwd_directory_attribute; addForeignKeyConstraint baseTableName=cwd_directory_attribute, constraintName=fk_directory_attribute, referencedTableName=cwd_directory', 'Creates the cwd_directory_attribute table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_directory_operation', 'crowd', 'liquibase/bootstrap/03_cwd_directory.xml', '2021-07-07 14:46:08.562777', 51, 'EXECUTED', '7:c4bdfbb17ad5c9924f0f4832c8cf10b6', 'createTable tableName=cwd_directory_operation; addPrimaryKey tableName=cwd_directory_operation; addForeignKeyConstraint baseTableName=cwd_directory_operation, constraintName=fk_directory_operation, referencedTableName=cwd_directory', 'Creates the cwd_directory_operation table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_application', 'crowd', 'liquibase/bootstrap/04_cwd_application.xml', '2021-07-07 14:46:08.591563', 52, 'EXECUTED', '7:ec2f07a6aaed2115d51ef75fdd916c59', 'createTable tableName=cwd_application; addUniqueConstraint constraintName=uk_app_l_name, tableName=cwd_application; createIndex indexName=idx_app_active, tableName=cwd_application; createIndex indexName=idx_app_type, tableName=cwd_application', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('CWD-3017-1', 'crowd', 'liquibase/bootstrap/04_cwd_application.xml', '2021-07-07 14:46:08.595609', 53, 'MARK_RAN', '7:28a71d029fa4cb3a40e915d13fd5e99a', 'dropPrimaryKey tableName=cwd_application_address; dropColumn columnName=remote_address_binary, tableName=cwd_application_address; addPrimaryKey tableName=cwd_application_address', 'Drops cwd_application.remote_address_binary', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('CWD-3017-2', 'crowd', 'liquibase/bootstrap/04_cwd_application.xml', '2021-07-07 14:46:08.600192', 54, 'MARK_RAN', '7:e4357d1df91bfd7345f7330b92cf1b08', 'dropColumn columnName=remote_address_mask, tableName=cwd_application_address', 'Drops cwd_application.remote_address_mask', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_app_dir_mapping', 'crowd', 'liquibase/bootstrap/04_cwd_application.xml', '2021-07-07 14:46:08.626218', 55, 'EXECUTED', '7:c125f5ec13d60fc598d2aa8d9121cc08', 'createTable tableName=cwd_app_dir_mapping; addUniqueConstraint constraintName=uk_app_dir, tableName=cwd_app_dir_mapping; addForeignKeyConstraint baseTableName=cwd_app_dir_mapping, constraintName=fk_app_dir_app, referencedTableName=cwd_application;...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_app_dir_operation', 'crowd', 'liquibase/bootstrap/04_cwd_application.xml', '2021-07-07 14:46:08.647247', 56, 'EXECUTED', '7:a4a295a64738b1e521e66472c52faeb3', 'createTable tableName=cwd_app_dir_operation; addPrimaryKey tableName=cwd_app_dir_operation; addForeignKeyConstraint baseTableName=cwd_app_dir_operation, constraintName=fk_app_dir_mapping, referencedTableName=cwd_app_dir_mapping', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_app_dir_group_mapping', 'crowd', 'liquibase/bootstrap/04_cwd_application.xml', '2021-07-07 14:46:08.676197', 57, 'EXECUTED', '7:3d49c1de444e59d92bcf52185fec63e2', 'createTable tableName=cwd_app_dir_group_mapping; addUniqueConstraint constraintName=uk_app_dir_group, tableName=cwd_app_dir_group_mapping; createIndex indexName=idx_app_dir_group_group_dir, tableName=cwd_app_dir_group_mapping; addForeignKeyConstra...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_application_address', 'crowd', 'liquibase/bootstrap/04_cwd_application.xml', '2021-07-07 14:46:08.69633', 58, 'EXECUTED', '7:df9580844eeffdb03d99eb8e6663cf68', 'createTable tableName=cwd_application_address; addPrimaryKey tableName=cwd_application_address; addForeignKeyConstraint baseTableName=cwd_application_address, constraintName=fk_application_address, referencedTableName=cwd_application', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_application_alias', 'crowd', 'liquibase/bootstrap/04_cwd_application.xml', '2021-07-07 14:46:08.722722', 59, 'EXECUTED', '7:5d42e0312cf3573858defad213b1daaa', 'createTable tableName=cwd_application_alias; addUniqueConstraint constraintName=uk_alias_app_l_alias, tableName=cwd_application_alias; addUniqueConstraint constraintName=uk_alias_app_l_username, tableName=cwd_application_alias; addForeignKeyConstr...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_application_attribute', 'crowd', 'liquibase/bootstrap/04_cwd_application.xml', '2021-07-07 14:46:08.746557', 60, 'EXECUTED', '7:b576438110b9d280491a8bf3c97a9cf9', 'createTable tableName=cwd_application_attribute; addPrimaryKey tableName=cwd_application_attribute; addForeignKeyConstraint baseTableName=cwd_application_attribute, constraintName=fk_application_attribute, referencedTableName=cwd_application', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-845: cwd_app_dir_default_groups', 'crowd', 'liquibase/bootstrap/04_cwd_application.xml', '2021-07-07 14:46:08.76856', 61, 'EXECUTED', '7:35d534edb98789cae679eec9dbd9ff9f', 'createTable tableName=cwd_app_dir_default_groups; addUniqueConstraint constraintName=uk_appmapping_groupname, tableName=cwd_app_dir_default_groups; addForeignKeyConstraint baseTableName=cwd_app_dir_default_groups, constraintName=fk_app_mapping, re...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-326: Add column cwd_membership.created_date', 'crowd', 'liquibase/bootstrap/10_cwd_membership.xml', '2021-07-07 14:46:09.057608', 86, 'EXECUTED', '7:6041eed4c7df5ab9fadf1959b7d864c2', 'addColumn tableName=cwd_membership', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_granted_perm', 'crowd', 'liquibase/bootstrap/05_cwd_granted_perm.xml', '2021-07-07 14:46:08.788034', 62, 'EXECUTED', '7:d96a0518de25383badc9c295ef014240', 'createTable tableName=cwd_granted_perm; addForeignKeyConstraint baseTableName=cwd_granted_perm, constraintName=fk_permission_group, referencedTableName=cwd_app_dir_group_mapping', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_user', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.814642', 63, 'EXECUTED', '7:be7bef487448295bd97dc9d970b7dd8a', 'createTable tableName=cwd_user; addUniqueConstraint constraintName=uk_user_name_dir_id, tableName=cwd_user; createIndex indexName=idx_user_active, tableName=cwd_user; createIndex indexName=idx_user_name_dir_id, tableName=cwd_user; addForeignKeyCon...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('CWD-1843: drop cwd_user.icon_location', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.818226', 64, 'MARK_RAN', '7:7f75978de1bc54332273f84a1ddd67aa', 'dropColumn columnName=icon_location, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: drop idx_user_lower_display_name before mutating constraints', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.830315', 65, 'MARK_RAN', '7:046da8a8ea5ce3d4065a43e74c48d0cd', 'dropIndex indexName=idx_user_lower_display_name, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: drop idx_user_lower_email_address before mutating constraints', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.840056', 66, 'MARK_RAN', '7:0c0017e1478cb58c47e83078fb108a67', 'dropIndex indexName=idx_user_lower_email_address, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: drop idx_user_lower_first_name before mutating constraints', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.848866', 67, 'MARK_RAN', '7:42456a8760650472ef544f53e3595a6d', 'dropIndex indexName=idx_user_lower_first_name, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: drop idx_user_lower_last_name before mutating constraints', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.858222', 68, 'MARK_RAN', '7:9916a9f25118ef540a0bf57de2381f28', 'dropIndex indexName=idx_user_lower_last_name, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: remove not-null constraints on cwd_user.first_name', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.861405', 69, 'EXECUTED', '7:bd01eee99c1b43b4aed93e8dc92cc9b6', 'dropNotNullConstraint columnName=first_name, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: remove not-null constraints on cwd_user.lower_first_name', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.864136', 70, 'EXECUTED', '7:1eb03c07a41f85d917c29c5c41796091', 'dropNotNullConstraint columnName=lower_first_name, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: remove not-null constraints on cwd_user.last_name', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.866756', 71, 'EXECUTED', '7:7aaf3723221413151da82ee13a5c3bf2', 'dropNotNullConstraint columnName=last_name, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: remove not-null constraints on cwd_user.lower_last_name', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.870262', 72, 'EXECUTED', '7:aaf3b1bc58afe67f78f4111c9835a60c', 'dropNotNullConstraint columnName=lower_last_name, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: remove not-null constraints on cwd_user.display_name', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.873842', 73, 'EXECUTED', '7:867bd8238e64623fa8635f59eedd470b', 'dropNotNullConstraint columnName=display_name, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: remove not-null constraints on cwd_user.lower_display_name', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.876521', 74, 'EXECUTED', '7:90c147b783d6c993dc0be069a321bd1b', 'dropNotNullConstraint columnName=lower_display_name, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: remove not-null constraints on cwd_user.email_address', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.879118', 75, 'EXECUTED', '7:e4d81cbe5f6aa38446cf767b313684da', 'dropNotNullConstraint columnName=email_address, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: remove not-null constraints on cwd_user.lower_email_address', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.881769', 76, 'EXECUTED', '7:a346c98a32e91dfe8c6d3d95dd211c1a', 'dropNotNullConstraint columnName=lower_email_address, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: recreate cwd_user indexes', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.892035', 77, 'EXECUTED', '7:54d82bae8c9c5998f0c188e002580a8a', 'createIndex indexName=idx_user_lower_display_name, tableName=cwd_user; createIndex indexName=idx_user_lower_email_address, tableName=cwd_user; createIndex indexName=idx_user_lower_first_name, tableName=cwd_user; createIndex indexName=idx_user_lowe...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('CWD-3340: add external_id', 'crowd', 'liquibase/bootstrap/06_cwd_user.xml', '2021-07-07 14:46:08.89864', 78, 'EXECUTED', '7:0dd519c7aef24978d38b0d7110df9043', 'addColumn tableName=cwd_user; createIndex indexName=idx_external_id, tableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_user_attribute', 'crowd', 'liquibase/bootstrap/07_cwd_user_attribute.xml', '2021-07-07 14:46:08.928922', 79, 'EXECUTED', '7:6759094190a53913707e5c102e8d70a9', 'createTable tableName=cwd_user_attribute; addUniqueConstraint constraintName=uk_user_attr_name_lval, tableName=cwd_user_attribute; createIndex indexName=idx_user_attr_dir_name_lval, tableName=cwd_user_attribute; createIndex indexName=idx_user_attr...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_user_credential_record', 'crowd', 'liquibase/bootstrap/08_cwd_user_credential_record.xml', '2021-07-07 14:46:08.948683', 80, 'EXECUTED', '7:9e70198ecf55af7437b42cb3f114acb1', 'createTable tableName=cwd_user_credential_record; addForeignKeyConstraint baseTableName=cwd_user_credential_record, constraintName=fk_user_cred_user, referencedTableName=cwd_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_group', 'crowd', 'liquibase/bootstrap/09_cwd_group.xml', '2021-07-07 14:46:08.976607', 81, 'EXECUTED', '7:091ccd11edd299b9b773a3ac9a4c2ae9', 'createTable tableName=cwd_group; addUniqueConstraint constraintName=uk_group_name_dir_id, tableName=cwd_group; createIndex indexName=idx_group_active, tableName=cwd_group; createIndex indexName=idx_group_dir_id, tableName=cwd_group; addForeignKeyC...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('EMBCWD-300: Add column cwd_group.is_local', 'crowd', 'liquibase/bootstrap/09_cwd_group.xml', '2021-07-07 14:46:08.981386', 82, 'EXECUTED', '7:86d5849e8c553c6ae15fe16ac57f8acf', 'addColumn tableName=cwd_group', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-328: Add column cwd_group.external_id', 'crowd', 'liquibase/bootstrap/09_cwd_group.xml', '2021-07-07 14:46:08.990089', 83, 'EXECUTED', '7:53b241170fca2f2b7001791c350eff9e', 'addColumn tableName=cwd_group; createIndex indexName=idx_group_external_id, tableName=cwd_group', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_group_attribute', 'crowd', 'liquibase/bootstrap/09_cwd_group.xml', '2021-07-07 14:46:09.018416', 84, 'EXECUTED', '7:44c52d0ef7ba497aa426b16b31d9228b', 'createTable tableName=cwd_group_attribute; addUniqueConstraint constraintName=uk_group_name_attr_lval, tableName=cwd_group_attribute; createIndex indexName=idx_group_attr_dir_name_lval, tableName=cwd_group_attribute; createIndex indexName=idx_grou...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_membership', 'crowd', 'liquibase/bootstrap/10_cwd_membership.xml', '2021-07-07 14:46:09.050021', 85, 'EXECUTED', '7:b29c7cd97757aacae5e6143e86edbc46', 'createTable tableName=cwd_membership; addUniqueConstraint constraintName=uk_mem_parent_child_type, tableName=cwd_membership; createIndex indexName=idx_mem_dir_child, tableName=cwd_membership; createIndex indexName=idx_mem_dir_parent, tableName=cwd...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_audit_log_changeset', 'crowd', 'liquibase/bootstrap/11_cwd_audit_log.xml', '2021-07-07 14:46:09.092608', 87, 'EXECUTED', '7:4d3d780edd3204504d47e2c72887c89b', 'createTable tableName=cwd_audit_log_changeset; createIndex indexName=idx_audit_authid, tableName=cwd_audit_log_changeset; createIndex indexName=idx_audit_authname, tableName=cwd_audit_log_changeset; createIndex indexName=idx_audit_authtype, tableN...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_audit_log_entry', 'crowd', 'liquibase/bootstrap/11_cwd_audit_log.xml', '2021-07-07 14:46:09.125349', 88, 'EXECUTED', '7:ee6bf90ee8e401891a3b56d66a1870cd', 'createTable tableName=cwd_audit_log_entry; createIndex indexName=idx_audit_propname, tableName=cwd_audit_log_entry', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_audit_log_entry - name foreign key', 'crowd', 'liquibase/bootstrap/11_cwd_audit_log.xml', '2021-07-07 14:46:09.168691', 89, 'EXECUTED', '7:92cb38115bcf791afcd2a38f53230945', 'dropAllForeignKeyConstraints baseTableName=cwd_audit_log_entry; addForeignKeyConstraint baseTableName=cwd_audit_log_entry, constraintName=fk_audit_entry_changeset, referencedTableName=cwd_audit_log_changeset', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_expirable_user_token', 'crowd', 'liquibase/bootstrap/12_cwd_expirable_user_token.xml', '2021-07-07 14:46:09.190839', 90, 'EXECUTED', '7:882ad01d0986638492d1843af55cf849', 'createTable tableName=cwd_expirable_user_token; addUniqueConstraint constraintName=uk_expirable_user_token, tableName=cwd_expirable_user_token', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: drop superflous idx_expirable_user_token_key', 'crowd', 'liquibase/bootstrap/12_cwd_expirable_user_token.xml', '2021-07-07 14:46:09.193133', 91, 'EXECUTED', '7:d41d8cd98f00b204e9800998ecf8427e', 'empty', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_cluster_heartbeat', 'crowd', 'liquibase/bootstrap/13_cwd_cluster_heartbeat.xml', '2021-07-07 14:46:09.213594', 92, 'EXECUTED', '7:e6cb7d87570417b64726fce9aa0091c9', 'createTable tableName=cwd_cluster_heartbeat; createIndex indexName=idx_hb_timestamp, tableName=cwd_cluster_heartbeat', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_cluster_info', 'crowd', 'liquibase/bootstrap/14_cwd_cluster_info.xml', '2021-07-07 14:46:09.229903', 93, 'EXECUTED', '7:47dc9923757242d2509cc7f8dffb2769', 'createTable tableName=cwd_cluster_info', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_cluster_job', 'crowd', 'liquibase/bootstrap/15_cwd_cluster_job.xml', '2021-07-07 14:46:09.255109', 94, 'EXECUTED', '7:0682eb08c7cae08af4059be20e8d5113', 'createTable tableName=cwd_cluster_job; createIndex indexName=nextRunTime_idx, tableName=cwd_cluster_job; createIndex indexName=runnerKey_idx, tableName=cwd_cluster_job', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_cluster_message', 'crowd', 'liquibase/bootstrap/16_cwd_cluster_message.xml', '2021-07-07 14:46:09.27699', 95, 'EXECUTED', '7:913ec120fa35178f764d190b27ea89ad', 'createTable tableName=cwd_cluster_message; createIndex indexName=sender_node_id_idx, tableName=cwd_cluster_message; createIndex indexName=timestamp_idx, tableName=cwd_cluster_message', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_cluster_message_id', 'crowd', 'liquibase/bootstrap/16_cwd_cluster_message.xml', '2021-07-07 14:46:09.292124', 96, 'EXECUTED', '7:9fdd0b8e1da96c6b0b44d488daab9ec2', 'createTable tableName=cwd_cluster_message_id', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: Populate cwd_cluster_message_id', 'crowd', 'liquibase/bootstrap/16_cwd_cluster_message.xml', '2021-07-07 14:46:09.296463', 97, 'EXECUTED', '7:863d758563fccb31984291a755f3f244', 'insert tableName=cwd_cluster_message_id', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_cluster_lock', 'crowd', 'liquibase/bootstrap/17_cwd_cluster_lock.xml', '2021-07-07 14:46:09.312672', 98, 'EXECUTED', '7:b4dfabe2a2a9bd71e9d99a05c2e00898', 'createTable tableName=cwd_cluster_lock', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: Drop cwd_cluster_safety', 'crowd', 'liquibase/bootstrap/18_cwd_cluster_safety.xml', '2021-07-07 14:46:09.327196', 99, 'MARK_RAN', '7:43f3b0fd4d9c4e6863792a7cacd0e873', 'dropTable tableName=cwd_cluster_safety', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: Recreate cwd_cluster_safety', 'crowd', 'liquibase/bootstrap/18_cwd_cluster_safety.xml', '2021-07-07 14:46:09.333981', 100, 'EXECUTED', '7:a0ac3146606a5dd1ec6888245e1d1227', 'createTable tableName=cwd_cluster_safety', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_property', 'crowd', 'liquibase/bootstrap/19_cwd_property.xml', '2021-07-07 14:46:09.35397', 101, 'EXECUTED', '7:a3661682668e907f130852d1984ee7ea', 'createTable tableName=cwd_property; addPrimaryKey tableName=cwd_property', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_tombstone', 'crowd', 'liquibase/bootstrap/20_cwd_tombstone.xml', '2021-07-07 14:46:09.37683', 102, 'EXECUTED', '7:37d51ff493be35347a8dd9a21b2e5c70', 'createTable tableName=cwd_tombstone; createIndex indexName=idx_tombstone_type_timestamp, tableName=cwd_tombstone', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_webhook', 'crowd', 'liquibase/bootstrap/21_cwd_webhook.xml', '2021-07-07 14:46:09.40182', 103, 'EXECUTED', '7:ae0d57564278085f93ee4fcd752667fe', 'createTable tableName=cwd_webhook; addUniqueConstraint constraintName=uk_webhook_url_app, tableName=cwd_webhook; addForeignKeyConstraint baseTableName=cwd_webhook, constraintName=fk_webhook_app, referencedTableName=cwd_application', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_synchronisation_status', 'crowd', 'liquibase/bootstrap/22_cwd_synchronisation_status.xml', '2021-07-07 14:46:09.426868', 104, 'EXECUTED', '7:9a33efe6ebfab3087a4272a739ecf209', 'createTable tableName=cwd_synchronisation_status; createIndex indexName=idx_directory_id, tableName=cwd_synchronisation_status; createIndex indexName=idx_sync_end, tableName=cwd_synchronisation_status; createIndex indexName=idx_sync_status_node_id...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_synchronisation_status - name foreign key', 'crowd', 'liquibase/bootstrap/22_cwd_synchronisation_status.xml', '2021-07-07 14:46:09.456733', 105, 'EXECUTED', '7:35bf26e8f855caee63f6d51ea9aafc85', 'dropAllForeignKeyConstraints baseTableName=cwd_synchronisation_status; addForeignKeyConstraint baseTableName=cwd_synchronisation_status, constraintName=fk_sync_status_dir, referencedTableName=cwd_directory', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_synchronisation_token', 'crowd', 'liquibase/bootstrap/23_cwd_synchronisation_token.xml', '2021-07-07 14:46:09.474072', 106, 'EXECUTED', '7:f534bd0510fa2c3aae86ab3a1b612ba9', 'createTable tableName=cwd_synchronisation_token', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_synchronisation_token - name foreign key', 'crowd', 'liquibase/bootstrap/23_cwd_synchronisation_token.xml', '2021-07-07 14:46:09.505834', 107, 'EXECUTED', '7:d088b8e8287720f2fbde2c3db545e2ea', 'dropAllForeignKeyConstraints baseTableName=cwd_synchronisation_token; addForeignKeyConstraint baseTableName=cwd_synchronisation_token, constraintName=fk_sync_token_dir, referencedTableName=cwd_directory', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('CWD-4119', 'crowd', 'liquibase/crowd_3_1_0/01_setup_hibernate_unique_key.xml', '2021-07-07 14:46:09.522777', 108, 'EXECUTED', '7:2ae7622d51cec142fab15fa76c905772', 'createTable tableName=hibernate_unique_key; insert tableName=hibernate_unique_key', 'Creates and seeds the hibernate_unique_key table used by Hibernate id generators.', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('CWD-5004', 'crowd', 'liquibase/crowd_3_1_0/02_denormalize_granted_permissions.xml', '2021-07-07 14:46:09.538904', 109, 'EXECUTED', '7:4646d4d053e2f11cf0e96408c4e1e72a', 'addColumn tableName=cwd_granted_perm; addNotNullConstraint columnName=group_name, tableName=cwd_granted_perm; addNotNullConstraint columnName=app_dir_mapping_id, tableName=cwd_granted_perm; addForeignKeyConstraint baseTableName=cwd_granted_perm, c...', 'Replaces cwd_granted_perm with group_name and app_dir_mapping_id in cwd_granted_perm', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1087', 'crowd', 'liquibase/crowd_3_1_3/01_audit_entry_cascade.xml', '2021-07-07 14:46:09.587192', 110, 'EXECUTED', '7:52cc69699f2b0dd6b0b86ec725cecba5', 'dropAllForeignKeyConstraints baseTableName=cwd_audit_log_entry; addForeignKeyConstraint baseTableName=cwd_audit_log_entry, constraintName=fk_entry_changeset, referencedTableName=cwd_audit_log_changeset', 'Replaces the current foreign key mapping between the changeset and the entry with one that has an ondelete cascade', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1074', 'crowd', 'liquibase/crowd_3_2_0/01_create_audit_log_entity_table.xml', '2021-07-07 14:46:09.620895', 111, 'EXECUTED', '7:9b93f7b005135067e3f0a8c8fc4184cc', 'createTable tableName=cwd_audit_log_entity; dropIndex indexName=idx_audit_enttype, tableName=cwd_audit_log_changeset; dropIndex indexName=idx_audit_entid, tableName=cwd_audit_log_changeset; dropIndex indexName=idx_audit_entname, tableName=cwd_audi...', 'Adds the audit log entity table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1073', 'crowd', 'liquibase/crowd_3_2_0/02_audit_log_migration.xml', '2021-07-07 14:46:09.630173', 112, 'EXECUTED', '7:1d5a661f251faa52855237b68fcf0b8e', 'sql; sql; dropColumn columnName=entity_id, tableName=cwd_audit_log_changeset; dropColumn columnName=entity_name, tableName=cwd_audit_log_changeset; dropColumn columnName=entity_type, tableName=cwd_audit_log_changeset', 'Migrates the data from the audit log changeset table to the new entity table, drops the entity columns from the changeset', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1170', 'crowd', 'liquibase/crowd_3_2_0/03_audit_log_event_source.xml', '2021-07-07 14:46:09.640243', 113, 'EXECUTED', '7:0d5df47adb0ebcabf4ceb13079052e73', 'addColumn tableName=cwd_audit_log_changeset; addNotNullConstraint columnName=event_source, tableName=cwd_audit_log_changeset; createIndex indexName=idx_audit_source, tableName=cwd_audit_log_changeset', 'Creates the source column for the cwd_audit_log_changeset table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1146_1', 'crowd', 'liquibase/crowd_3_2_0/04_audit_log_fk_indexes.xml', '2021-07-07 14:46:09.653689', 114, 'EXECUTED', '7:f7e3fbb056b3177818a27888bd97a277', 'createIndex indexName=idx_entry_changeset, tableName=cwd_audit_log_entry', 'Creates an index on cwd_audit_log_entry.changeset_id', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1146_2', 'crowd', 'liquibase/crowd_3_2_0/04_audit_log_fk_indexes.xml', '2021-07-07 14:46:09.667686', 115, 'EXECUTED', '7:a7fd8da4d0b1fff328ebd656e85727f0', 'createIndex indexName=idx_changeset_entity, tableName=cwd_audit_log_entity', 'Creates an index on cwd_audit_log_entity.changeset_id', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1187', 'crowd', 'liquibase/crowd_3_3_0/01_user_numeric_attribute.xml', '2021-07-07 14:46:09.676463', 116, 'EXECUTED', '7:bf1ea10941a68a91eb18bba936adc11e', 'addColumn tableName=cwd_user_attribute; createIndex indexName=idx_user_attr_nval, tableName=cwd_user_attribute', 'Creates new column with numeric value of attributes.', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1031', 'crowd', 'liquibase/crowd_3_3_0/02_synchronisation_status_parameters_type_migration.xml', '2021-07-07 14:46:09.678516', 117, 'MARK_RAN', '7:e85519419b17df43e277db93e114ea1f', 'modifyDataType columnName=status_parameters, tableName=cwd_synchronisation_status', 'Changes status_parameters type from long to clob in database of oracle type', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1031', 'crowd', 'liquibase/crowd_3_3_0/03_synchronisation_status_token_type_migration.xml', '2021-07-07 14:46:09.680338', 118, 'MARK_RAN', '7:f4a71c9504ad4df1b27ae8e912da7916', 'modifyDataType columnName=sync_status_token, tableName=cwd_synchronisation_token', 'Changes sync_status_token type from long to clob in database of oracle type', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1031', 'crowd', 'liquibase/crowd_3_3_0/04_directory_attribute_value_type_migration.xml', '2021-07-07 14:46:09.687121', 119, 'EXECUTED', '7:7c0073cd4f62ebe6e09af666774ee92b', 'delete tableName=cwd_directory_attribute; addColumn tableName=cwd_directory_attribute; update tableName=cwd_directory_attribute; dropColumn columnName=attribute_value, tableName=cwd_directory_attribute; renameColumn newColumnName=attribute_value, ...', 'Changes attribute value type from varchar to clob', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1031', 'crowd', 'liquibase/crowd_3_3_0/05_audit_log_entry_types_migration.xml', '2021-07-07 14:46:09.697599', 120, 'EXECUTED', '7:25922e53188d1f2f449609e89f03acca', 'addColumn tableName=cwd_audit_log_entry; update tableName=cwd_audit_log_entry; dropColumn columnName=old_value, tableName=cwd_audit_log_entry; renameColumn newColumnName=old_value, oldColumnName=old_value_clob, tableName=cwd_audit_log_entry; addCo...', 'Changes attribute value type from varchar to clob', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1385', 'crowd', 'liquibase/crowd_3_3_0/06_cwd_group_admin_group_table.xml', '2021-07-07 14:46:09.67659', 121, 'EXECUTED', '7:75058ed5e72b10ce28bba5c8d3c35ee7', 'createTable tableName=cwd_group_admin_group; addForeignKeyConstraint baseTableName=cwd_group_admin_group, constraintName=fk_admin_group, referencedTableName=cwd_group; addForeignKeyConstraint baseTableName=cwd_group_admin_group, constraintName=fk_...', 'Create cwd_group_admin_group table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1385', 'crowd', 'liquibase/crowd_3_3_0/07_cwd_group_admin_user_table.xml', '2021-07-07 14:46:09.708448', 122, 'EXECUTED', '7:27b173f3d82484a1bf891425bea87e43', 'createTable tableName=cwd_group_admin_user; addForeignKeyConstraint baseTableName=cwd_group_admin_user, constraintName=fk_admin_user, referencedTableName=cwd_user; addForeignKeyConstraint baseTableName=cwd_group_admin_user, constraintName=fk_user_...', 'Create cwd_group_admin_user table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: hibernate_unique_key - make sure next_hi is a bigint', 'crowd', 'liquibase/crowd_3_3_0/08_fixup_hibernate_unique_key.xml', '2021-07-07 14:46:09.712702', 123, 'EXECUTED', '7:fd037c6165cc34a6a447ac62bd0cdd1e', 'renameColumn newColumnName=next_hi_old, oldColumnName=next_hi, tableName=hibernate_unique_key; addColumn tableName=hibernate_unique_key; dropColumn columnName=next_hi_old, tableName=hibernate_unique_key', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('CWD-4242: drop cwd_webhook.idx_webhook_url_app', 'crowd', 'liquibase/crowd_3_3_0/09_drop_superflous_cwd_webhook_index.xml', '2021-07-07 14:46:09.71499', 124, 'EXECUTED', '7:d41d8cd98f00b204e9800998ecf8427e', 'empty', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('CWD-5004: cwd_granted_perm.group_name fix', 'crowd', 'liquibase/crowd_3_3_0/10_fix_granted_perm_group_name_type.xml', '2021-07-07 14:46:09.722625', 125, 'EXECUTED', '7:34921f9ca7b72e259b882c65e319c97a', 'delete tableName=cwd_granted_perm; renameColumn newColumnName=group_name_old, oldColumnName=group_name, tableName=cwd_granted_perm; addColumn tableName=cwd_granted_perm; addNotNullConstraint columnName=group_name, tableName=cwd_granted_perm; dropC...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1031: make sure cwd_cluster_job.job_parameters has the expected type', 'crowd', 'liquibase/crowd_3_3_0/11_cwd_cluster_job_job_parameters_blob_migration.xml', '2021-07-07 14:46:09.725009', 126, 'MARK_RAN', '7:608ba968258041f356010f4445736333', 'delete tableName=cwd_cluster_job; dropColumn columnName=job_parameters, tableName=cwd_cluster_job; addColumn tableName=cwd_cluster_job', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1712', 'crowd', 'liquibase/crowd_3_4_0/01_application_saml_configuration.xml', '2021-07-07 14:46:09.746162', 127, 'EXECUTED', '7:eeac02f02852656cd04db59f986a7f99', 'createTable tableName=cwd_application_saml_config; addForeignKeyConstraint baseTableName=cwd_application_saml_config, constraintName=fk_app_sso_config, referencedTableName=cwd_application', 'Create cwd_application_saml_config table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1711', 'crowd', 'liquibase/crowd_3_4_0/02_saml_trust_entity_idp_table.xml', '2021-07-07 14:46:09.765805', 128, 'EXECUTED', '7:9072eae637ed6caf5b4ace0347943fe3', 'createTable tableName=cwd_saml_trust_entity_idp', 'Create cwd_saml_trust_entity_idp table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1574', 'crowd', 'liquibase/crowd_3_4_0/03_crowd_remember_me_token.xml', '2021-07-07 14:46:09.791148', 129, 'EXECUTED', '7:1b943b958bd4e59d5cabf020e8f6e61c', 'createTable tableName=cwd_remember_me_token; createIndex indexName=idx_rmt_username, tableName=cwd_remember_me_token; createIndex indexName=idx_rmt_created_date, tableName=cwd_remember_me_token; addUniqueConstraint constraintName=uk_rmt_token, tab...', 'Create cwd_remember_me_token table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1791_1', 'crowd', 'liquibase/crowd_3_4_0/03_crowd_remember_me_token.xml', '2021-07-07 14:46:09.797635', 130, 'EXECUTED', '7:01cfbd253fef8ab2ff7874c2dad0d10e', 'dropTable tableName=cwd_remember_me_token', 'Dropping cwd_remember_me_token table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-1791_2', 'crowd', 'liquibase/crowd_3_4_0/03_crowd_remember_me_token.xml', '2021-07-07 14:46:09.829895', 131, 'EXECUTED', '7:56fc29bc24392e5f372ea736130e3f55', 'createTable tableName=cwd_remember_me_token; createIndex indexName=idx_rmt_username, tableName=cwd_remember_me_token; createIndex indexName=idx_rmt_directory_id, tableName=cwd_remember_me_token; createIndex indexName=idx_rmt_created_date, tableNam...', 'Re-create cwd_remember_me_token table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('CWD-5213', 'crowd', 'liquibase/crowd_3_4_0/04_update_azure_ad_timeouts.xml', '2021-07-07 14:46:09.836018', 132, 'EXECUTED', '7:ab8700a2a1b3c4c6e8fd9607900b2fea', 'sql; sql', 'Set default timeouts for Azure AD directories', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-2030', 'crowd', 'liquibase/crowd_3_5_0/01_cwd_app_licensing.xml', '2021-07-07 14:46:09.859745', 133, 'EXECUTED', '7:e75b472a3ec8682593365e06681ac08d', 'createTable tableName=cwd_app_licensing; createIndex indexName=idx_app_id, tableName=cwd_app_licensing; createIndex indexName=idx_app_id_subtype_version, tableName=cwd_app_licensing; addForeignKeyConstraint baseTableName=cwd_app_licensing, constra...', 'Create cwd_app_licensing table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-2030', 'crowd', 'liquibase/crowd_3_5_0/02_cwd_app_licensing_dir_info.xml', '2021-07-07 14:46:09.886265', 134, 'EXECUTED', '7:609e04308341c0991796d65803040943', 'createTable tableName=cwd_app_licensing_dir_info; createIndex indexName=idx_dir_id, tableName=cwd_app_licensing_dir_info; createIndex indexName=idx_summary_id, tableName=cwd_app_licensing_dir_info; addForeignKeyConstraint baseTableName=cwd_app_lic...', 'Create cwd_app_licensing_dir_info table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-2030', 'crowd', 'liquibase/crowd_3_5_0/03_cwd_app_licensed_user.xml', '2021-07-07 14:46:09.908134', 135, 'EXECUTED', '7:b4f4ff7b11701905eed6620d128496a4', 'createTable tableName=cwd_app_licensed_user; addForeignKeyConstraint baseTableName=cwd_app_licensed_user, constraintName=fk_licensed_user_dir_id, referencedTableName=cwd_app_licensing_dir_info', 'Create cwd_application_saml_config table', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-2030-drop-constraints', 'crowd', 'liquibase/crowd_3_5_0/04_cwd_app_licensed_user_updates.xml', '2021-07-07 14:46:09.911683', 136, 'EXECUTED', '7:cb7fb7e7e8bc42fd9db4139cae36a667', 'dropNotNullConstraint columnName=full_name, tableName=cwd_app_licensed_user; dropNotNullConstraint columnName=email, tableName=cwd_app_licensed_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-2030-delete-before-add-lowercased-columns', 'crowd', 'liquibase/crowd_3_5_0/05_before_cwd_app_licensed_user_lowercase.xml', '2021-07-07 14:46:09.914687', 137, 'EXECUTED', '7:b6080cf23c27f771662282f22e79b5f3', 'delete tableName=cwd_app_licensed_user; delete tableName=cwd_app_licensing_dir_info; delete tableName=cwd_app_licensing', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-2030-add-lowercased-columns', 'crowd', 'liquibase/crowd_3_5_0/05_cwd_app_licensed_user_lowercase.xml', '2021-07-07 14:46:09.919475', 138, 'EXECUTED', '7:1ce690b94512b0f4ed736085c420735b', 'addColumn tableName=cwd_app_licensed_user; addColumn tableName=cwd_app_licensed_user; addColumn tableName=cwd_app_licensed_user', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-844', 'crowd', 'liquibase/crowd_3_7_0/01_cwd_property_value_type_change.xml', '2021-07-07 14:46:09.92329', 139, 'EXECUTED', '7:2b77a48bd2d54b058a36afcab3f35ea9', 'addColumn tableName=cwd_property; update tableName=cwd_property; dropColumn columnName=property_value, tableName=cwd_property; renameColumn newColumnName=property_value, oldColumnName=property_value_clob, tableName=cwd_property', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-677', 'crowd', 'liquibase/crowd_3_7_0/02_cwd_application_attribute_value_type_change.xml', '2021-07-07 14:46:09.926877', 140, 'EXECUTED', '7:65c76d3d9eaaaa8393be121c31f5e06e', 'addColumn tableName=cwd_application_attribute; update tableName=cwd_application_attribute; dropColumn columnName=attribute_value, tableName=cwd_application_attribute; renameColumn newColumnName=attribute_value, oldColumnName=attribute_value_clob, ...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-2897: Make cwd_cluster_message_id compatible with hibernate 5.4.0', 'crowd', 'liquibase/crowd_4_0_0/01_cwd_cluster_message_id.xml', '2021-07-07 14:46:09.928989', 141, 'EXECUTED', '7:9891eea9482bf90db7f72b261303955a', 'update tableName=cwd_cluster_message_id', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-2935: cwd_membership_indexes', 'crowd', 'liquibase/crowd_4_0_3/01_cwd_membership_indexes.xml', '2021-07-07 14:46:09.938076', 142, 'EXECUTED', '7:d862b6ca3f67cf8db33e1c2afc1def39', 'dropIndex indexName=idx_mem_dir_child, tableName=cwd_membership; createIndex indexName=idx_mem_dir_child, tableName=cwd_membership; dropIndex indexName=idx_mem_dir_parent, tableName=cwd_membership; createIndex indexName=idx_mem_dir_parent, tableNa...', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-3496: Add the incremental_sync_error and full_sync_error columns to cwd_synchronisation_status', 'crowd', 'liquibase/crowd_4_2_0/01_cwd_synchronisation_status_inc_and_full_sync_errors.xml', '2021-07-07 14:46:09.943878', 143, 'EXECUTED', '7:65553d8d08bd1f60070cc204ad42403c', 'addColumn tableName=cwd_synchronisation_status', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+    INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-3494: Add the node_name column to cwd_synchronisation_status', 'crowd', 'liquibase/crowd_4_2_0/02_cwd_synchronisation_status_node_name.xml', '2021-07-07 14:46:09.948229', 144, 'EXECUTED', '7:41a34c1c5d891724b80e25dee145e654', 'addColumn tableName=cwd_synchronisation_status', '', NULL, '3.5.3', NULL, NULL, '5669168353');
+
+
+    --
+    -- Data for Name: cwd_databasechangeloglock; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_databasechangeloglock VALUES (1, false, NULL, NULL);
+
+
+    --
+    -- Data for Name: cwd_directory; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_directory VALUES (131073, 'Crowd server', 'crowd server', '2021-07-07 14:47:13.365', '2021-07-07 14:47:37.273', 'T', '', 'com.atlassian.crowd.directory.InternalDirectory', 'com.atlassian.crowd.directory.internaldirectory', 'INTERNAL');
+
+
+    --
+    -- Data for Name: cwd_directory_attribute; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_directory_attribute VALUES (131073, 'user_encryption_method', 'atlassian-security');
+    INSERT INTO public.cwd_directory_attribute VALUES (131073, 'password_max_change_time', '0');
+    INSERT INTO public.cwd_directory_attribute VALUES (131073, 'password_max_attempts', '0');
+    INSERT INTO public.cwd_directory_attribute VALUES (131073, 'password_history_count', '0');
+    INSERT INTO public.cwd_directory_attribute VALUES (131073, 'configuration.change.timestamp', '1625669256731');
+
+
+    --
+    -- Data for Name: cwd_directory_operation; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_directory_operation VALUES (131073, 'CREATE_USER');
+    INSERT INTO public.cwd_directory_operation VALUES (131073, 'CREATE_GROUP');
+    INSERT INTO public.cwd_directory_operation VALUES (131073, 'UPDATE_GROUP');
+    INSERT INTO public.cwd_directory_operation VALUES (131073, 'UPDATE_USER_ATTRIBUTE');
+    INSERT INTO public.cwd_directory_operation VALUES (131073, 'DELETE_USER');
+    INSERT INTO public.cwd_directory_operation VALUES (131073, 'UPDATE_USER');
+    INSERT INTO public.cwd_directory_operation VALUES (131073, 'DELETE_GROUP');
+    INSERT INTO public.cwd_directory_operation VALUES (131073, 'UPDATE_GROUP_ATTRIBUTE');
+
+
+    --
+    -- Data for Name: cwd_expirable_user_token; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_granted_perm; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_granted_perm VALUES (393217, '2021-07-07 14:47:34.5', 2, 327681, 'crowd-administrators');
+    INSERT INTO public.cwd_granted_perm VALUES (393218, '2021-07-07 14:47:36.978', 2, 327681, 'crowd-administrators');
+
+
+    --
+    -- Data for Name: cwd_group; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_group VALUES (262145, 'crowd-administrators', 'crowd-administrators', 'T', '2021-07-07 14:47:34.413', '2021-07-07 14:47:34.413', NULL, 'GROUP', 131073, 'F', NULL);
+
+
+    --
+    -- Data for Name: cwd_group_admin_group; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_group_admin_user; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_group_attribute; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_membership; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_membership VALUES (294913, 262145, 163841, 'GROUP_USER', 'GROUP', 'crowd-administrators', 'crowd-administrators', 'admin', 'admin', 131073, '2021-07-07 14:47:34.444');
+
+
+    --
+    -- Data for Name: cwd_property; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_property VALUES ('crowd', 'deployment.title', 'Crowd server');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'des.encryption.key', 'QyOoBxpUpwg=');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'session.time', '1800000');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'cache.enabled', 'true');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'base.url', 'http://127.0.0.1:8080/crowd');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'mailserver.message.template', 'Hello $firstname $lastname,
+
+    You (or someone else) have requested to reset your password for $deploymenttitle on $date.
+
+    If you follow the link below you will be able to personally reset your password.
+    $resetlink
+
+    This password reset request is valid for the next 24 hours.
+
+    Here are the details of your account:
+
+    Username: $username
+    Full name: $firstname $lastname
+    Your account is currently: $active
+
+    $deploymenttitle administrator');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'email.template.forgotten.username', 'Hello $firstname $lastname,
+
+    You have requested the username for your email address: $email.
+
+    Your username(s) are: $username
+
+    If you think this email was sent incorrectly, please contact one of the administrators at: $admincontact
+
+    $deploymenttitle administrator');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'mailserver.prefix', '[Crowd server - Atlassian Crowd]');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'email.template.password.expiration.reminder', 'Hello $username,
+
+    your password will expire in $daysToPasswordExpiration day(s). Use the following link to change your password to avoid losing access to Crowd and connected applications.
+
+    $changePasswordlink
+
+    $deploymenttitle administrator');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'current.license.resource.total', '0');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'secure.cookie', 'false');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'com.sun.jndi.ldap.connect.pool.initsize', '1');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'com.sun.jndi.ldap.connect.pool.prefsize', '10');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'com.sun.jndi.ldap.connect.pool.maxsize', '0');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'com.sun.jndi.ldap.connect.pool.timeout', '30000');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'com.sun.jndi.ldap.connect.pool.protocol', 'plain ssl');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'com.sun.jndi.ldap.connect.pool.authentication', 'simple');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'mailserver.timeout', '60');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'notification.email', '[""]');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'crowd.encryption.encryptor.AES.keyPath', 'KEY_DIR/javax.crypto.spec.SecretKeySpec_1625669257214');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'crowd.encryption.encryptor.default', 'AES_CBC_PKCS5Padding');
+    INSERT INTO public.cwd_property VALUES ('crowd', 'build.number', '1581');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.upm:notifications:notification-plugin.request', '#java.util.List
+    ');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.upm:notifications:notification-edition.mismatch', '#java.util.List
+    ');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.upm:notifications:notification-evaluation.expired', '#java.util.List
+    ');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.upm:notifications:notification-evaluation.nearlyexpired', '#java.util.List
+    ');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.upm:notifications:notification-maintenance.expired', '#java.util.List
+    ');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.upm:notifications:notification-maintenance.nearlyexpired', '#java.util.List
+    ');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.upm:notifications:notification-license.expired', '#java.util.List
+    ');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.upm:notifications:notification-license.nearlyexpired', '#java.util.List
+    ');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.analytics.client.configuration..policy_acknowledged', 'true');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.upm.log.PluginSettingsAuditLogService:log:upm_audit_log_v3', '#java.util.List
+    {"userKey":"Crowd","date":1625669257433,"i18nKey":"upm.auditLog.upm.startup","entryType":"UPM_STARTUP","params":[]}');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'crowd-saml-plugin:build', '1');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.analytics.client.configuration..analytics_enabled', 'true');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.analytics.client.configuration.uuid', 'f4bb878f-b050-4c24-865d-bc0e834d2259');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.analytics.client.configuration.serverid', 'BKQ0-1JXX-R1L3-H6E2');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.upm.atlassian-universal-plugin-manager-plugin:build', '5');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'crowd.analytics.instance.startup.info', '#java.util.Map
+    start_time 1625669258482
+    build_number 1581
+    clustered true');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.upm:notifications:notification-update', '#java.util.List
+    com.atlassian.troubleshooting.plugin-crowd');
+    INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.analytics.client.configuration..logged_base_analytics_data', 'true');
+
+
+    --
+    -- Data for Name: cwd_remember_me_token; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_saml_trust_entity_idp; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_synchronisation_status; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_synchronisation_token; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: cwd_token; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_token VALUES (557057, 131073, 'admin', 5804501752893499698, 'CSRlvRtAx72jSomTRTbskw', 'oSKplFrFWBRYFtlMGdYXjAAAAAAAAgABYWRtaW4', '2021-07-07 14:47:44.357', '2021-07-07 14:47:44.357', 1625669264357, NULL);
+
+
+    --
+    -- Data for Name: cwd_tombstone; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_tombstone VALUES (425985, 'APPLICATION_UPDATED', 1625669254563, NULL, NULL, NULL, 2);
+    INSERT INTO public.cwd_tombstone VALUES (425986, 'EVENTS', 1625669256645, 'com.atlassian.crowd.event.directory.DirectoryUpdatedEvent', 131073, NULL, NULL);
+    INSERT INTO public.cwd_tombstone VALUES (425987, 'EVENTS', 1625669256696, 'com.atlassian.crowd.event.directory.DirectoryUpdatedEvent', 131073, NULL, NULL);
+    INSERT INTO public.cwd_tombstone VALUES (425988, 'EVENTS', 1625669256722, 'com.atlassian.crowd.event.directory.DirectoryUpdatedEvent', 131073, NULL, NULL);
+    INSERT INTO public.cwd_tombstone VALUES (425989, 'APPLICATION_UPDATED', 1625669256788, NULL, NULL, NULL, 2);
+    INSERT INTO public.cwd_tombstone VALUES (425990, 'APPLICATION_UPDATED', 1625669256925, NULL, NULL, NULL, 2);
+    INSERT INTO public.cwd_tombstone VALUES (425991, 'APPLICATION_UPDATED', 1625669256938, NULL, NULL, NULL, 1);
+
+
+    --
+    -- Data for Name: cwd_user; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_user VALUES (163841, 'admin', 'admin', 'T', '2021-07-07 14:47:34.337', '2021-07-07 14:47:34.337', 'Crowd', 'crowd', 'Admin', 'admin', 'Crowd Admin', 'crowd admin', 'admin@admin.com', 'admin@admin.com', 131073, '{PKCS5S2}opsfcJ06jsYAHH2uiORuXwYCJofsIOwczVVWEu1uTnPp2vuCgd0d7+UBypHJ5saM', '211ade80-a976-421e-9c10-70223e602c53');
+
+
+    --
+    -- Data for Name: cwd_user_attribute; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_user_attribute VALUES (229377, 163841, 131073, 'requiresPasswordChange', 'false', 'false', NULL);
+    INSERT INTO public.cwd_user_attribute VALUES (229378, 163841, 131073, 'invalidPasswordAttempts', '0', '0', 0);
+    INSERT INTO public.cwd_user_attribute VALUES (229379, 163841, 131073, 'passwordLastChanged', '1625669254356', '1625669254356', 1625669254356);
+    INSERT INTO public.cwd_user_attribute VALUES (524289, 163841, 131073, 'lastAuthenticated', '1625669264299', '1625669264299', 1625669264299);
+    INSERT INTO public.cwd_user_attribute VALUES (524290, 163841, 131073, 'lastActive', '1625669264357', '1625669264357', 1625669264357);
+
+
+    --
+    -- Data for Name: cwd_user_credential_record; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.cwd_user_credential_record VALUES (196609, 163841, '{PKCS5S2}opsfcJ06jsYAHH2uiORuXwYCJofsIOwczVVWEu1uTnPp2vuCgd0d7+UBypHJ5saM', 0);
+
+
+    --
+    -- Data for Name: cwd_webhook; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+
+
+    --
+    -- Data for Name: hibernate_unique_key; Type: TABLE DATA; Schema: public; Owner: crowd
+    --
+
+    INSERT INTO public.hibernate_unique_key VALUES (18);
+
+
+    --
+    -- Name: cwd_app_dir_operation cwd_app_dir_operation_pkey; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_operation
+        ADD CONSTRAINT cwd_app_dir_operation_pkey PRIMARY KEY (app_dir_mapping_id, operation_type);
+
+
+    --
+    -- Name: cwd_application_address cwd_application_address_pkey; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_application_address
+        ADD CONSTRAINT cwd_application_address_pkey PRIMARY KEY (application_id, remote_address);
+
+
+    --
+    -- Name: cwd_application_attribute cwd_application_attribute_pkey; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_application_attribute
+        ADD CONSTRAINT cwd_application_attribute_pkey PRIMARY KEY (application_id, attribute_name);
+
+
+    --
+    -- Name: cwd_directory_attribute cwd_directory_attribute_pkey; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_directory_attribute
+        ADD CONSTRAINT cwd_directory_attribute_pkey PRIMARY KEY (directory_id, attribute_name);
+
+
+    --
+    -- Name: cwd_directory_operation cwd_directory_operation_pkey; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_directory_operation
+        ADD CONSTRAINT cwd_directory_operation_pkey PRIMARY KEY (directory_id, operation_type);
+
+
+    --
+    -- Name: cwd_property cwd_property_pkey; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_property
+        ADD CONSTRAINT cwd_property_pkey PRIMARY KEY (property_key, property_name);
+
+
+    --
+    -- Name: cwd_app_dir_default_groups pk_cwd_app_dir_default_groups; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_default_groups
+        ADD CONSTRAINT pk_cwd_app_dir_default_groups PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_app_dir_group_mapping pk_cwd_app_dir_group_mapping; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_group_mapping
+        ADD CONSTRAINT pk_cwd_app_dir_group_mapping PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_app_dir_mapping pk_cwd_app_dir_mapping; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_mapping
+        ADD CONSTRAINT pk_cwd_app_dir_mapping PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_app_licensed_user pk_cwd_app_licensed_user; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_licensed_user
+        ADD CONSTRAINT pk_cwd_app_licensed_user PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_app_licensing pk_cwd_app_licensing; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_licensing
+        ADD CONSTRAINT pk_cwd_app_licensing PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_app_licensing_dir_info pk_cwd_app_licensing_dir_info; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_licensing_dir_info
+        ADD CONSTRAINT pk_cwd_app_licensing_dir_info PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_application pk_cwd_application; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_application
+        ADD CONSTRAINT pk_cwd_application PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_application_alias pk_cwd_application_alias; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_application_alias
+        ADD CONSTRAINT pk_cwd_application_alias PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_application_saml_config pk_cwd_application_saml_config; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_application_saml_config
+        ADD CONSTRAINT pk_cwd_application_saml_config PRIMARY KEY (application_id);
+
+
+    --
+    -- Name: cwd_audit_log_changeset pk_cwd_audit_log_changeset; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_audit_log_changeset
+        ADD CONSTRAINT pk_cwd_audit_log_changeset PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_audit_log_entity pk_cwd_audit_log_entity; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_audit_log_entity
+        ADD CONSTRAINT pk_cwd_audit_log_entity PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_audit_log_entry pk_cwd_audit_log_entry; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_audit_log_entry
+        ADD CONSTRAINT pk_cwd_audit_log_entry PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_cluster_heartbeat pk_cwd_cluster_heartbeat; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_cluster_heartbeat
+        ADD CONSTRAINT pk_cwd_cluster_heartbeat PRIMARY KEY (node_id);
+
+
+    --
+    -- Name: cwd_cluster_info pk_cwd_cluster_info; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_cluster_info
+        ADD CONSTRAINT pk_cwd_cluster_info PRIMARY KEY (node_id);
+
+
+    --
+    -- Name: cwd_cluster_job pk_cwd_cluster_job; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_cluster_job
+        ADD CONSTRAINT pk_cwd_cluster_job PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_cluster_lock pk_cwd_cluster_lock; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_cluster_lock
+        ADD CONSTRAINT pk_cwd_cluster_lock PRIMARY KEY (lock_name);
+
+
+    --
+    -- Name: cwd_cluster_message pk_cwd_cluster_message; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_cluster_message
+        ADD CONSTRAINT pk_cwd_cluster_message PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_cluster_safety pk_cwd_cluster_safety; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_cluster_safety
+        ADD CONSTRAINT pk_cwd_cluster_safety PRIMARY KEY (entry_key);
+
+
+    --
+    -- Name: cwd_databasechangeloglock pk_cwd_databasechangeloglock; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_databasechangeloglock
+        ADD CONSTRAINT pk_cwd_databasechangeloglock PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_directory pk_cwd_directory; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_directory
+        ADD CONSTRAINT pk_cwd_directory PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_expirable_user_token pk_cwd_expirable_user_token; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_expirable_user_token
+        ADD CONSTRAINT pk_cwd_expirable_user_token PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_granted_perm pk_cwd_granted_perm; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_granted_perm
+        ADD CONSTRAINT pk_cwd_granted_perm PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_group pk_cwd_group; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group
+        ADD CONSTRAINT pk_cwd_group PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_group_admin_group pk_cwd_group_admin_group; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group_admin_group
+        ADD CONSTRAINT pk_cwd_group_admin_group PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_group_admin_user pk_cwd_group_admin_user; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group_admin_user
+        ADD CONSTRAINT pk_cwd_group_admin_user PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_group_attribute pk_cwd_group_attribute; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group_attribute
+        ADD CONSTRAINT pk_cwd_group_attribute PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_membership pk_cwd_membership; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_membership
+        ADD CONSTRAINT pk_cwd_membership PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_remember_me_token pk_cwd_remember_me_token; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_remember_me_token
+        ADD CONSTRAINT pk_cwd_remember_me_token PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_saml_trust_entity_idp pk_cwd_saml_trust_entity_idp; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_saml_trust_entity_idp
+        ADD CONSTRAINT pk_cwd_saml_trust_entity_idp PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_synchronisation_status pk_cwd_synchronisation_status; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_synchronisation_status
+        ADD CONSTRAINT pk_cwd_synchronisation_status PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_synchronisation_token pk_cwd_synchronisation_token; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_synchronisation_token
+        ADD CONSTRAINT pk_cwd_synchronisation_token PRIMARY KEY (directory_id);
+
+
+    --
+    -- Name: cwd_token pk_cwd_token; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_token
+        ADD CONSTRAINT pk_cwd_token PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_tombstone pk_cwd_tombstone; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_tombstone
+        ADD CONSTRAINT pk_cwd_tombstone PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_user pk_cwd_user; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_user
+        ADD CONSTRAINT pk_cwd_user PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_user_attribute pk_cwd_user_attribute; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_user_attribute
+        ADD CONSTRAINT pk_cwd_user_attribute PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_user_credential_record pk_cwd_user_credential_record; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_user_credential_record
+        ADD CONSTRAINT pk_cwd_user_credential_record PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_webhook pk_cwd_webhook; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_webhook
+        ADD CONSTRAINT pk_cwd_webhook PRIMARY KEY (id);
+
+
+    --
+    -- Name: cwd_application_alias uk_alias_app_l_alias; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_application_alias
+        ADD CONSTRAINT uk_alias_app_l_alias UNIQUE (application_id, lower_alias_name);
+
+
+    --
+    -- Name: cwd_application_alias uk_alias_app_l_username; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_application_alias
+        ADD CONSTRAINT uk_alias_app_l_username UNIQUE (application_id, lower_user_name);
+
+
+    --
+    -- Name: cwd_app_dir_mapping uk_app_dir; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_mapping
+        ADD CONSTRAINT uk_app_dir UNIQUE (application_id, directory_id);
+
+
+    --
+    -- Name: cwd_app_dir_group_mapping uk_app_dir_group; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_group_mapping
+        ADD CONSTRAINT uk_app_dir_group UNIQUE (app_dir_mapping_id, group_name);
+
+
+    --
+    -- Name: cwd_application uk_app_l_name; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_application
+        ADD CONSTRAINT uk_app_l_name UNIQUE (lower_application_name);
+
+
+    --
+    -- Name: cwd_app_dir_default_groups uk_appmapping_groupname; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_default_groups
+        ADD CONSTRAINT uk_appmapping_groupname UNIQUE (application_mapping_id, group_name);
+
+
+    --
+    -- Name: cwd_directory uk_dir_l_name; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_directory
+        ADD CONSTRAINT uk_dir_l_name UNIQUE (lower_directory_name);
+
+
+    --
+    -- Name: cwd_expirable_user_token uk_expirable_user_token; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_expirable_user_token
+        ADD CONSTRAINT uk_expirable_user_token UNIQUE (token);
+
+
+    --
+    -- Name: cwd_group_admin_group uk_group_and_target_group; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group_admin_group
+        ADD CONSTRAINT uk_group_and_target_group UNIQUE (group_id, target_group_id);
+
+
+    --
+    -- Name: cwd_group_attribute uk_group_name_attr_lval; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group_attribute
+        ADD CONSTRAINT uk_group_name_attr_lval UNIQUE (group_id, attribute_name, attribute_lower_value);
+
+
+    --
+    -- Name: cwd_group uk_group_name_dir_id; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group
+        ADD CONSTRAINT uk_group_name_dir_id UNIQUE (lower_group_name, directory_id);
+
+
+    --
+    -- Name: cwd_membership uk_mem_parent_child_type; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_membership
+        ADD CONSTRAINT uk_mem_parent_child_type UNIQUE (parent_id, child_id, membership_type);
+
+
+    --
+    -- Name: cwd_remember_me_token uk_rmt_token_and_series; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_remember_me_token
+        ADD CONSTRAINT uk_rmt_token_and_series UNIQUE (token, series);
+
+
+    --
+    -- Name: cwd_token uk_token_id_hash; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_token
+        ADD CONSTRAINT uk_token_id_hash UNIQUE (identifier_hash);
+
+
+    --
+    -- Name: cwd_group_admin_user uk_user_and_target_group; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group_admin_user
+        ADD CONSTRAINT uk_user_and_target_group UNIQUE (user_id, target_group_id);
+
+
+    --
+    -- Name: cwd_user_attribute uk_user_attr_name_lval; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_user_attribute
+        ADD CONSTRAINT uk_user_attr_name_lval UNIQUE (user_id, attribute_name, attribute_lower_value);
+
+
+    --
+    -- Name: cwd_user uk_user_name_dir_id; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_user
+        ADD CONSTRAINT uk_user_name_dir_id UNIQUE (lower_user_name, directory_id);
+
+
+    --
+    -- Name: cwd_webhook uk_webhook_url_app; Type: CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_webhook
+        ADD CONSTRAINT uk_webhook_url_app UNIQUE (endpoint_url, application_id);
+
+
+    --
+    -- Name: idx_admin_group; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_admin_group ON public.cwd_group_admin_group USING btree (group_id);
+
+
+    --
+    -- Name: idx_admin_user; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_admin_user ON public.cwd_group_admin_user USING btree (user_id);
+
+
+    --
+    -- Name: idx_app_active; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_app_active ON public.cwd_application USING btree (active);
+
+
+    --
+    -- Name: idx_app_dir_group_group_dir; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_app_dir_group_group_dir ON public.cwd_app_dir_group_mapping USING btree (directory_id, group_name);
+
+
+    --
+    -- Name: idx_app_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_app_id ON public.cwd_app_licensing USING btree (application_id);
+
+
+    --
+    -- Name: idx_app_id_subtype_version; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE UNIQUE INDEX idx_app_id_subtype_version ON public.cwd_app_licensing USING btree (application_id, application_subtype, version);
+
+
+    --
+    -- Name: idx_app_type; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_app_type ON public.cwd_application USING btree (application_type);
+
+
+    --
+    -- Name: idx_audit_authid; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_audit_authid ON public.cwd_audit_log_changeset USING btree (author_id);
+
+
+    --
+    -- Name: idx_audit_authname; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_audit_authname ON public.cwd_audit_log_changeset USING btree (author_name);
+
+
+    --
+    -- Name: idx_audit_authtype; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_audit_authtype ON public.cwd_audit_log_changeset USING btree (author_type);
+
+
+    --
+    -- Name: idx_audit_entid; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_audit_entid ON public.cwd_audit_log_entity USING btree (entity_id);
+
+
+    --
+    -- Name: idx_audit_entname; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_audit_entname ON public.cwd_audit_log_entity USING btree (entity_name);
+
+
+    --
+    -- Name: idx_audit_enttype_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_audit_enttype_id ON public.cwd_audit_log_entity USING btree (entity_type, entity_id);
+
+
+    --
+    -- Name: idx_audit_enttype_name; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_audit_enttype_name ON public.cwd_audit_log_entity USING btree (entity_type, entity_name);
+
+
+    --
+    -- Name: idx_audit_ip; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_audit_ip ON public.cwd_audit_log_changeset USING btree (ip_address);
+
+
+    --
+    -- Name: idx_audit_propname; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_audit_propname ON public.cwd_audit_log_entry USING btree (property_name);
+
+
+    --
+    -- Name: idx_audit_source; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_audit_source ON public.cwd_audit_log_changeset USING btree (event_source);
+
+
+    --
+    -- Name: idx_audit_timestamp; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_audit_timestamp ON public.cwd_audit_log_changeset USING btree (audit_timestamp);
+
+
+    --
+    -- Name: idx_auth_eventtype; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_auth_eventtype ON public.cwd_audit_log_changeset USING btree (event_type);
+
+
+    --
+    -- Name: idx_changeset_entity; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_changeset_entity ON public.cwd_audit_log_entity USING btree (changeset_id);
+
+
+    --
+    -- Name: idx_dir_active; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_dir_active ON public.cwd_directory USING btree (active);
+
+
+    --
+    -- Name: idx_dir_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_dir_id ON public.cwd_app_licensing_dir_info USING btree (directory_id);
+
+
+    --
+    -- Name: idx_dir_l_impl_class; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_dir_l_impl_class ON public.cwd_directory USING btree (lower_impl_class);
+
+
+    --
+    -- Name: idx_dir_type; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_dir_type ON public.cwd_directory USING btree (directory_type);
+
+
+    --
+    -- Name: idx_directory_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_directory_id ON public.cwd_synchronisation_status USING btree (directory_id);
+
+
+    --
+    -- Name: idx_entry_changeset; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_entry_changeset ON public.cwd_audit_log_entry USING btree (changeset_id);
+
+
+    --
+    -- Name: idx_external_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_external_id ON public.cwd_user USING btree (external_id);
+
+
+    --
+    -- Name: idx_group_active; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_group_active ON public.cwd_group USING btree (active, directory_id);
+
+
+    --
+    -- Name: idx_group_attr_dir_name_lval; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_group_attr_dir_name_lval ON public.cwd_group_attribute USING btree (directory_id, attribute_name, attribute_lower_value);
+
+
+    --
+    -- Name: idx_group_attr_group_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_group_attr_group_id ON public.cwd_group_attribute USING btree (group_id);
+
+
+    --
+    -- Name: idx_group_dir_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_group_dir_id ON public.cwd_group USING btree (directory_id);
+
+
+    --
+    -- Name: idx_group_external_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_group_external_id ON public.cwd_group USING btree (external_id);
+
+
+    --
+    -- Name: idx_group_target_group; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_group_target_group ON public.cwd_group_admin_group USING btree (target_group_id);
+
+
+    --
+    -- Name: idx_hb_timestamp; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_hb_timestamp ON public.cwd_cluster_heartbeat USING btree (hearbeat_timestamp);
+
+
+    --
+    -- Name: idx_mem_dir_child; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_mem_dir_child ON public.cwd_membership USING btree (directory_id, lower_child_name, membership_type);
+
+
+    --
+    -- Name: idx_mem_dir_parent; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_mem_dir_parent ON public.cwd_membership USING btree (directory_id, lower_parent_name, membership_type);
+
+
+    --
+    -- Name: idx_mem_dir_parent_child; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_mem_dir_parent_child ON public.cwd_membership USING btree (directory_id, lower_parent_name, lower_child_name, membership_type);
+
+
+    --
+    -- Name: idx_rmt_created_date; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_rmt_created_date ON public.cwd_remember_me_token USING btree (created_date);
+
+
+    --
+    -- Name: idx_rmt_directory_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_rmt_directory_id ON public.cwd_remember_me_token USING btree (directory_id);
+
+
+    --
+    -- Name: idx_rmt_used_date; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_rmt_used_date ON public.cwd_remember_me_token USING btree (used_date);
+
+
+    --
+    -- Name: idx_rmt_username; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_rmt_username ON public.cwd_remember_me_token USING btree (username);
+
+
+    --
+    -- Name: idx_summary_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_summary_id ON public.cwd_app_licensing_dir_info USING btree (licensing_summary_id);
+
+
+    --
+    -- Name: idx_sync_end; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_sync_end ON public.cwd_synchronisation_status USING btree (sync_end);
+
+
+    --
+    -- Name: idx_sync_status_node_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_sync_status_node_id ON public.cwd_synchronisation_status USING btree (node_id);
+
+
+    --
+    -- Name: idx_token_dir_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_token_dir_id ON public.cwd_token USING btree (directory_id);
+
+
+    --
+    -- Name: idx_token_key; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_token_key ON public.cwd_token USING btree (random_hash);
+
+
+    --
+    -- Name: idx_token_last_access; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_token_last_access ON public.cwd_token USING btree (last_accessed_date);
+
+
+    --
+    -- Name: idx_token_name_dir_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_token_name_dir_id ON public.cwd_token USING btree (directory_id, entity_name);
+
+
+    --
+    -- Name: idx_tombstone_type_timestamp; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_tombstone_type_timestamp ON public.cwd_tombstone USING btree (tombstone_type, tombstone_timestamp);
+
+
+    --
+    -- Name: idx_user_active; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_user_active ON public.cwd_user USING btree (active, directory_id);
+
+
+    --
+    -- Name: idx_user_attr_dir_name_lval; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_user_attr_dir_name_lval ON public.cwd_user_attribute USING btree (directory_id, attribute_name, attribute_lower_value);
+
+
+    --
+    -- Name: idx_user_attr_nval; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_user_attr_nval ON public.cwd_user_attribute USING btree (attribute_name, attribute_numeric_value);
+
+
+    --
+    -- Name: idx_user_attr_user_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_user_attr_user_id ON public.cwd_user_attribute USING btree (user_id);
+
+
+    --
+    -- Name: idx_user_lower_display_name; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_user_lower_display_name ON public.cwd_user USING btree (lower_display_name, directory_id);
+
+
+    --
+    -- Name: idx_user_lower_email_address; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_user_lower_email_address ON public.cwd_user USING btree (lower_email_address, directory_id);
+
+
+    --
+    -- Name: idx_user_lower_first_name; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_user_lower_first_name ON public.cwd_user USING btree (lower_first_name, directory_id);
+
+
+    --
+    -- Name: idx_user_lower_last_name; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_user_lower_last_name ON public.cwd_user USING btree (lower_last_name, directory_id);
+
+
+    --
+    -- Name: idx_user_name_dir_id; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_user_name_dir_id ON public.cwd_user USING btree (directory_id);
+
+
+    --
+    -- Name: idx_user_target_group; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX idx_user_target_group ON public.cwd_group_admin_user USING btree (target_group_id);
+
+
+    --
+    -- Name: nextRunTime_idx; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX "nextRunTime_idx" ON public.cwd_cluster_job USING btree (next_run_timestamp);
+
+
+    --
+    -- Name: runnerKey_idx; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX "runnerKey_idx" ON public.cwd_cluster_job USING btree (runner_key);
+
+
+    --
+    -- Name: sender_node_id_idx; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX sender_node_id_idx ON public.cwd_cluster_message USING btree (sender_node_id);
+
+
+    --
+    -- Name: timestamp_idx; Type: INDEX; Schema: public; Owner: crowd
+    --
+
+    CREATE INDEX timestamp_idx ON public.cwd_cluster_message USING btree (msg_timestamp);
+
+
+    --
+    -- Name: cwd_group_admin_group fk_admin_group; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group_admin_group
+        ADD CONSTRAINT fk_admin_group FOREIGN KEY (group_id) REFERENCES public.cwd_group(id);
+
+
+    --
+    -- Name: cwd_group_admin_user fk_admin_user; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group_admin_user
+        ADD CONSTRAINT fk_admin_user FOREIGN KEY (user_id) REFERENCES public.cwd_user(id) ON DELETE CASCADE;
+
+
+    --
+    -- Name: cwd_application_alias fk_alias_app_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_application_alias
+        ADD CONSTRAINT fk_alias_app_id FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
+
+
+    --
+    -- Name: cwd_app_dir_mapping fk_app_dir_app; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_mapping
+        ADD CONSTRAINT fk_app_dir_app FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
+
+
+    --
+    -- Name: cwd_app_dir_mapping fk_app_dir_dir; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_mapping
+        ADD CONSTRAINT fk_app_dir_dir FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
+
+
+    --
+    -- Name: cwd_app_dir_group_mapping fk_app_dir_group_app; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_group_mapping
+        ADD CONSTRAINT fk_app_dir_group_app FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
+
+
+    --
+    -- Name: cwd_app_dir_group_mapping fk_app_dir_group_dir; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_group_mapping
+        ADD CONSTRAINT fk_app_dir_group_dir FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
+
+
+    --
+    -- Name: cwd_app_dir_group_mapping fk_app_dir_group_mapping; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_group_mapping
+        ADD CONSTRAINT fk_app_dir_group_mapping FOREIGN KEY (app_dir_mapping_id) REFERENCES public.cwd_app_dir_mapping(id);
+
+
+    --
+    -- Name: cwd_app_dir_operation fk_app_dir_mapping; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_operation
+        ADD CONSTRAINT fk_app_dir_mapping FOREIGN KEY (app_dir_mapping_id) REFERENCES public.cwd_app_dir_mapping(id);
+
+
+    --
+    -- Name: cwd_app_licensing fk_app_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_licensing
+        ADD CONSTRAINT fk_app_id FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
+
+
+    --
+    -- Name: cwd_app_dir_default_groups fk_app_mapping; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_dir_default_groups
+        ADD CONSTRAINT fk_app_mapping FOREIGN KEY (application_mapping_id) REFERENCES public.cwd_app_dir_mapping(id);
+
+
+    --
+    -- Name: cwd_application_saml_config fk_app_sso_config; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_application_saml_config
+        ADD CONSTRAINT fk_app_sso_config FOREIGN KEY (application_id) REFERENCES public.cwd_application(id) ON DELETE CASCADE;
+
+
+    --
+    -- Name: cwd_application_address fk_application_address; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_application_address
+        ADD CONSTRAINT fk_application_address FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
+
+
+    --
+    -- Name: cwd_application_attribute fk_application_attribute; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_application_attribute
+        ADD CONSTRAINT fk_application_attribute FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
+
+
+    --
+    -- Name: cwd_audit_log_entity fk_changeset_entity; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_audit_log_entity
+        ADD CONSTRAINT fk_changeset_entity FOREIGN KEY (changeset_id) REFERENCES public.cwd_audit_log_changeset(id) ON DELETE CASCADE;
+
+
+    --
+    -- Name: cwd_directory_attribute fk_directory_attribute; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_directory_attribute
+        ADD CONSTRAINT fk_directory_attribute FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
+
+
+    --
+    -- Name: cwd_group fk_directory_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group
+        ADD CONSTRAINT fk_directory_id FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
+
+
+    --
+    -- Name: cwd_directory_operation fk_directory_operation; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_directory_operation
+        ADD CONSTRAINT fk_directory_operation FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
+
+
+    --
+    -- Name: cwd_audit_log_entry fk_entry_changeset; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_audit_log_entry
+        ADD CONSTRAINT fk_entry_changeset FOREIGN KEY (changeset_id) REFERENCES public.cwd_audit_log_changeset(id) ON DELETE CASCADE;
+
+
+    --
+    -- Name: cwd_granted_perm fk_granted_perm_dir_mapping; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_granted_perm
+        ADD CONSTRAINT fk_granted_perm_dir_mapping FOREIGN KEY (app_dir_mapping_id) REFERENCES public.cwd_app_dir_mapping(id);
+
+
+    --
+    -- Name: cwd_group_attribute fk_group_attr_dir_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group_attribute
+        ADD CONSTRAINT fk_group_attr_dir_id FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
+
+
+    --
+    -- Name: cwd_group_attribute fk_group_attr_id_group_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group_attribute
+        ADD CONSTRAINT fk_group_attr_id_group_id FOREIGN KEY (group_id) REFERENCES public.cwd_group(id);
+
+
+    --
+    -- Name: cwd_group_admin_group fk_group_target_group; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group_admin_group
+        ADD CONSTRAINT fk_group_target_group FOREIGN KEY (target_group_id) REFERENCES public.cwd_group(id) ON DELETE CASCADE;
+
+
+    --
+    -- Name: cwd_app_licensed_user fk_licensed_user_dir_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_licensed_user
+        ADD CONSTRAINT fk_licensed_user_dir_id FOREIGN KEY (directory_id) REFERENCES public.cwd_app_licensing_dir_info(id);
+
+
+    --
+    -- Name: cwd_app_licensing_dir_info fk_licensing_dir_dir_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_licensing_dir_info
+        ADD CONSTRAINT fk_licensing_dir_dir_id FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
+
+
+    --
+    -- Name: cwd_app_licensing_dir_info fk_licensing_dir_summary_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_app_licensing_dir_info
+        ADD CONSTRAINT fk_licensing_dir_summary_id FOREIGN KEY (licensing_summary_id) REFERENCES public.cwd_app_licensing(id);
+
+
+    --
+    -- Name: cwd_membership fk_membership_dir; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_membership
+        ADD CONSTRAINT fk_membership_dir FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
+
+
+    --
+    -- Name: cwd_remember_me_token fk_rmt_directory_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_remember_me_token
+        ADD CONSTRAINT fk_rmt_directory_id FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id) ON DELETE CASCADE;
+
+
+    --
+    -- Name: cwd_synchronisation_status fk_sync_status_dir; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_synchronisation_status
+        ADD CONSTRAINT fk_sync_status_dir FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
+
+
+    --
+    -- Name: cwd_synchronisation_token fk_sync_token_dir; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_synchronisation_token
+        ADD CONSTRAINT fk_sync_token_dir FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
+
+
+    --
+    -- Name: cwd_user_attribute fk_user_attr_dir_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_user_attribute
+        ADD CONSTRAINT fk_user_attr_dir_id FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
+
+
+    --
+    -- Name: cwd_user_attribute fk_user_attribute_id_user_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_user_attribute
+        ADD CONSTRAINT fk_user_attribute_id_user_id FOREIGN KEY (user_id) REFERENCES public.cwd_user(id);
+
+
+    --
+    -- Name: cwd_user_credential_record fk_user_cred_user; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_user_credential_record
+        ADD CONSTRAINT fk_user_cred_user FOREIGN KEY (user_id) REFERENCES public.cwd_user(id);
+
+
+    --
+    -- Name: cwd_user fk_user_dir_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_user
+        ADD CONSTRAINT fk_user_dir_id FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
+
+
+    --
+    -- Name: cwd_group_admin_user fk_user_target_group; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_group_admin_user
+        ADD CONSTRAINT fk_user_target_group FOREIGN KEY (target_group_id) REFERENCES public.cwd_group(id) ON DELETE CASCADE;
+
+
+    --
+    -- Name: cwd_webhook fk_webhook_app; Type: FK CONSTRAINT; Schema: public; Owner: crowd
+    --
+
+    ALTER TABLE ONLY public.cwd_webhook
+        ADD CONSTRAINT fk_webhook_app FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
+
+
+    --
+    -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: crowd
+    --
+
+    REVOKE ALL ON SCHEMA public FROM postgres;
+    REVOKE ALL ON SCHEMA public FROM PUBLIC;
+    GRANT ALL ON SCHEMA public TO {{ include "postgresql.username" .Subcharts.postgresql }};
+    GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+    --
+    -- PostgreSQL database dump complete
+    --
