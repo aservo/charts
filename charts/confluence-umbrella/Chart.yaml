@@ -1,0 +1,22 @@
+apiVersion: v2
+name: confluence-umbrella
+version: 0.11.0
+appVersion: 7.12.2-jdk11
+description: Helm chart for Confluence with Postgresql, plugins and parametrization
+type: application
+sources:
+  - https://github.com/aservo/charts
+  - https://github.com/atlassian/data-center-helm-charts/tree/main/src/main/charts/confluence
+  - https://github.com/bitnami/charts/tree/master/bitnami/postgresql
+dependencies:
+  - name: confluence
+    version: 0.11.0
+    repository: https://atlassian.github.io/data-center-helm-charts
+  - name: postgresql
+    version: 10.3.17
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+maintainers:
+  - name: ASERVO Software GmbH
+    email: opensource@aservo.com
+engine: gotpl
