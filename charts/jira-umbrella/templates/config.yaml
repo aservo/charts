@@ -9223,7 +9223,7 @@ data:
     -- Data for Name: productlicense; Type: TABLE DATA; Schema: public; Owner: jira
     --
 
-    INSERT INTO public.productlicense VALUES (10000, 'AAACFg0ODAoPeNqNVE1v4jAUvOdXWNobkk1It7QgRdqWuF2qkqAQKu3XwSQPcBvsyHbSZX/9mjQIujRoDzk4fm88b2bsT3eKowlTyB2gXn/o9YcXLrqfJMhze9fOM1eMFEpmZWrIboE1qIqnkIF+ISw1vALfqBKclQIQa1kUoMijLRAaaMYNl8KnYULjaTyeUScsNwtQ0XJuYbSPe85ICmNhQrYBn//hQlYcqi/M5ExrzgRJ5eYDEqlUQE6wpqVK10xDwAz4lv4l7nnY9ZyGTrItoD4noE/0MZrSeL9Dfxdcbeu26aD/dU+KThjPW1nNrBCgxoF/S68o/hx893A/erjC9xeDD3WTS/PKLO1j0SwOOaAeS9vO+bwl7X3vz9qjPINFYVY3XnGxIllKpMi3/mJb2EJnVi50qnhR29hmcxvH9hS0GHqszPkpT6zvdDphlOC7KMbTOArmo2QchXg+o3bDHymw1mZosUVmDajhhahIZQYKNSqgH2tjip/DbnclyTuru/lbB4a3jl8EBRIJaVDGtVF8URqwyFwjI1FaaiM3lhZxbHyEAcFEepIwS2sU05uEBvj2245jW8oasjZmc/Ei5Ks4F60TWWY09O2HL13XidSKCa5ZbcbDOL5BGVSQS+ukRs2EaCkVMqCNzYJTy2aL/71OTe2T7dtBeU4Ah5D8D3A9QdvbcfyfViwv2SF8Z0Zvz+Jf+pe60jAtAhQ+GzCJU7MYFmyr9bWcIcaHyABZBwIVAIwwUZOl/qRdA4snVtYzwcCSZ1O/X02p5');
+    INSERT INTO public.productlicense VALUES (10000, '{{ include "umbrella.licenseKey" . }}');
 
 
     --

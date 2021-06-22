@@ -20,7 +20,7 @@ data:
     <setupType>install.new</setupType>
     <buildNumber>1581</buildNumber>
     <properties>
-        <property name="crowd.clustering.enabled">false</property>
+        <property name="crowd.clustering.enabled">{{ .Values.crowd.crowd.clustering.enabled }}</property>
         <property name="crowd.server.id">{{ include "umbrella.serverId" . }}</property>
         <property name="hibernate.c3p0.acquire_increment">1</property>
         <property name="hibernate.c3p0.idle_test_period">100</property>
@@ -34,7 +34,7 @@ data:
         <property name="hibernate.connection.password">{{ .Values.postgresql.postgresqlPassword }}</property>
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <property name="hibernate.setup">true</property>
-        <property name="license">AAABgQ0ODAoPeNp1kstuwjAQRff5CktdB4XXAqQsIHELLS+RQCvUjWMGcBvsaJxA+fuaQNQkopJX19d3zsz4aaokCSAhzQ5pdvutVr/dJTQISctxelbEjpFSjYngIDXQrUiFki6dhXS5WI4Dau2EPsAFCkd4ScB9Nhq9wGef+HCCWCWAFo/VCbBi83Kp4pplxwhwvltpQO12La7krsF4Kk7gppiBtciQH5gGn6XgXgltc5odq5Q7Y0dwfbqmk/mCLosb+pMIvOTPFu1R0Vc5OgA0OGPfHb70Qvtjte7Yb5vNyB46zXfrSyCrwL+OlwNCZQqYoNC1Xq/UlU6NEGcg+QNf0bIXZ9qkzdQWtOvUBp+nDHPpv6Jlwgd74phxEcXVRXl3sRI0ZcJUkMzQ1obGUZ23tQCjVF7fb80YV/JbqrO05rhnUmiWEw3SmGktmPwDKu/AQ8h99fXeKpedxb8raz5ojiLJC4WgUxLfYMhOIUnibC8k2Rak+jax8vv7Hy1Lv3FyG1gwLAIUHEP4zbqEf1DeOWKb7SpxQ1MEd8ACFGxZV5doE27OtsuNDT50k2xIhAozX02im</property>
+        <property name="license">{{ include "umbrella.licenseKey" . }}</property>
     </properties>
     </application-configuration>
 

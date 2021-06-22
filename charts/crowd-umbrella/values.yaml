@@ -1,5 +1,6 @@
 umbrella:
   serverId: ""
+  licenseKey: ""
 
 crowd:
   volumes:
