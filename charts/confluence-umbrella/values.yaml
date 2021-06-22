@@ -88,3 +88,4 @@ postgresql:
   postgresqlUsername: confluence
   postgresqlPassword: confluence
   postgresqlPostgresPassword: confluence
+  postgresqlMaxConnections: 125
