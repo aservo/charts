@@ -2,6 +2,8 @@ umbrella:
   serverId: ""
   licenseKey: ""
 
+  plugins: []
+
 postgresql:
   enabled: true
   # postgresqlHostname:

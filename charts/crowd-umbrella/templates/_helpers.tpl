@@ -153,8 +153,9 @@ AB0C-1D2E-FGHI-JKL3
       mkdir -p /mnt/plugins &&
       mkdir -p /mnt/additional-plugins &&
       ./cleanup.sh /mnt/plugins jar &&
-      ./download.sh de.aservo:confapi-crowd-plugin:0.0.8:jar /mnt/additional-plugins &&
-      ./download.sh de.aservo:timestamp-to-date-crowd-plugin:0.0.4:jar /mnt/additional-plugins &&
+{{- range .Values.plugins }}
+      ./download.sh {{ . }} /mnt/additional-plugins &&
+{{- end }}
       echo "Finish installing plugins..."
 {{- with .Values.additionalInitContainers }}
 {{- toYaml . }}
@@ -162,12 +163,11 @@ AB0C-1D2E-FGHI-JKL3
 {{- end }}
 
 {{- define "crowd.additionalBundledPlugins" -}}
+{{- range .Values.plugins }}
 - name: shared-home
-  mountPath: "/var/atlassian/application-data/crowd/shared/plugins/confapi-crowd-plugin.jar"
-  subPath: additional-plugins/confapi-crowd-plugin.jar
-- name: shared-home
-  mountPath: "/var/atlassian/application-data/crowd/shared/plugins/timestamp-to-date-crowd-plugin.jar"
-  subPath: additional-plugins/timestamp-to-date-crowd-plugin.jar
+  mountPath: /var/atlassian/application-data/crowd/shared/plugins/{{ regexReplaceAll "([^:]*):([^:]*):([^:]*):([^:]*)" . "${2}.${4}" }}
+  subPath: additional-plugins/{{ regexReplaceAll "([^:]*):([^:]*):([^:]*):([^:]*)" . "${2}.${4}" }}
+{{- end -}}
 {{- range .Values.crowd.additionalBundledPlugins }}
 - name: {{ .volumeName }}
   mountPath: "/var/atlassian/application-data/crowd/shared/plugins/{{ .fileName }}"
