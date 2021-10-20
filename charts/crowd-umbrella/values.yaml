@@ -1,13 +1,23 @@
+global:
+  postgresql:
+    postgresqlHostname: ""
+    postgresqlDatabase: ""
+    postgresqlUsername: ""
+    postgresqlPassword: ""
+    servicePort: ""
+
 umbrella:
   serverId: ""
   licenseKey: ""
-
   plugins: []
+
+crowd:
+  # make 4.3.5-jdk11 default (as stated in upstream's Chart.yaml)
+  image:
+    tag: 4.3.5-jdk11
 
 postgresql:
   enabled: true
-  # postgresqlHostname:
-  # postgresqlPort: 5432
   postgresqlDatabase: crowd
   postgresqlUsername: crowd
   postgresqlPassword: crowd

@@ -51,6 +51,76 @@ AB0C-1D2E-FGHI-JKL3
 {{- end -}}
 {{- end -}}
 
+{{/*
+Get license-key. If none set, use default.
+*/}}
+{{- define "umbrella.licenseKey" -}}
+{{- if .Values.umbrella.licenseKey }}
+{{- .Values.umbrella.licenseKey }}
+{{- else -}}
+{{- "AAABgQ0ODAoPeNp1kstuwjAQRff5CktdB4XXAqQsIHELLS+RQCvUjWMGcBvsaJxA+fuaQNQkopJX19d3zsz4aaokCSAhzQ5pdvutVr/dJTQISctxelbEjpFSjYngIDXQrUiFki6dhXS5WI4Dau2EPsAFCkd4ScB9Nhq9wGef+HCCWCWAFo/VCbBi83Kp4pplxwhwvltpQO12La7krsF4Kk7gppiBtciQH5gGn6XgXgltc5odq5Q7Y0dwfbqmk/mCLosb+pMIvOTPFu1R0Vc5OgA0OGPfHb70Qvtjte7Yb5vNyB46zXfrSyCrwL+OlwNCZQqYoNC1Xq/UlU6NEGcg+QNf0bIXZ9qkzdQWtOvUBp+nDHPpv6Jlwgd74phxEcXVRXl3sRI0ZcJUkMzQ1obGUZ23tQCjVF7fb80YV/JbqrO05rhnUmiWEw3SmGktmPwDKu/AQ8h99fXeKpedxb8raz5ojiLJC4WgUxLfYMhOIUnibC8k2Rak+jax8vv7Hy1Lv3FyG1gwLAIUHEP4zbqEf1DeOWKb7SpxQ1MEd8ACFGxZV5doE27OtsuNDT50k2xIhAozX02im" }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Determine the hostname to use for PostgreSQL
+*/}}
+{{- define "umbrella.databaseHost" -}}
+{{- if .Values.global.postgresql.postgresqlHostname -}}
+    {{- .Values.global.postgresql.postgresqlHostname -}}
+{{- else if .Values.postgresql.enabled -}}
+    {{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL port
+*/}}
+{{- define "umbrella.databasePort" -}}
+{{- if .Values.global.postgresql.servicePort -}}
+    {{- .Values.global.postgresql.servicePort -}}
+{{- else if .Values.postgresql.enabled -}}
+    {{- template "postgresql.port" .Subcharts.postgresql -}}
+{{- else }}
+    {{- printf "5432" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL created database
+*/}}
+{{- define "umbrella.databaseName" -}}
+{{- if .Values.global.postgresql.postgresqlDatabase -}}
+    {{- .Values.global.postgresql.postgresqlDatabase -}}
+{{- else if .Values.postgresql.enabled }}
+    {{- template "postgresql.database" .Subcharts.postgresql -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL username
+*/}}
+{{- define "umbrella.databaseUser" -}}
+{{- if .Values.global.postgresql.postgresqlUsername -}}
+    {{- .Values.global.postgresql.postgresqlUsername -}}
+{{- else if .Values.postgresql.enabled }}
+    {{- template "postgresql.username" .Subcharts.postgresql -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL password
+*/}}
+{{- define "umbrella.databasePassword" -}}
+{{- if .Values.global.postgresql.postgresqlPassword -}}
+    {{- .Values.global.postgresql.postgresqlPassword -}}
+{{- else if .Values.postgresql.enabled }}
+    {{- template "postgresql.password" .Subcharts.postgresql -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Override crowd templates to implement umbrella logic */}}
+
 {{- define "crowd.volumes" -}}
 {{ if not .Values.volumes.localHome.persistentVolumeClaim.create }}
 {{ include "crowd.volumes.localHome" . }}
@@ -178,25 +248,3 @@ AB0C-1D2E-FGHI-JKL3
   {{- end }}
 {{- end }}
 {{- end }}
-
-{{/*
-Get license-key. If none set, use default.
-*/}}
-{{- define "umbrella.licenseKey" -}}
-{{- if .Values.umbrella.licenseKey }}
-{{- .Values.umbrella.licenseKey }}
-{{- else -}}
-{{- "AAABgQ0ODAoPeNp1kstuwjAQRff5CktdB4XXAqQsIHELLS+RQCvUjWMGcBvsaJxA+fuaQNQkopJX19d3zsz4aaokCSAhzQ5pdvutVr/dJTQISctxelbEjpFSjYngIDXQrUiFki6dhXS5WI4Dau2EPsAFCkd4ScB9Nhq9wGef+HCCWCWAFo/VCbBi83Kp4pplxwhwvltpQO12La7krsF4Kk7gppiBtciQH5gGn6XgXgltc5odq5Q7Y0dwfbqmk/mCLosb+pMIvOTPFu1R0Vc5OgA0OGPfHb70Qvtjte7Yb5vNyB46zXfrSyCrwL+OlwNCZQqYoNC1Xq/UlU6NEGcg+QNf0bIXZ9qkzdQWtOvUBp+nDHPpv6Jlwgd74phxEcXVRXl3sRI0ZcJUkMzQ1obGUZ23tQCjVF7fb80YV/JbqrO05rhnUmiWEw3SmGktmPwDKu/AQ8h99fXeKpedxb8raz5ojiLJC4WgUxLfYMhOIUnibC8k2Rak+jax8vv7Hy1Lv3FyG1gwLAIUHEP4zbqEf1DeOWKb7SpxQ1MEd8ACFGxZV5doE27OtsuNDT50k2xIhAozX02im" }}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Determine the hostname to use for PostgreSQL.
-*/}}
-{{- define "postgresql.hostname" -}}
-{{- if .Values.postgresql.enabled -}}
-{{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- .Values.postgresql.postgresqlHostname -}}
-{{- end -}}
-{{- end -}}
