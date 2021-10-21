@@ -1,11 +1,17 @@
+global:
+  postgresql:
+    postgresqlHostname: ""
+    postgresqlDatabase: ""
+    postgresqlUsername: ""
+    postgresqlPassword: ""
+    servicePort: ""
+
 umbrella:
   serverId: ""
   licenseKey: ""
 
 postgresql:
   enabled: true
-  # postgresqlHostname:
-  postgresqlPort: 5432
   postgresqlDatabase: jira
   postgresqlUsername: jira
   postgresqlPassword: jira

@@ -51,6 +51,74 @@ AB0C-1D2E-FGHI-JKL3
 {{- end -}}
 {{- end -}}
 
+{{/*
+Get license-key. If none set, use default.
+*/}}
+{{- define "umbrella.licenseKey" -}}
+{{- if .Values.umbrella.licenseKey }}
+{{- .Values.umbrella.licenseKey }}
+{{- else -}}
+{{- "AAACFg0ODAoPeNqNVE1v4jAUvOdXWNobkk1It7QgRdqWuF2qkqAQKu3XwSQPcBvsyHbSZX/9mjQIujRoDzk4fm88b2bsT3eKowlTyB2gXn/o9YcXLrqfJMhze9fOM1eMFEpmZWrIboE1qIqnkIF+ISw1vALfqBKclQIQa1kUoMijLRAaaMYNl8KnYULjaTyeUScsNwtQ0XJuYbSPe85ICmNhQrYBn//hQlYcqi/M5ExrzgRJ5eYDEqlUQE6wpqVK10xDwAz4lv4l7nnY9ZyGTrItoD4noE/0MZrSeL9Dfxdcbeu26aD/dU+KThjPW1nNrBCgxoF/S68o/hx893A/erjC9xeDD3WTS/PKLO1j0SwOOaAeS9vO+bwl7X3vz9qjPINFYVY3XnGxIllKpMi3/mJb2EJnVi50qnhR29hmcxvH9hS0GHqszPkpT6zvdDphlOC7KMbTOArmo2QchXg+o3bDHymw1mZosUVmDajhhahIZQYKNSqgH2tjip/DbnclyTuru/lbB4a3jl8EBRIJaVDGtVF8URqwyFwjI1FaaiM3lhZxbHyEAcFEepIwS2sU05uEBvj2245jW8oasjZmc/Ei5Ks4F60TWWY09O2HL13XidSKCa5ZbcbDOL5BGVSQS+ukRs2EaCkVMqCNzYJTy2aL/71OTe2T7dtBeU4Ah5D8D3A9QdvbcfyfViwv2SF8Z0Zvz+Jf+pe60jAtAhQ+GzCJU7MYFmyr9bWcIcaHyABZBwIVAIwwUZOl/qRdA4snVtYzwcCSZ1O/X02p5" }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Determine the hostname to use for PostgreSQL
+*/}}
+{{- define "umbrella.databaseHost" -}}
+{{- if .Values.global.postgresql.postgresqlHostname -}}
+    {{- .Values.global.postgresql.postgresqlHostname -}}
+{{- else if .Values.postgresql.enabled -}}
+    {{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL port
+*/}}
+{{- define "umbrella.databasePort" -}}
+{{- if .Values.global.postgresql.servicePort -}}
+    {{- .Values.global.postgresql.servicePort -}}
+{{- else if .Values.postgresql.enabled -}}
+    {{- template "postgresql.port" .Subcharts.postgresql -}}
+{{- else }}
+    {{- printf "5432" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL created database
+*/}}
+{{- define "umbrella.databaseName" -}}
+{{- if .Values.global.postgresql.postgresqlDatabase -}}
+    {{- .Values.global.postgresql.postgresqlDatabase -}}
+{{- else if .Values.postgresql.enabled }}
+    {{- template "postgresql.database" .Subcharts.postgresql -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL username
+*/}}
+{{- define "umbrella.databaseUser" -}}
+{{- if .Values.global.postgresql.postgresqlUsername -}}
+    {{- .Values.global.postgresql.postgresqlUsername -}}
+{{- else if .Values.postgresql.enabled }}
+    {{- template "postgresql.username" .Subcharts.postgresql -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL password
+*/}}
+{{- define "umbrella.databasePassword" -}}
+{{- if .Values.global.postgresql.postgresqlPassword -}}
+    {{- .Values.global.postgresql.postgresqlPassword -}}
+{{- else if .Values.postgresql.enabled }}
+    {{- template "postgresql.password" .Subcharts.postgresql -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "jira.additionalInitContainers" -}}
 # -- Additional initContainer to copy the Jira configuration.
 # Copies dbconfig.xml file to the proper location
@@ -149,25 +217,3 @@ AB0C-1D2E-FGHI-JKL3
 {{- toYaml . | nindent 0 }}
 {{- end }}
 {{- end }}
-
-{{/*
-Get license-key. If none set, use default.
-*/}}
-{{- define "umbrella.licenseKey" -}}
-{{- if .Values.umbrella.licenseKey }}
-{{- .Values.umbrella.licenseKey }}
-{{- else -}}
-{{- "AAACFg0ODAoPeNqNVE1v4jAUvOdXWNobkk1It7QgRdqWuF2qkqAQKu3XwSQPcBvsyHbSZX/9mjQIujRoDzk4fm88b2bsT3eKowlTyB2gXn/o9YcXLrqfJMhze9fOM1eMFEpmZWrIboE1qIqnkIF+ISw1vALfqBKclQIQa1kUoMijLRAaaMYNl8KnYULjaTyeUScsNwtQ0XJuYbSPe85ICmNhQrYBn//hQlYcqi/M5ExrzgRJ5eYDEqlUQE6wpqVK10xDwAz4lv4l7nnY9ZyGTrItoD4noE/0MZrSeL9Dfxdcbeu26aD/dU+KThjPW1nNrBCgxoF/S68o/hx893A/erjC9xeDD3WTS/PKLO1j0SwOOaAeS9vO+bwl7X3vz9qjPINFYVY3XnGxIllKpMi3/mJb2EJnVi50qnhR29hmcxvH9hS0GHqszPkpT6zvdDphlOC7KMbTOArmo2QchXg+o3bDHymw1mZosUVmDajhhahIZQYKNSqgH2tjip/DbnclyTuru/lbB4a3jl8EBRIJaVDGtVF8URqwyFwjI1FaaiM3lhZxbHyEAcFEepIwS2sU05uEBvj2245jW8oasjZmc/Ei5Ks4F60TWWY09O2HL13XidSKCa5ZbcbDOL5BGVSQS+ukRs2EaCkVMqCNzYJTy2aL/71OTe2T7dtBeU4Ah5D8D3A9QdvbcfyfViwv2SF8Z0Zvz+Jf+pe60jAtAhQ+GzCJU7MYFmyr9bWcIcaHyABZBwIVAIwwUZOl/qRdA4snVtYzwcCSZ1O/X02p5" }}
-{{- end -}}
-{{- end -}}
-
-{{/*
-  Determine the hostname to use for PostgreSQL.
-*/}}
-{{- define "postgresql.hostname" -}}
-{{- if .Values.postgresql.enabled -}}
-{{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- .Values.postgresql.postgresqlHostname -}}
-{{- end -}}
-{{- end -}}

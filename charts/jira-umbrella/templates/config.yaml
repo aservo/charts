@@ -7,9 +7,9 @@ metadata:
 data:
   restore-db.sh: |-
     #! /bin/bash -xe
-    until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/{{ include "postgresql.hostname" . }}/{{ include "postgresql.port" .Subcharts.postgresql }}'; do echo "WAITING: db host {{ include "postgresql.hostname" . }} port {{ include "postgresql.port" .Subcharts.postgresql }}"; sleep 1; done
-    psql -h {{ include "postgresql.hostname" . }} -p {{ include "postgresql.port" .Subcharts.postgresql }} -U {{ include "postgresql.username" .Subcharts.postgresql }} -d {{ include "postgresql.database" .Subcharts.postgresql }} -c 'SELECT 1 FROM cwd_user' && exit 0
-    psql -h {{ include "postgresql.hostname" . }} -p {{ include "postgresql.port" .Subcharts.postgresql }} -U {{ include "postgresql.username" .Subcharts.postgresql }} -d {{ include "postgresql.database" .Subcharts.postgresql }} < /tmp/db.dump
+    until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/{{ include "umbrella.databaseHost" . }}/{{ include "umbrella.databasePort" . }}'; do echo "WAITING: db host {{ include "umbrella.databaseHost" . }} port {{ include "umbrella.databasePort" . }}"; sleep 1; done
+    psql -h {{ include "umbrella.databaseHost" . }} -p {{ include "umbrella.databasePort" . }} -U {{ include "umbrella.databaseUser" . }} -d {{ include "umbrella.databaseName" . }} -c 'SELECT 1 FROM cwd_user' && exit 0
+    psql -h {{ include "umbrella.databaseHost" . }} -p {{ include "umbrella.databasePort" . }} -U {{ include "umbrella.databaseUser" . }} -d {{ include "umbrella.databaseName" . }} < /tmp/db.dump
     unset PGPASSWORD
 
   dbconfig.xml: |-
@@ -20,9 +20,9 @@ data:
       <schema-name>public</schema-name>
       <database-type>postgres72</database-type>
       <jdbc-datasource>
-        <url>jdbc:postgresql://{{ include "postgresql.hostname" . }}:{{ include "postgresql.port" .Subcharts.postgresql }}/{{ include "postgresql.database" .Subcharts.postgresql }}</url>
-        <username>{{ include "postgresql.username" .Subcharts.postgresql }}</username>
-        <password>{{ .Values.postgresql.postgresqlPassword }}</password>
+        <url>jdbc:postgresql://{{ include "umbrella.databaseHost" . }}:{{ include "umbrella.databasePort" . }}/{{ include "umbrella.databaseName" . }}</url>
+        <username>{{ include "umbrella.databaseUser" . }}</username>
+        <password>{{ include "umbrella.databasePassword" . }}</password>
         <driver-class>org.postgresql.Driver</driver-class>
         <connection-properties>tcpKeepAlive=true;socketTimeout=240</connection-properties>
         <pool-min-size>20</pool-min-size>
