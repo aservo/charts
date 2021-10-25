@@ -43,6 +43,63 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+{{/*
+Determine the hostname to use for PostgreSQL
+*/}}
+{{- define "umbrella.databaseHost" -}}
+{{- if .Values.global.postgresql.postgresqlHostname -}}
+    {{- .Values.global.postgresql.postgresqlHostname -}}
+{{- else if .Values.postgresql.enabled -}}
+    {{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL port
+*/}}
+{{- define "umbrella.databasePort" -}}
+{{- if .Values.global.postgresql.servicePort -}}
+    {{- .Values.global.postgresql.servicePort -}}
+{{- else if .Values.postgresql.enabled -}}
+    {{- template "postgresql.port" .Subcharts.postgresql -}}
+{{- else }}
+    {{- printf "5432" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL created database
+*/}}
+{{- define "umbrella.databaseName" -}}
+{{- if .Values.global.postgresql.postgresqlDatabase -}}
+    {{- .Values.global.postgresql.postgresqlDatabase -}}
+{{- else if .Values.postgresql.enabled }}
+    {{- template "postgresql.database" .Subcharts.postgresql -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL username
+*/}}
+{{- define "umbrella.databaseUser" -}}
+{{- if .Values.global.postgresql.postgresqlUsername -}}
+    {{- .Values.global.postgresql.postgresqlUsername -}}
+{{- else if .Values.postgresql.enabled }}
+    {{- template "postgresql.username" .Subcharts.postgresql -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return PostgreSQL password
+*/}}
+{{- define "umbrella.databasePassword" -}}
+{{- if .Values.global.postgresql.postgresqlPassword -}}
+    {{- .Values.global.postgresql.postgresqlPassword -}}
+{{- else if .Values.postgresql.enabled }}
+    {{- template "postgresql.password" .Subcharts.postgresql -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "umbrella.serverId" -}}
 {{- if .Values.umbrella.serverId -}}
 {{- .Values.umbrella.serverId -}}
@@ -168,14 +225,3 @@ Generate confluence baseurl
 {{- toYaml . | nindent 0 }}
 {{- end }}
 {{- end }}
-
-{{/*
-Determine the hostname to use for PostgreSQL.
-*/}}
-{{- define "postgresql.hostname" -}}
-{{- if .Values.postgresql.enabled -}}
-{{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- .Values.postgresql.postgresqlHostname -}}
-{{- end -}}
-{{- end -}}
