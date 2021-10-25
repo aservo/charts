@@ -81,6 +81,94 @@ Generate confluence baseurl
 {{- end -}}
 {{- end -}}
 
+{{- define "confluence.additionalInitContainers" -}}
+# -- Additional initContainer to copy the Confluence configuration.
+# Copies confluence.cfg.xml file to the proper location
+- name: copy-config
+  image: busybox
+  imagePullPolicy: IfNotPresent
+  command:
+    - /bin/sh
+  args:
+    - '-c'
+    - >-
+      set -x
+      ; cp /tmp/confluence.cfg.xml /var/atlassian/application-data/confluence/confluence.cfg.xml
+  resources: {}
+  volumeMounts:
+    - name: confluence-config
+      mountPath: /tmp/confluence.cfg.xml
+      subPath: confluence.cfg.xml
+    - name: local-home
+      mountPath: /var/atlassian/application-data/confluence
+
+# -- Additional initContainer to load initial Confluence database.
+# The initial Confluence setup was performed in order to connect to a ready Postgresql database
+# After the chart deployment the default user is able immediately to login without init routine
+- name: init-db
+  image: docker.io/bitnami/postgresql:11
+  imagePullPolicy: IfNotPresent
+  resources: {}
+  volumeMounts:
+    - name: confluence-config
+      mountPath: /tmp/restore-db.sh
+      subPath: restore-db.sh
+    - name: dump-config
+      mountPath: /tmp/db.dump
+      subPath: db.dump
+    - name: dump-config-2
+      mountPath: /tmp/db.dump2
+      subPath: db.dump2
+  env:
+    - name: PGPASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: confluence-secrets
+          key: postgresql-password
+  args: ['/tmp/restore-db.sh']
+{{- with .Values.additionalInitContainers }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{- define "confluence.volumes" -}}
+{{ if not .Values.volumes.localHome.persistentVolumeClaim.create }}
+{{ include "confluence.volumes.localHome" . }}
+{{- end }}
+{{ include "confluence.volumes.sharedHome" . }}
+# -- Volume with additional configuration files
+- name: confluence-config
+  configMap:
+    name: confluence-config
+    items:
+    - key: restore-db.sh
+      path: restore-db.sh
+      mode: 0755
+    - key: confluence.cfg.xml
+      path: confluence.cfg.xml
+      mode: 0755
+
+# -- Volume with additional dump file for SQL import to the database
+- name: dump-config
+  configMap:
+    name: dump-config
+    items:
+    - key: db.dump
+      path: db.dump
+
+# -- Volume with additional dump file for SQL import to the database part2.
+# Need to split into pieces since configmap must have at most 1048576 bytes
+- name: dump-config-2
+  configMap:
+    name: dump-config-2
+    items:
+    - key: db.dump2
+      path: db.dump2
+{{- with .Values.volumes.additional }}
+{{- toYaml . | nindent 0 }}
+{{- end }}
+{{- end }}
+
 {{/*
 Determine the hostname to use for PostgreSQL.
 */}}
