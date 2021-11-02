@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  ENV_FILE: .env
+
+jobs:
+
+  release:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Load environment variables from .env file
+        shell: bash
+        run: |
+          while read line; do
+            echo "$line" >> $GITHUB_ENV
+          done < ${{ env.ENV_FILE }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.2.1
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Push to container registry
+        run: ./scripts/helm-push-oci.sh ${{ secrets.AZ_CR_HOSTNAME }} ${{ secrets.AZ_CR_USERNAME }} ${{ secrets.AZ_CR_PASSWORD }}
+

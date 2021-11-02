@@ -1,0 +1,10 @@
+# See https://github.com/helm/chart-testing#configuration
+remote: origin
+target-branch: main
+chart-dirs:
+  - charts
+chart-repos:
+  - atlassian-data-center=https://atlassian.github.io/data-center-helm-charts
+  - bitnami=https://charts.bitnami.com/bitnami
+helm-extra-args: --timeout 600s
+validate-maintainers: false
