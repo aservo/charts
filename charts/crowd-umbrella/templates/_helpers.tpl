@@ -57,9 +57,9 @@ AB0C-1D2E-FGHI-JKL3
 {{- end }}
 {{ include "crowd.volumes.sharedHome" . }}
 # -- Volume with additional configuration files
-- name: crowd-config
+- name: {{ include "crowd.fullname" . }}-server-config
   configMap:
-    name: crowd-config
+    name: {{ include "crowd.fullname" . }}-server-config
     items:
     - key: restore-db.sh
       path: restore-db.sh
@@ -70,15 +70,15 @@ AB0C-1D2E-FGHI-JKL3
 # -- Volume with additional encryption key
 - name: crowd-key
   configMap:
-    name: crowd-config
+    name: {{ include "crowd.fullname" . }}-server-config
     items:
     - key: javax.crypto.spec.SecretKeySpec
       path: javax.crypto.spec.SecretKeySpec
       mode: 0755
 # -- Volume with additional dump file for SQL import to the database
-- name: dump-config
+- name: {{ include "crowd.fullname" . }}-dump-config
   configMap:
-    name: dump-config
+    name: {{ include "crowd.fullname" . }}-dump-config
     items:
     - key: db.dump
       path: db.dump
@@ -108,7 +108,7 @@ AB0C-1D2E-FGHI-JKL3
       /var/atlassian/application-data/crowd/shared/keys/javax.crypto.spec.SecretKeySpec_1619611916201
   resources: {}
   volumeMounts:
-    - name: crowd-config
+    - name: {{ include "crowd.fullname" . }}-server-config
       mountPath: /tmp/crowd.cfg.xml
       subPath: crowd.cfg.xml
     - name: shared-home
@@ -123,17 +123,17 @@ AB0C-1D2E-FGHI-JKL3
   imagePullPolicy: IfNotPresent
   resources: {}
   volumeMounts:
-    - name: crowd-config
+    - name: {{ include "crowd.fullname" . }}-server-config
       mountPath: /tmp/restore-db.sh
       subPath: restore-db.sh
-    - name: dump-config
+    - name: {{ include "crowd.fullname" . }}-dump-config
       mountPath: /tmp/db.dump
       subPath: db.dump
   env:
     - name: PGPASSWORD
       valueFrom:
         secretKeyRef:
-          name: crowd-secrets
+          name: {{ include "crowd.fullname" . }}-secrets
           key: postgresql-password
   args: ['/tmp/restore-db.sh']
 - name: plugins

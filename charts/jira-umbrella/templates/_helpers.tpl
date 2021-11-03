@@ -75,13 +75,13 @@ AB0C-1D2E-FGHI-JKL3
       chown 2001:2001 /opt/atlassian/jira/atlassian-jira/WEB-INF/classes/seraph-config.xml
   resources: {}
   volumeMounts:
-    - name: jira-config
+    - name: {{ include "jira.fullname" . }}-server-config
       mountPath: /tmp/dbconfig.xml
       subPath: dbconfig.xml
-    - name: jira-config
+    - name: {{ include "jira.fullname" . }}-server-config
       mountPath: /tmp/server.xml
       subPath: server.xml
-    - name: jira-config
+    - name: {{ include "jira.fullname" . }}-server-config
       mountPath: /tmp/seraph-config.xml
       subPath: seraph-config.xml
     - name: local-home
@@ -97,17 +97,17 @@ AB0C-1D2E-FGHI-JKL3
   imagePullPolicy: IfNotPresent
   resources: {}
   volumeMounts:
-    - name: jira-config
+    - name: {{ include "jira.fullname" . }}-server-config
       mountPath: /tmp/restore-db.sh
       subPath: restore-db.sh
-    - name: dump-config
+    - name: {{ include "jira.fullname" . }}-dump-config
       mountPath: /tmp/db.dump
       subPath: db.dump
   env:
     - name: PGPASSWORD
       valueFrom:
         secretKeyRef:
-          name: jira-secrets
+          name: {{ include "jira.fullname" . }}-secrets
           key: postgresql-password
   args: ['/tmp/restore-db.sh']
 {{- with .Values.additionalInitContainers }}
@@ -115,16 +115,15 @@ AB0C-1D2E-FGHI-JKL3
 {{- end }}
 {{- end }}
 
-
 {{- define "jira.volumes" -}}
 {{ if not .Values.volumes.localHome.persistentVolumeClaim.create }}
 {{ include "jira.volumes.localHome" . }}
 {{- end }}
 {{ include "jira.volumes.sharedHome" . }}
 # -- Volume with additional configuration files
-- name: jira-config
+- name: {{ include "jira.fullname" . }}-server-config
   configMap:
-    name: jira-config
+    name: {{ include "jira.fullname" . }}-server-config
     items:
     - key: restore-db.sh
       path: restore-db.sh
@@ -140,9 +139,9 @@ AB0C-1D2E-FGHI-JKL3
       mode: 0755
 
 # -- Volume with additional dump file for SQL import to the database
-- name: dump-config
+- name: {{ include "jira.fullname" . }}-dump-config
   configMap:
-    name: dump-config
+    name: {{ include "jira.fullname" . }}-dump-config
     items:
     - key: db.dump
       path: db.dump
@@ -150,7 +149,6 @@ AB0C-1D2E-FGHI-JKL3
 {{- toYaml . | nindent 0 }}
 {{- end }}
 {{- end }}
->>>>>>> 5dacdf9 (Jira: Move chart logic from values.yaml to template helpers)
 
 {{/*
 Get license-key. If none set, use default.

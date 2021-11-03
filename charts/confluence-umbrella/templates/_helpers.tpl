@@ -96,7 +96,7 @@ Generate confluence baseurl
       ; cp /tmp/confluence.cfg.xml /var/atlassian/application-data/confluence/confluence.cfg.xml
   resources: {}
   volumeMounts:
-    - name: confluence-config
+    - name: {{ include "confluence.fullname" . }}-server-config
       mountPath: /tmp/confluence.cfg.xml
       subPath: confluence.cfg.xml
     - name: local-home
@@ -110,20 +110,20 @@ Generate confluence baseurl
   imagePullPolicy: IfNotPresent
   resources: {}
   volumeMounts:
-    - name: confluence-config
+    - name: {{ include "confluence.fullname" . }}-server-config
       mountPath: /tmp/restore-db.sh
       subPath: restore-db.sh
-    - name: dump-config
+    - name: {{ include "confluence.fullname" . }}-dump-config
       mountPath: /tmp/db.dump
       subPath: db.dump
-    - name: dump-config-2
+    - name: {{ include "confluence.fullname" . }}-dump-config-2
       mountPath: /tmp/db.dump2
       subPath: db.dump2
   env:
     - name: PGPASSWORD
       valueFrom:
         secretKeyRef:
-          name: confluence-secrets
+          name: {{ include "confluence.fullname" . }}-secrets
           key: postgresql-password
   args: ['/tmp/restore-db.sh']
 {{- with .Values.additionalInitContainers }}
@@ -137,9 +137,9 @@ Generate confluence baseurl
 {{- end }}
 {{ include "confluence.volumes.sharedHome" . }}
 # -- Volume with additional configuration files
-- name: confluence-config
+- name: {{ include "confluence.fullname" . }}-server-config
   configMap:
-    name: confluence-config
+    name: {{ include "confluence.fullname" . }}-server-config
     items:
     - key: restore-db.sh
       path: restore-db.sh
@@ -149,18 +149,18 @@ Generate confluence baseurl
       mode: 0755
 
 # -- Volume with additional dump file for SQL import to the database
-- name: dump-config
+- name: {{ include "confluence.fullname" . }}-dump-config
   configMap:
-    name: dump-config
+    name: {{ include "confluence.fullname" . }}-dump-config
     items:
     - key: db.dump
       path: db.dump
 
 # -- Volume with additional dump file for SQL import to the database part2.
 # Need to split into pieces since configmap must have at most 1048576 bytes
-- name: dump-config-2
+- name: {{ include "confluence.fullname" . }}-dump-config-2
   configMap:
-    name: dump-config-2
+    name: {{ include "confluence.fullname" . }}-dump-config-2
     items:
     - key: db.dump2
       path: db.dump2
