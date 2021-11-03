@@ -2,6 +2,31 @@ apiVersion: v1
 entries:
   confluence-umbrella:
   - apiVersion: v2
+    appVersion: 7.12.4-jdk11
+    created: "2021-11-03T16:30:22.355043691Z"
+    dependencies:
+    - name: confluence
+      repository: https://atlassian.github.io/data-center-helm-charts
+      version: 0.15.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.3.17
+    description: Helm chart for Confluence with Postgresql, plugins and parametrization
+    digest: c71c57ccd95a9ea0d13117897eeef1dad62f2576e98ce5937541f4de38ccab24
+    maintainers:
+    - email: opensource@aservo.com
+      name: ASERVO Software GmbH
+    name: confluence-umbrella
+    sources:
+    - https://github.com/aservo/charts
+    - https://github.com/atlassian/data-center-helm-charts/tree/main/src/main/charts/confluence
+    - https://github.com/bitnami/charts/tree/master/bitnami/postgresql
+    type: application
+    urls:
+    - https://github.com/aservo/charts/releases/download/confluence-umbrella-0.15.0/confluence-umbrella-0.15.0.tgz
+    version: 0.15.0
+  - apiVersion: v2
     appVersion: 7.12.2-jdk11
     created: "2021-11-03T14:21:24.524915694Z"
     dependencies:
@@ -403,4 +428,4 @@ entries:
     urls:
     - https://github.com/aservo/charts/releases/download/jira-umbrella-0.11.0/jira-umbrella-0.11.0.tgz
     version: 0.11.0
-generated: "2021-11-03T16:18:56.000912272Z"
+generated: "2021-11-03T16:30:22.355096894Z"
