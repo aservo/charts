@@ -275,7 +275,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_0A5972_NOTIFICATION_SETTING" OWNER TO jira;
+    ALTER TABLE public."AO_0A5972_NOTIFICATION_SETTING" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_0A5972_NOTIFICATION_SETTING_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -289,7 +289,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_0A5972_NOTIFICATION_SETTING_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_0A5972_NOTIFICATION_SETTING_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_0A5972_NOTIFICATION_SETTING_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -312,7 +312,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_0A5972_PUSH_REGISTRATION" OWNER TO jira;
+    ALTER TABLE public."AO_0A5972_PUSH_REGISTRATION" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_0AC321_RECOMMENDATION_AO; Type: TABLE; Schema: public; Owner: jira
@@ -330,7 +330,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_0AC321_RECOMMENDATION_AO" OWNER TO jira;
+    ALTER TABLE public."AO_0AC321_RECOMMENDATION_AO" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_21D670_WHITELIST_RULES; Type: TABLE; Schema: public; Owner: jira
@@ -345,7 +345,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_21D670_WHITELIST_RULES" OWNER TO jira;
+    ALTER TABLE public."AO_21D670_WHITELIST_RULES" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_21D670_WHITELIST_RULES_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -360,7 +360,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_21D670_WHITELIST_RULES_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_21D670_WHITELIST_RULES_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_21D670_WHITELIST_RULES_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -379,7 +379,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_21F425_MESSAGE_AO" OWNER TO jira;
+    ALTER TABLE public."AO_21F425_MESSAGE_AO" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_21F425_MESSAGE_MAPPING_AO; Type: TABLE; Schema: public; Owner: jira
@@ -392,7 +392,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_21F425_MESSAGE_MAPPING_AO" OWNER TO jira;
+    ALTER TABLE public."AO_21F425_MESSAGE_MAPPING_AO" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_21F425_MESSAGE_MAPPING_AO_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -407,7 +407,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_21F425_MESSAGE_MAPPING_AO_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_21F425_MESSAGE_MAPPING_AO_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_21F425_MESSAGE_MAPPING_AO_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -428,7 +428,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_21F425_USER_PROPERTY_AO" OWNER TO jira;
+    ALTER TABLE public."AO_21F425_USER_PROPERTY_AO" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_21F425_USER_PROPERTY_AO_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -443,7 +443,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_21F425_USER_PROPERTY_AO_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_21F425_USER_PROPERTY_AO_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_21F425_USER_PROPERTY_AO_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -465,7 +465,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_38321B_CUSTOM_CONTENT_LINK" OWNER TO jira;
+    ALTER TABLE public."AO_38321B_CUSTOM_CONTENT_LINK" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_38321B_CUSTOM_CONTENT_LINK_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -480,7 +480,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_38321B_CUSTOM_CONTENT_LINK_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_38321B_CUSTOM_CONTENT_LINK_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_38321B_CUSTOM_CONTENT_LINK_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -501,7 +501,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_3B1893_LOOP_DETECTION" OWNER TO jira;
+    ALTER TABLE public."AO_3B1893_LOOP_DETECTION" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_3B1893_LOOP_DETECTION_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -516,7 +516,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_3B1893_LOOP_DETECTION_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_3B1893_LOOP_DETECTION_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_3B1893_LOOP_DETECTION_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -544,7 +544,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_4789DD_HEALTH_CHECK_STATUS" OWNER TO jira;
+    ALTER TABLE public."AO_4789DD_HEALTH_CHECK_STATUS" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_4789DD_HEALTH_CHECK_STATUS_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -559,7 +559,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_4789DD_HEALTH_CHECK_STATUS_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_4789DD_HEALTH_CHECK_STATUS_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_4789DD_HEALTH_CHECK_STATUS_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -578,7 +578,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_4789DD_HEALTH_CHECK_WATCHER" OWNER TO jira;
+    ALTER TABLE public."AO_4789DD_HEALTH_CHECK_WATCHER" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_4789DD_HEALTH_CHECK_WATCHER_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -593,7 +593,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_4789DD_HEALTH_CHECK_WATCHER_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_4789DD_HEALTH_CHECK_WATCHER_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_4789DD_HEALTH_CHECK_WATCHER_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -613,7 +613,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_4789DD_PROPERTIES" OWNER TO jira;
+    ALTER TABLE public."AO_4789DD_PROPERTIES" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_4789DD_PROPERTIES_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -628,7 +628,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_4789DD_PROPERTIES_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_4789DD_PROPERTIES_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_4789DD_PROPERTIES_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -651,7 +651,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_4789DD_READ_NOTIFICATIONS" OWNER TO jira;
+    ALTER TABLE public."AO_4789DD_READ_NOTIFICATIONS" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_4789DD_READ_NOTIFICATIONS_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -666,7 +666,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_4789DD_READ_NOTIFICATIONS_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_4789DD_READ_NOTIFICATIONS_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_4789DD_READ_NOTIFICATIONS_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -694,7 +694,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_4789DD_TASK_MONITOR" OWNER TO jira;
+    ALTER TABLE public."AO_4789DD_TASK_MONITOR" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_4789DD_TASK_MONITOR_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -709,7 +709,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_4789DD_TASK_MONITOR_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_4789DD_TASK_MONITOR_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_4789DD_TASK_MONITOR_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -738,7 +738,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_4AEACD_WEBHOOK_DAO" OWNER TO jira;
+    ALTER TABLE public."AO_4AEACD_WEBHOOK_DAO" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_4AEACD_WEBHOOK_DAO_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -753,7 +753,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_4AEACD_WEBHOOK_DAO_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_4AEACD_WEBHOOK_DAO_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_4AEACD_WEBHOOK_DAO_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -776,7 +776,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_550953_SHORTCUT" OWNER TO jira;
+    ALTER TABLE public."AO_550953_SHORTCUT" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_550953_SHORTCUT_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -791,7 +791,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_550953_SHORTCUT_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_550953_SHORTCUT_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_550953_SHORTCUT_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -825,7 +825,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_563AEE_ACTIVITY_ENTITY" OWNER TO jira;
+    ALTER TABLE public."AO_563AEE_ACTIVITY_ENTITY" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_563AEE_ACTIVITY_ENTITY_ACTIVITY_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -839,7 +839,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_563AEE_ACTIVITY_ENTITY_ACTIVITY_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_563AEE_ACTIVITY_ENTITY_ACTIVITY_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_563AEE_ACTIVITY_ENTITY_ACTIVITY_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -861,7 +861,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_563AEE_ACTOR_ENTITY" OWNER TO jira;
+    ALTER TABLE public."AO_563AEE_ACTOR_ENTITY" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_563AEE_ACTOR_ENTITY_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -876,7 +876,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_563AEE_ACTOR_ENTITY_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_563AEE_ACTOR_ENTITY_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_563AEE_ACTOR_ENTITY_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -898,7 +898,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_563AEE_MEDIA_LINK_ENTITY" OWNER TO jira;
+    ALTER TABLE public."AO_563AEE_MEDIA_LINK_ENTITY" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_563AEE_MEDIA_LINK_ENTITY_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -913,7 +913,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_563AEE_MEDIA_LINK_ENTITY_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_563AEE_MEDIA_LINK_ENTITY_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_563AEE_MEDIA_LINK_ENTITY_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -938,7 +938,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_563AEE_OBJECT_ENTITY" OWNER TO jira;
+    ALTER TABLE public."AO_563AEE_OBJECT_ENTITY" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_563AEE_OBJECT_ENTITY_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -953,7 +953,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_563AEE_OBJECT_ENTITY_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_563AEE_OBJECT_ENTITY_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_563AEE_OBJECT_ENTITY_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -978,7 +978,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_563AEE_TARGET_ENTITY" OWNER TO jira;
+    ALTER TABLE public."AO_563AEE_TARGET_ENTITY" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_563AEE_TARGET_ENTITY_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -993,7 +993,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_563AEE_TARGET_ENTITY_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_563AEE_TARGET_ENTITY_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_563AEE_TARGET_ENTITY_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1016,7 +1016,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_575BF5_DEV_SUMMARY" OWNER TO jira;
+    ALTER TABLE public."AO_575BF5_DEV_SUMMARY" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_575BF5_DEV_SUMMARY_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1031,7 +1031,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_575BF5_DEV_SUMMARY_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_575BF5_DEV_SUMMARY_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_575BF5_DEV_SUMMARY_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1051,7 +1051,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_575BF5_PROCESSED_COMMITS" OWNER TO jira;
+    ALTER TABLE public."AO_575BF5_PROCESSED_COMMITS" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_575BF5_PROCESSED_COMMITS_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1066,7 +1066,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_575BF5_PROCESSED_COMMITS_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_575BF5_PROCESSED_COMMITS_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_575BF5_PROCESSED_COMMITS_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1087,7 +1087,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_575BF5_PROVIDER_ISSUE" OWNER TO jira;
+    ALTER TABLE public."AO_575BF5_PROVIDER_ISSUE" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_575BF5_PROVIDER_ISSUE_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1102,7 +1102,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_575BF5_PROVIDER_ISSUE_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_575BF5_PROVIDER_ISSUE_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_575BF5_PROVIDER_ISSUE_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1122,7 +1122,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_575BF5_PROVIDER_SEQ_NO" OWNER TO jira;
+    ALTER TABLE public."AO_575BF5_PROVIDER_SEQ_NO" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_575BF5_PROVIDER_SEQ_NO_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1137,7 +1137,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_575BF5_PROVIDER_SEQ_NO_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_575BF5_PROVIDER_SEQ_NO_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_575BF5_PROVIDER_SEQ_NO_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1161,7 +1161,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_AUDITENTRY" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_AUDITENTRY" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_AUDITENTRY_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1175,7 +1175,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_AUDITENTRY_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_AUDITENTRY_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_AUDITENTRY_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1196,7 +1196,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_BOARDADMINS" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_BOARDADMINS" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_BOARDADMINS_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1210,7 +1210,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_BOARDADMINS_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_BOARDADMINS_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_BOARDADMINS_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1233,7 +1233,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_CARDCOLOR" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_CARDCOLOR" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_CARDCOLOR_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1247,7 +1247,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_CARDCOLOR_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_CARDCOLOR_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_CARDCOLOR_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1269,7 +1269,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_CARDLAYOUT" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_CARDLAYOUT" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_CARDLAYOUT_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1283,7 +1283,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_CARDLAYOUT_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_CARDLAYOUT_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_CARDLAYOUT_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1306,7 +1306,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_COLUMN" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_COLUMN" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_COLUMNSTATUS; Type: TABLE; Schema: public; Owner: jira
@@ -1320,7 +1320,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_COLUMNSTATUS" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_COLUMNSTATUS" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_COLUMNSTATUS_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1334,7 +1334,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_COLUMNSTATUS_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_COLUMNSTATUS_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_COLUMNSTATUS_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1355,7 +1355,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_COLUMN_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_COLUMN_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_COLUMN_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1376,7 +1376,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_DETAILVIEWFIELD" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_DETAILVIEWFIELD" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_DETAILVIEWFIELD_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1390,7 +1390,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_DETAILVIEWFIELD_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_DETAILVIEWFIELD_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_DETAILVIEWFIELD_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1411,7 +1411,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_ESTIMATESTATISTIC" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_ESTIMATESTATISTIC" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_ESTIMATESTATISTIC_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1425,7 +1425,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_ESTIMATESTATISTIC_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_ESTIMATESTATISTIC_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_ESTIMATESTATISTIC_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1446,7 +1446,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_ISSUERANKING" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_ISSUERANKING" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_ISSUERANKINGLOG; Type: TABLE; Schema: public; Owner: jira
@@ -1465,7 +1465,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_ISSUERANKINGLOG" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_ISSUERANKINGLOG" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_ISSUERANKINGLOG_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1479,7 +1479,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_ISSUERANKINGLOG_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_ISSUERANKINGLOG_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_ISSUERANKINGLOG_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1500,7 +1500,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_ISSUERANKING_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_ISSUERANKING_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_ISSUERANKING_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1525,7 +1525,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_LEXORANK" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_LEXORANK" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_LEXORANKBALANCER; Type: TABLE; Schema: public; Owner: jira
@@ -1539,7 +1539,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_LEXORANKBALANCER" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_LEXORANKBALANCER" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_LEXORANKBALANCER_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1553,7 +1553,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_LEXORANKBALANCER_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_LEXORANKBALANCER_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_LEXORANKBALANCER_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1574,7 +1574,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_LEXORANK_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_LEXORANK_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_LEXORANK_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1594,7 +1594,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_NONWORKINGDAY" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_NONWORKINGDAY" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_NONWORKINGDAY_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1608,7 +1608,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_NONWORKINGDAY_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_NONWORKINGDAY_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_NONWORKINGDAY_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1632,7 +1632,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_QUICKFILTER" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_QUICKFILTER" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_QUICKFILTER_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1646,7 +1646,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_QUICKFILTER_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_QUICKFILTER_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_QUICKFILTER_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1665,7 +1665,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_RANKABLEOBJECT" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_RANKABLEOBJECT" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_RANKABLEOBJECT_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1679,7 +1679,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_RANKABLEOBJECT_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_RANKABLEOBJECT_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_RANKABLEOBJECT_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1708,7 +1708,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_RAPIDVIEW" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_RAPIDVIEW" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_RAPIDVIEW_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1722,7 +1722,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_RAPIDVIEW_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_RAPIDVIEW_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_RAPIDVIEW_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1751,7 +1751,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_SPRINT" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_SPRINT" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_SPRINT_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1765,7 +1765,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_SPRINT_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_SPRINT_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_SPRINT_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1785,7 +1785,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_STATSFIELD" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_STATSFIELD" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_STATSFIELD_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1799,7 +1799,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_STATSFIELD_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_STATSFIELD_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_STATSFIELD_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1821,7 +1821,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_SUBQUERY" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_SUBQUERY" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_SUBQUERY_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1835,7 +1835,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_SUBQUERY_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_SUBQUERY_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_SUBQUERY_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1860,7 +1860,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_SWIMLANE" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_SWIMLANE" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_SWIMLANE_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1874,7 +1874,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_SWIMLANE_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_SWIMLANE_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_SWIMLANE_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1895,7 +1895,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_TRACKINGSTATISTIC" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_TRACKINGSTATISTIC" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_TRACKINGSTATISTIC_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1909,7 +1909,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_TRACKINGSTATISTIC_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_TRACKINGSTATISTIC_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_TRACKINGSTATISTIC_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1929,7 +1929,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_VERSION" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_VERSION" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_VERSION_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1943,7 +1943,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_VERSION_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_VERSION_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_VERSION_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -1970,7 +1970,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_60DB71_WORKINGDAYS" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_WORKINGDAYS" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_WORKINGDAYS_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -1984,7 +1984,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_60DB71_WORKINGDAYS_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_60DB71_WORKINGDAYS_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_60DB71_WORKINGDAYS_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2010,7 +2010,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_723324_CLIENT_CONFIG" OWNER TO jira;
+    ALTER TABLE public."AO_723324_CLIENT_CONFIG" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_723324_CLIENT_TOKEN; Type: TABLE; Schema: public; Owner: jira
@@ -2030,7 +2030,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_723324_CLIENT_TOKEN" OWNER TO jira;
+    ALTER TABLE public."AO_723324_CLIENT_TOKEN" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_733371_EVENT; Type: TABLE; Schema: public; Owner: jira
@@ -2047,7 +2047,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_733371_EVENT" OWNER TO jira;
+    ALTER TABLE public."AO_733371_EVENT" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_733371_EVENT_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2061,7 +2061,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_733371_EVENT_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_733371_EVENT_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_733371_EVENT_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2082,7 +2082,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_733371_EVENT_PARAMETER" OWNER TO jira;
+    ALTER TABLE public."AO_733371_EVENT_PARAMETER" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_733371_EVENT_PARAMETER_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2096,7 +2096,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_733371_EVENT_PARAMETER_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_733371_EVENT_PARAMETER_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_733371_EVENT_PARAMETER_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2121,7 +2121,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_733371_EVENT_RECIPIENT" OWNER TO jira;
+    ALTER TABLE public."AO_733371_EVENT_RECIPIENT" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_733371_EVENT_RECIPIENT_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2135,7 +2135,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_733371_EVENT_RECIPIENT_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_733371_EVENT_RECIPIENT_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_733371_EVENT_RECIPIENT_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2159,7 +2159,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_97EDAB_USERINVITATION" OWNER TO jira;
+    ALTER TABLE public."AO_97EDAB_USERINVITATION" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_97EDAB_USERINVITATION_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2174,7 +2174,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_97EDAB_USERINVITATION_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_97EDAB_USERINVITATION_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_97EDAB_USERINVITATION_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2203,7 +2203,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_A0B856_WEB_HOOK_LISTENER_AO" OWNER TO jira;
+    ALTER TABLE public."AO_A0B856_WEB_HOOK_LISTENER_AO" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_A0B856_WEB_HOOK_LISTENER_AO_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2218,7 +2218,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_A0B856_WEB_HOOK_LISTENER_AO_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_A0B856_WEB_HOOK_LISTENER_AO_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_A0B856_WEB_HOOK_LISTENER_AO_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2240,7 +2240,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_AC3877_RL_USER_COUNTER" OWNER TO jira;
+    ALTER TABLE public."AO_AC3877_RL_USER_COUNTER" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_AC3877_RL_USER_COUNTER_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2254,7 +2254,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_AC3877_RL_USER_COUNTER_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_AC3877_RL_USER_COUNTER_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_AC3877_RL_USER_COUNTER_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2273,7 +2273,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_AC3877_SETTINGS_VERSION" OWNER TO jira;
+    ALTER TABLE public."AO_AC3877_SETTINGS_VERSION" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_AC3877_SYSTEM_RL_SETTINGS; Type: TABLE; Schema: public; Owner: jira
@@ -2294,7 +2294,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_AC3877_SYSTEM_RL_SETTINGS" OWNER TO jira;
+    ALTER TABLE public."AO_AC3877_SYSTEM_RL_SETTINGS" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_AC3877_USER_RL_SETTINGS; Type: TABLE; Schema: public; Owner: jira
@@ -2310,7 +2310,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_AC3877_USER_RL_SETTINGS" OWNER TO jira;
+    ALTER TABLE public."AO_AC3877_USER_RL_SETTINGS" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_B9A0F0_APPLIED_TEMPLATE; Type: TABLE; Schema: public; Owner: jira
@@ -2324,7 +2324,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_B9A0F0_APPLIED_TEMPLATE" OWNER TO jira;
+    ALTER TABLE public."AO_B9A0F0_APPLIED_TEMPLATE" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_B9A0F0_APPLIED_TEMPLATE_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2339,7 +2339,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_B9A0F0_APPLIED_TEMPLATE_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_B9A0F0_APPLIED_TEMPLATE_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_B9A0F0_APPLIED_TEMPLATE_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2367,7 +2367,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_C16815_ALERT_AO" OWNER TO jira;
+    ALTER TABLE public."AO_C16815_ALERT_AO" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_C16815_ALERT_AO_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2381,7 +2381,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_C16815_ALERT_AO_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_C16815_ALERT_AO_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_C16815_ALERT_AO_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2427,7 +2427,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_C77861_AUDIT_ENTITY" OWNER TO jira;
+    ALTER TABLE public."AO_C77861_AUDIT_ENTITY" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_C77861_AUDIT_ENTITY_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2441,7 +2441,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_C77861_AUDIT_ENTITY_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_C77861_AUDIT_ENTITY_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_C77861_AUDIT_ENTITY_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2467,7 +2467,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_CFF990_AOTRANSITION_FAILURE" OWNER TO jira;
+    ALTER TABLE public."AO_CFF990_AOTRANSITION_FAILURE" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_CFF990_AOTRANSITION_FAILURE_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2482,7 +2482,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_CFF990_AOTRANSITION_FAILURE_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_CFF990_AOTRANSITION_FAILURE_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_CFF990_AOTRANSITION_FAILURE_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2502,7 +2502,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_BRANCH" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_BRANCH" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_BRANCH_HEAD_MAPPING; Type: TABLE; Schema: public; Owner: jira
@@ -2516,7 +2516,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_BRANCH_HEAD_MAPPING" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_BRANCH_HEAD_MAPPING" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_BRANCH_HEAD_MAPPING_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2531,7 +2531,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_BRANCH_HEAD_MAPPING_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_BRANCH_HEAD_MAPPING_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_BRANCH_HEAD_MAPPING_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2553,7 +2553,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_BRANCH_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_BRANCH_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_BRANCH_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2588,7 +2588,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_CHANGESET_MAPPING" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_CHANGESET_MAPPING" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_CHANGESET_MAPPING_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2603,7 +2603,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_CHANGESET_MAPPING_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_CHANGESET_MAPPING_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_CHANGESET_MAPPING_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2629,7 +2629,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_COMMIT" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_COMMIT" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_COMMIT_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2644,7 +2644,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_COMMIT_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_COMMIT_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_COMMIT_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2666,7 +2666,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_GIT_HUB_EVENT" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_GIT_HUB_EVENT" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_GIT_HUB_EVENT_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2681,7 +2681,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_GIT_HUB_EVENT_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_GIT_HUB_EVENT_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_GIT_HUB_EVENT_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2703,7 +2703,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_ISSUE_MAPPING" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_ISSUE_MAPPING" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_ISSUE_MAPPING_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2718,7 +2718,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_ISSUE_MAPPING_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_ISSUE_MAPPING_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_ISSUE_MAPPING_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2748,7 +2748,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_ISSUE_MAPPING_V2" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_ISSUE_MAPPING_V2" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_ISSUE_MAPPING_V2_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2763,7 +2763,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_ISSUE_MAPPING_V2_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_ISSUE_MAPPING_V2_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_ISSUE_MAPPING_V2_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2783,7 +2783,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_ISSUE_TO_BRANCH" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_ISSUE_TO_BRANCH" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_ISSUE_TO_BRANCH_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2798,7 +2798,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_ISSUE_TO_BRANCH_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_ISSUE_TO_BRANCH_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_ISSUE_TO_BRANCH_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2819,7 +2819,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_ISSUE_TO_CHANGESET" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_ISSUE_TO_CHANGESET" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_ISSUE_TO_CHANGESET_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2834,7 +2834,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_ISSUE_TO_CHANGESET_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_ISSUE_TO_CHANGESET_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_ISSUE_TO_CHANGESET_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2856,7 +2856,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_MESSAGE" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_MESSAGE" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_MESSAGE_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2871,7 +2871,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_MESSAGE_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_MESSAGE_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_MESSAGE_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2895,7 +2895,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_MESSAGE_QUEUE_ITEM" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_MESSAGE_QUEUE_ITEM" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_MESSAGE_QUEUE_ITEM_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2910,7 +2910,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_MESSAGE_QUEUE_ITEM_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_MESSAGE_QUEUE_ITEM_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_MESSAGE_QUEUE_ITEM_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2930,7 +2930,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_MESSAGE_TAG" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_MESSAGE_TAG" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_MESSAGE_TAG_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2945,7 +2945,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_MESSAGE_TAG_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_MESSAGE_TAG_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_MESSAGE_TAG_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -2977,7 +2977,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_ORGANIZATION_MAPPING" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_ORGANIZATION_MAPPING" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_ORGANIZATION_MAPPING_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -2992,7 +2992,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_ORGANIZATION_MAPPING_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_ORGANIZATION_MAPPING_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_ORGANIZATION_MAPPING_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3012,7 +3012,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_ORG_TO_PROJECT" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_ORG_TO_PROJECT" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_ORG_TO_PROJECT_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -3027,7 +3027,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_ORG_TO_PROJECT_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_ORG_TO_PROJECT_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_ORG_TO_PROJECT_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3049,7 +3049,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_PROJECT_MAPPING" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_PROJECT_MAPPING" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_PROJECT_MAPPING_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -3064,7 +3064,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_PROJECT_MAPPING_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_PROJECT_MAPPING_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_PROJECT_MAPPING_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3090,7 +3090,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_PROJECT_MAPPING_V2" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_PROJECT_MAPPING_V2" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_PROJECT_MAPPING_V2_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -3105,7 +3105,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_PROJECT_MAPPING_V2_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_PROJECT_MAPPING_V2_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_PROJECT_MAPPING_V2_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3126,7 +3126,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_PR_ISSUE_KEY" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_PR_ISSUE_KEY" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_PR_ISSUE_KEY_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -3141,7 +3141,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_PR_ISSUE_KEY_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_PR_ISSUE_KEY_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_PR_ISSUE_KEY_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3164,7 +3164,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_PR_PARTICIPANT" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_PR_PARTICIPANT" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_PR_PARTICIPANT_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -3179,7 +3179,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_PR_PARTICIPANT_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_PR_PARTICIPANT_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_PR_PARTICIPANT_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3200,7 +3200,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_PR_TO_COMMIT" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_PR_TO_COMMIT" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_PR_TO_COMMIT_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -3215,7 +3215,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_PR_TO_COMMIT_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_PR_TO_COMMIT_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_PR_TO_COMMIT_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3247,7 +3247,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_PULL_REQUEST" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_PULL_REQUEST" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_PULL_REQUEST_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -3262,7 +3262,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_PULL_REQUEST_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_PULL_REQUEST_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_PULL_REQUEST_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3295,7 +3295,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_REPOSITORY_MAPPING" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_REPOSITORY_MAPPING" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_REPOSITORY_MAPPING_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -3310,7 +3310,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_REPOSITORY_MAPPING_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_REPOSITORY_MAPPING_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_REPOSITORY_MAPPING_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3330,7 +3330,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_REPO_TO_CHANGESET" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_REPO_TO_CHANGESET" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_REPO_TO_CHANGESET_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -3345,7 +3345,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_REPO_TO_CHANGESET_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_REPO_TO_CHANGESET_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_REPO_TO_CHANGESET_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3365,7 +3365,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_REPO_TO_PROJECT" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_REPO_TO_PROJECT" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_REPO_TO_PROJECT_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -3380,7 +3380,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_REPO_TO_PROJECT_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_REPO_TO_PROJECT_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_REPO_TO_PROJECT_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3408,7 +3408,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_SYNC_AUDIT_LOG" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_SYNC_AUDIT_LOG" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_SYNC_AUDIT_LOG_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -3423,7 +3423,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_SYNC_AUDIT_LOG_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_SYNC_AUDIT_LOG_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_SYNC_AUDIT_LOG_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3446,7 +3446,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_E8B6CC_SYNC_EVENT" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_SYNC_EVENT" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_SYNC_EVENT_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -3461,7 +3461,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_E8B6CC_SYNC_EVENT_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_E8B6CC_SYNC_EVENT_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_E8B6CC_SYNC_EVENT_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3481,7 +3481,7 @@ data:
     );
 
 
-    ALTER TABLE public."AO_ED669C_SEEN_ASSERTIONS" OWNER TO jira;
+    ALTER TABLE public."AO_ED669C_SEEN_ASSERTIONS" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_ED669C_SEEN_ASSERTIONS_ID_seq; Type: SEQUENCE; Schema: public; Owner: jira
@@ -3496,7 +3496,7 @@ data:
         CACHE 1;
 
 
-    ALTER TABLE public."AO_ED669C_SEEN_ASSERTIONS_ID_seq" OWNER TO jira;
+    ALTER TABLE public."AO_ED669C_SEEN_ASSERTIONS_ID_seq" OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_ED669C_SEEN_ASSERTIONS_ID_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jira
@@ -3516,7 +3516,7 @@ data:
     );
 
 
-    ALTER TABLE public.app_user OWNER TO jira;
+    ALTER TABLE public.app_user OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: audit_changed_value; Type: TABLE; Schema: public; Owner: jira
@@ -3531,7 +3531,7 @@ data:
     );
 
 
-    ALTER TABLE public.audit_changed_value OWNER TO jira;
+    ALTER TABLE public.audit_changed_value OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: audit_item; Type: TABLE; Schema: public; Owner: jira
@@ -3548,7 +3548,7 @@ data:
     );
 
 
-    ALTER TABLE public.audit_item OWNER TO jira;
+    ALTER TABLE public.audit_item OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: audit_log; Type: TABLE; Schema: public; Owner: jira
@@ -3574,7 +3574,7 @@ data:
     );
 
 
-    ALTER TABLE public.audit_log OWNER TO jira;
+    ALTER TABLE public.audit_log OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: avatar; Type: TABLE; Schema: public; Owner: jira
@@ -3590,7 +3590,7 @@ data:
     );
 
 
-    ALTER TABLE public.avatar OWNER TO jira;
+    ALTER TABLE public.avatar OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: board; Type: TABLE; Schema: public; Owner: jira
@@ -3602,7 +3602,7 @@ data:
     );
 
 
-    ALTER TABLE public.board OWNER TO jira;
+    ALTER TABLE public.board OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: boardproject; Type: TABLE; Schema: public; Owner: jira
@@ -3614,7 +3614,7 @@ data:
     );
 
 
-    ALTER TABLE public.boardproject OWNER TO jira;
+    ALTER TABLE public.boardproject OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: changegroup; Type: TABLE; Schema: public; Owner: jira
@@ -3628,7 +3628,7 @@ data:
     );
 
 
-    ALTER TABLE public.changegroup OWNER TO jira;
+    ALTER TABLE public.changegroup OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: changeitem; Type: TABLE; Schema: public; Owner: jira
@@ -3646,7 +3646,7 @@ data:
     );
 
 
-    ALTER TABLE public.changeitem OWNER TO jira;
+    ALTER TABLE public.changeitem OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: clusteredjob; Type: TABLE; Schema: public; Owner: jira
@@ -3667,7 +3667,7 @@ data:
     );
 
 
-    ALTER TABLE public.clusteredjob OWNER TO jira;
+    ALTER TABLE public.clusteredjob OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: clusterlockstatus; Type: TABLE; Schema: public; Owner: jira
@@ -3681,7 +3681,7 @@ data:
     );
 
 
-    ALTER TABLE public.clusterlockstatus OWNER TO jira;
+    ALTER TABLE public.clusterlockstatus OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: clustermessage; Type: TABLE; Schema: public; Owner: jira
@@ -3697,7 +3697,7 @@ data:
     );
 
 
-    ALTER TABLE public.clustermessage OWNER TO jira;
+    ALTER TABLE public.clustermessage OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: clusternode; Type: TABLE; Schema: public; Owner: jira
@@ -3714,7 +3714,7 @@ data:
     );
 
 
-    ALTER TABLE public.clusternode OWNER TO jira;
+    ALTER TABLE public.clusternode OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: clusternodeheartbeat; Type: TABLE; Schema: public; Owner: jira
@@ -3727,7 +3727,7 @@ data:
     );
 
 
-    ALTER TABLE public.clusternodeheartbeat OWNER TO jira;
+    ALTER TABLE public.clusternodeheartbeat OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: clusterupgradestate; Type: TABLE; Schema: public; Owner: jira
@@ -3743,7 +3743,7 @@ data:
     );
 
 
-    ALTER TABLE public.clusterupgradestate OWNER TO jira;
+    ALTER TABLE public.clusterupgradestate OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: columnlayout; Type: TABLE; Schema: public; Owner: jira
@@ -3756,7 +3756,7 @@ data:
     );
 
 
-    ALTER TABLE public.columnlayout OWNER TO jira;
+    ALTER TABLE public.columnlayout OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: columnlayoutitem; Type: TABLE; Schema: public; Owner: jira
@@ -3770,7 +3770,7 @@ data:
     );
 
 
-    ALTER TABLE public.columnlayoutitem OWNER TO jira;
+    ALTER TABLE public.columnlayoutitem OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: comment_version; Type: TABLE; Schema: public; Owner: jira
@@ -3785,7 +3785,7 @@ data:
     );
 
 
-    ALTER TABLE public.comment_version OWNER TO jira;
+    ALTER TABLE public.comment_version OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: component; Type: TABLE; Schema: public; Owner: jira
@@ -3803,7 +3803,7 @@ data:
     );
 
 
-    ALTER TABLE public.component OWNER TO jira;
+    ALTER TABLE public.component OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: configurationcontext; Type: TABLE; Schema: public; Owner: jira
@@ -3818,7 +3818,7 @@ data:
     );
 
 
-    ALTER TABLE public.configurationcontext OWNER TO jira;
+    ALTER TABLE public.configurationcontext OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: customfield; Type: TABLE; Schema: public; Owner: jira
@@ -3838,7 +3838,7 @@ data:
     );
 
 
-    ALTER TABLE public.customfield OWNER TO jira;
+    ALTER TABLE public.customfield OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: customfieldoption; Type: TABLE; Schema: public; Owner: jira
@@ -3856,7 +3856,7 @@ data:
     );
 
 
-    ALTER TABLE public.customfieldoption OWNER TO jira;
+    ALTER TABLE public.customfieldoption OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: customfieldvalue; Type: TABLE; Schema: public; Owner: jira
@@ -3876,7 +3876,7 @@ data:
     );
 
 
-    ALTER TABLE public.customfieldvalue OWNER TO jira;
+    ALTER TABLE public.customfieldvalue OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: cwd_application; Type: TABLE; Schema: public; Owner: jira
@@ -3895,7 +3895,7 @@ data:
     );
 
 
-    ALTER TABLE public.cwd_application OWNER TO jira;
+    ALTER TABLE public.cwd_application OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: cwd_application_address; Type: TABLE; Schema: public; Owner: jira
@@ -3909,7 +3909,7 @@ data:
     );
 
 
-    ALTER TABLE public.cwd_application_address OWNER TO jira;
+    ALTER TABLE public.cwd_application_address OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: cwd_directory; Type: TABLE; Schema: public; Owner: jira
@@ -3930,7 +3930,7 @@ data:
     );
 
 
-    ALTER TABLE public.cwd_directory OWNER TO jira;
+    ALTER TABLE public.cwd_directory OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: cwd_directory_attribute; Type: TABLE; Schema: public; Owner: jira
@@ -3943,7 +3943,7 @@ data:
     );
 
 
-    ALTER TABLE public.cwd_directory_attribute OWNER TO jira;
+    ALTER TABLE public.cwd_directory_attribute OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: cwd_directory_operation; Type: TABLE; Schema: public; Owner: jira
@@ -3955,7 +3955,7 @@ data:
     );
 
 
-    ALTER TABLE public.cwd_directory_operation OWNER TO jira;
+    ALTER TABLE public.cwd_directory_operation OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: cwd_group; Type: TABLE; Schema: public; Owner: jira
@@ -3977,7 +3977,7 @@ data:
     );
 
 
-    ALTER TABLE public.cwd_group OWNER TO jira;
+    ALTER TABLE public.cwd_group OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: cwd_group_attributes; Type: TABLE; Schema: public; Owner: jira
@@ -3993,7 +3993,7 @@ data:
     );
 
 
-    ALTER TABLE public.cwd_group_attributes OWNER TO jira;
+    ALTER TABLE public.cwd_group_attributes OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: cwd_membership; Type: TABLE; Schema: public; Owner: jira
@@ -4013,7 +4013,7 @@ data:
     );
 
 
-    ALTER TABLE public.cwd_membership OWNER TO jira;
+    ALTER TABLE public.cwd_membership OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: cwd_synchronisation_status; Type: TABLE; Schema: public; Owner: jira
@@ -4030,7 +4030,7 @@ data:
     );
 
 
-    ALTER TABLE public.cwd_synchronisation_status OWNER TO jira;
+    ALTER TABLE public.cwd_synchronisation_status OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: cwd_synchronisation_token; Type: TABLE; Schema: public; Owner: jira
@@ -4042,7 +4042,7 @@ data:
     );
 
 
-    ALTER TABLE public.cwd_synchronisation_token OWNER TO jira;
+    ALTER TABLE public.cwd_synchronisation_token OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: cwd_user; Type: TABLE; Schema: public; Owner: jira
@@ -4070,7 +4070,7 @@ data:
     );
 
 
-    ALTER TABLE public.cwd_user OWNER TO jira;
+    ALTER TABLE public.cwd_user OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: cwd_user_attributes; Type: TABLE; Schema: public; Owner: jira
@@ -4086,7 +4086,7 @@ data:
     );
 
 
-    ALTER TABLE public.cwd_user_attributes OWNER TO jira;
+    ALTER TABLE public.cwd_user_attributes OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: deadletter; Type: TABLE; Schema: public; Owner: jira
@@ -4101,7 +4101,7 @@ data:
     );
 
 
-    ALTER TABLE public.deadletter OWNER TO jira;
+    ALTER TABLE public.deadletter OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: draftworkflowscheme; Type: TABLE; Schema: public; Owner: jira
@@ -4117,7 +4117,7 @@ data:
     );
 
 
-    ALTER TABLE public.draftworkflowscheme OWNER TO jira;
+    ALTER TABLE public.draftworkflowscheme OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: draftworkflowschemeentity; Type: TABLE; Schema: public; Owner: jira
@@ -4131,7 +4131,7 @@ data:
     );
 
 
-    ALTER TABLE public.draftworkflowschemeentity OWNER TO jira;
+    ALTER TABLE public.draftworkflowschemeentity OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: entity_property; Type: TABLE; Schema: public; Owner: jira
@@ -4148,7 +4148,7 @@ data:
     );
 
 
-    ALTER TABLE public.entity_property OWNER TO jira;
+    ALTER TABLE public.entity_property OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: entity_property_index_document; Type: TABLE; Schema: public; Owner: jira
@@ -4164,7 +4164,7 @@ data:
     );
 
 
-    ALTER TABLE public.entity_property_index_document OWNER TO jira;
+    ALTER TABLE public.entity_property_index_document OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: entity_translation; Type: TABLE; Schema: public; Owner: jira
@@ -4180,7 +4180,7 @@ data:
     );
 
 
-    ALTER TABLE public.entity_translation OWNER TO jira;
+    ALTER TABLE public.entity_translation OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: external_entities; Type: TABLE; Schema: public; Owner: jira
@@ -4193,7 +4193,7 @@ data:
     );
 
 
-    ALTER TABLE public.external_entities OWNER TO jira;
+    ALTER TABLE public.external_entities OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: externalgadget; Type: TABLE; Schema: public; Owner: jira
@@ -4205,7 +4205,7 @@ data:
     );
 
 
-    ALTER TABLE public.externalgadget OWNER TO jira;
+    ALTER TABLE public.externalgadget OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: favouriteassociations; Type: TABLE; Schema: public; Owner: jira
@@ -4220,7 +4220,7 @@ data:
     );
 
 
-    ALTER TABLE public.favouriteassociations OWNER TO jira;
+    ALTER TABLE public.favouriteassociations OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: feature; Type: TABLE; Schema: public; Owner: jira
@@ -4234,7 +4234,7 @@ data:
     );
 
 
-    ALTER TABLE public.feature OWNER TO jira;
+    ALTER TABLE public.feature OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fieldconfigscheme; Type: TABLE; Schema: public; Owner: jira
@@ -4249,7 +4249,7 @@ data:
     );
 
 
-    ALTER TABLE public.fieldconfigscheme OWNER TO jira;
+    ALTER TABLE public.fieldconfigscheme OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fieldconfigschemeissuetype; Type: TABLE; Schema: public; Owner: jira
@@ -4263,7 +4263,7 @@ data:
     );
 
 
-    ALTER TABLE public.fieldconfigschemeissuetype OWNER TO jira;
+    ALTER TABLE public.fieldconfigschemeissuetype OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fieldconfiguration; Type: TABLE; Schema: public; Owner: jira
@@ -4278,7 +4278,7 @@ data:
     );
 
 
-    ALTER TABLE public.fieldconfiguration OWNER TO jira;
+    ALTER TABLE public.fieldconfiguration OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fieldlayout; Type: TABLE; Schema: public; Owner: jira
@@ -4293,7 +4293,7 @@ data:
     );
 
 
-    ALTER TABLE public.fieldlayout OWNER TO jira;
+    ALTER TABLE public.fieldlayout OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fieldlayoutitem; Type: TABLE; Schema: public; Owner: jira
@@ -4311,7 +4311,7 @@ data:
     );
 
 
-    ALTER TABLE public.fieldlayoutitem OWNER TO jira;
+    ALTER TABLE public.fieldlayoutitem OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fieldlayoutscheme; Type: TABLE; Schema: public; Owner: jira
@@ -4324,7 +4324,7 @@ data:
     );
 
 
-    ALTER TABLE public.fieldlayoutscheme OWNER TO jira;
+    ALTER TABLE public.fieldlayoutscheme OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fieldlayoutschemeassociation; Type: TABLE; Schema: public; Owner: jira
@@ -4338,7 +4338,7 @@ data:
     );
 
 
-    ALTER TABLE public.fieldlayoutschemeassociation OWNER TO jira;
+    ALTER TABLE public.fieldlayoutschemeassociation OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fieldlayoutschemeentity; Type: TABLE; Schema: public; Owner: jira
@@ -4352,7 +4352,7 @@ data:
     );
 
 
-    ALTER TABLE public.fieldlayoutschemeentity OWNER TO jira;
+    ALTER TABLE public.fieldlayoutschemeentity OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fieldscreen; Type: TABLE; Schema: public; Owner: jira
@@ -4365,7 +4365,7 @@ data:
     );
 
 
-    ALTER TABLE public.fieldscreen OWNER TO jira;
+    ALTER TABLE public.fieldscreen OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fieldscreenlayoutitem; Type: TABLE; Schema: public; Owner: jira
@@ -4379,7 +4379,7 @@ data:
     );
 
 
-    ALTER TABLE public.fieldscreenlayoutitem OWNER TO jira;
+    ALTER TABLE public.fieldscreenlayoutitem OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fieldscreenscheme; Type: TABLE; Schema: public; Owner: jira
@@ -4392,7 +4392,7 @@ data:
     );
 
 
-    ALTER TABLE public.fieldscreenscheme OWNER TO jira;
+    ALTER TABLE public.fieldscreenscheme OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fieldscreenschemeitem; Type: TABLE; Schema: public; Owner: jira
@@ -4406,7 +4406,7 @@ data:
     );
 
 
-    ALTER TABLE public.fieldscreenschemeitem OWNER TO jira;
+    ALTER TABLE public.fieldscreenschemeitem OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fieldscreentab; Type: TABLE; Schema: public; Owner: jira
@@ -4421,7 +4421,7 @@ data:
     );
 
 
-    ALTER TABLE public.fieldscreentab OWNER TO jira;
+    ALTER TABLE public.fieldscreentab OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: fileattachment; Type: TABLE; Schema: public; Owner: jira
@@ -4440,7 +4440,7 @@ data:
     );
 
 
-    ALTER TABLE public.fileattachment OWNER TO jira;
+    ALTER TABLE public.fileattachment OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: filtersubscription; Type: TABLE; Schema: public; Owner: jira
@@ -4456,7 +4456,7 @@ data:
     );
 
 
-    ALTER TABLE public.filtersubscription OWNER TO jira;
+    ALTER TABLE public.filtersubscription OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: gadgetuserpreference; Type: TABLE; Schema: public; Owner: jira
@@ -4470,7 +4470,7 @@ data:
     );
 
 
-    ALTER TABLE public.gadgetuserpreference OWNER TO jira;
+    ALTER TABLE public.gadgetuserpreference OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: genericconfiguration; Type: TABLE; Schema: public; Owner: jira
@@ -4484,7 +4484,7 @@ data:
     );
 
 
-    ALTER TABLE public.genericconfiguration OWNER TO jira;
+    ALTER TABLE public.genericconfiguration OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: globalpermissionentry; Type: TABLE; Schema: public; Owner: jira
@@ -4497,7 +4497,7 @@ data:
     );
 
 
-    ALTER TABLE public.globalpermissionentry OWNER TO jira;
+    ALTER TABLE public.globalpermissionentry OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: groupbase; Type: TABLE; Schema: public; Owner: jira
@@ -4509,7 +4509,7 @@ data:
     );
 
 
-    ALTER TABLE public.groupbase OWNER TO jira;
+    ALTER TABLE public.groupbase OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: issue_field_option; Type: TABLE; Schema: public; Owner: jira
@@ -4524,7 +4524,7 @@ data:
     );
 
 
-    ALTER TABLE public.issue_field_option OWNER TO jira;
+    ALTER TABLE public.issue_field_option OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: issue_field_option_scope; Type: TABLE; Schema: public; Owner: jira
@@ -4538,7 +4538,7 @@ data:
     );
 
 
-    ALTER TABLE public.issue_field_option_scope OWNER TO jira;
+    ALTER TABLE public.issue_field_option_scope OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: issue_version; Type: TABLE; Schema: public; Owner: jira
@@ -4553,7 +4553,7 @@ data:
     );
 
 
-    ALTER TABLE public.issue_version OWNER TO jira;
+    ALTER TABLE public.issue_version OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: issuelink; Type: TABLE; Schema: public; Owner: jira
@@ -4568,7 +4568,7 @@ data:
     );
 
 
-    ALTER TABLE public.issuelink OWNER TO jira;
+    ALTER TABLE public.issuelink OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: issuelinktype; Type: TABLE; Schema: public; Owner: jira
@@ -4583,7 +4583,7 @@ data:
     );
 
 
-    ALTER TABLE public.issuelinktype OWNER TO jira;
+    ALTER TABLE public.issuelinktype OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: issuesecurityscheme; Type: TABLE; Schema: public; Owner: jira
@@ -4597,7 +4597,7 @@ data:
     );
 
 
-    ALTER TABLE public.issuesecurityscheme OWNER TO jira;
+    ALTER TABLE public.issuesecurityscheme OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: issuestatus; Type: TABLE; Schema: public; Owner: jira
@@ -4613,7 +4613,7 @@ data:
     );
 
 
-    ALTER TABLE public.issuestatus OWNER TO jira;
+    ALTER TABLE public.issuestatus OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: issuetype; Type: TABLE; Schema: public; Owner: jira
@@ -4630,7 +4630,7 @@ data:
     );
 
 
-    ALTER TABLE public.issuetype OWNER TO jira;
+    ALTER TABLE public.issuetype OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: issuetypescreenscheme; Type: TABLE; Schema: public; Owner: jira
@@ -4643,7 +4643,7 @@ data:
     );
 
 
-    ALTER TABLE public.issuetypescreenscheme OWNER TO jira;
+    ALTER TABLE public.issuetypescreenscheme OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: issuetypescreenschemeentity; Type: TABLE; Schema: public; Owner: jira
@@ -4657,7 +4657,7 @@ data:
     );
 
 
-    ALTER TABLE public.issuetypescreenschemeentity OWNER TO jira;
+    ALTER TABLE public.issuetypescreenschemeentity OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jiraaction; Type: TABLE; Schema: public; Owner: jira
@@ -4678,7 +4678,7 @@ data:
     );
 
 
-    ALTER TABLE public.jiraaction OWNER TO jira;
+    ALTER TABLE public.jiraaction OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jiradraftworkflows; Type: TABLE; Schema: public; Owner: jira
@@ -4691,7 +4691,7 @@ data:
     );
 
 
-    ALTER TABLE public.jiradraftworkflows OWNER TO jira;
+    ALTER TABLE public.jiradraftworkflows OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jiraeventtype; Type: TABLE; Schema: public; Owner: jira
@@ -4706,7 +4706,7 @@ data:
     );
 
 
-    ALTER TABLE public.jiraeventtype OWNER TO jira;
+    ALTER TABLE public.jiraeventtype OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jiraissue; Type: TABLE; Schema: public; Owner: jira
@@ -4746,7 +4746,7 @@ data:
     );
 
 
-    ALTER TABLE public.jiraissue OWNER TO jira;
+    ALTER TABLE public.jiraissue OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jiraperms; Type: TABLE; Schema: public; Owner: jira
@@ -4760,7 +4760,7 @@ data:
     );
 
 
-    ALTER TABLE public.jiraperms OWNER TO jira;
+    ALTER TABLE public.jiraperms OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jiraworkflows; Type: TABLE; Schema: public; Owner: jira
@@ -4775,7 +4775,7 @@ data:
     );
 
 
-    ALTER TABLE public.jiraworkflows OWNER TO jira;
+    ALTER TABLE public.jiraworkflows OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jiraworkflowstatuses; Type: TABLE; Schema: public; Owner: jira
@@ -4788,7 +4788,7 @@ data:
     );
 
 
-    ALTER TABLE public.jiraworkflowstatuses OWNER TO jira;
+    ALTER TABLE public.jiraworkflowstatuses OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jquartz_blob_triggers; Type: TABLE; Schema: public; Owner: jira
@@ -4802,7 +4802,7 @@ data:
     );
 
 
-    ALTER TABLE public.jquartz_blob_triggers OWNER TO jira;
+    ALTER TABLE public.jquartz_blob_triggers OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jquartz_calendars; Type: TABLE; Schema: public; Owner: jira
@@ -4815,7 +4815,7 @@ data:
     );
 
 
-    ALTER TABLE public.jquartz_calendars OWNER TO jira;
+    ALTER TABLE public.jquartz_calendars OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jquartz_cron_triggers; Type: TABLE; Schema: public; Owner: jira
@@ -4830,7 +4830,7 @@ data:
     );
 
 
-    ALTER TABLE public.jquartz_cron_triggers OWNER TO jira;
+    ALTER TABLE public.jquartz_cron_triggers OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jquartz_fired_triggers; Type: TABLE; Schema: public; Owner: jira
@@ -4856,7 +4856,7 @@ data:
     );
 
 
-    ALTER TABLE public.jquartz_fired_triggers OWNER TO jira;
+    ALTER TABLE public.jquartz_fired_triggers OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jquartz_job_details; Type: TABLE; Schema: public; Owner: jira
@@ -4878,7 +4878,7 @@ data:
     );
 
 
-    ALTER TABLE public.jquartz_job_details OWNER TO jira;
+    ALTER TABLE public.jquartz_job_details OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jquartz_job_listeners; Type: TABLE; Schema: public; Owner: jira
@@ -4891,7 +4891,7 @@ data:
     );
 
 
-    ALTER TABLE public.jquartz_job_listeners OWNER TO jira;
+    ALTER TABLE public.jquartz_job_listeners OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jquartz_locks; Type: TABLE; Schema: public; Owner: jira
@@ -4903,7 +4903,7 @@ data:
     );
 
 
-    ALTER TABLE public.jquartz_locks OWNER TO jira;
+    ALTER TABLE public.jquartz_locks OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jquartz_paused_trigger_grps; Type: TABLE; Schema: public; Owner: jira
@@ -4915,7 +4915,7 @@ data:
     );
 
 
-    ALTER TABLE public.jquartz_paused_trigger_grps OWNER TO jira;
+    ALTER TABLE public.jquartz_paused_trigger_grps OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jquartz_scheduler_state; Type: TABLE; Schema: public; Owner: jira
@@ -4929,7 +4929,7 @@ data:
     );
 
 
-    ALTER TABLE public.jquartz_scheduler_state OWNER TO jira;
+    ALTER TABLE public.jquartz_scheduler_state OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jquartz_simple_triggers; Type: TABLE; Schema: public; Owner: jira
@@ -4945,7 +4945,7 @@ data:
     );
 
 
-    ALTER TABLE public.jquartz_simple_triggers OWNER TO jira;
+    ALTER TABLE public.jquartz_simple_triggers OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jquartz_simprop_triggers; Type: TABLE; Schema: public; Owner: jira
@@ -4969,7 +4969,7 @@ data:
     );
 
 
-    ALTER TABLE public.jquartz_simprop_triggers OWNER TO jira;
+    ALTER TABLE public.jquartz_simprop_triggers OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jquartz_trigger_listeners; Type: TABLE; Schema: public; Owner: jira
@@ -4982,7 +4982,7 @@ data:
     );
 
 
-    ALTER TABLE public.jquartz_trigger_listeners OWNER TO jira;
+    ALTER TABLE public.jquartz_trigger_listeners OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: jquartz_triggers; Type: TABLE; Schema: public; Owner: jira
@@ -5009,7 +5009,7 @@ data:
     );
 
 
-    ALTER TABLE public.jquartz_triggers OWNER TO jira;
+    ALTER TABLE public.jquartz_triggers OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: label; Type: TABLE; Schema: public; Owner: jira
@@ -5023,7 +5023,7 @@ data:
     );
 
 
-    ALTER TABLE public.label OWNER TO jira;
+    ALTER TABLE public.label OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: licenserolesdefault; Type: TABLE; Schema: public; Owner: jira
@@ -5035,7 +5035,7 @@ data:
     );
 
 
-    ALTER TABLE public.licenserolesdefault OWNER TO jira;
+    ALTER TABLE public.licenserolesdefault OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: licenserolesgroup; Type: TABLE; Schema: public; Owner: jira
@@ -5049,7 +5049,7 @@ data:
     );
 
 
-    ALTER TABLE public.licenserolesgroup OWNER TO jira;
+    ALTER TABLE public.licenserolesgroup OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: listenerconfig; Type: TABLE; Schema: public; Owner: jira
@@ -5062,7 +5062,7 @@ data:
     );
 
 
-    ALTER TABLE public.listenerconfig OWNER TO jira;
+    ALTER TABLE public.listenerconfig OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: mailserver; Type: TABLE; Schema: public; Owner: jira
@@ -5090,7 +5090,7 @@ data:
     );
 
 
-    ALTER TABLE public.mailserver OWNER TO jira;
+    ALTER TABLE public.mailserver OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: managedconfigurationitem; Type: TABLE; Schema: public; Owner: jira
@@ -5107,7 +5107,7 @@ data:
     );
 
 
-    ALTER TABLE public.managedconfigurationitem OWNER TO jira;
+    ALTER TABLE public.managedconfigurationitem OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: membershipbase; Type: TABLE; Schema: public; Owner: jira
@@ -5120,7 +5120,7 @@ data:
     );
 
 
-    ALTER TABLE public.membershipbase OWNER TO jira;
+    ALTER TABLE public.membershipbase OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: moved_issue_key; Type: TABLE; Schema: public; Owner: jira
@@ -5133,7 +5133,7 @@ data:
     );
 
 
-    ALTER TABLE public.moved_issue_key OWNER TO jira;
+    ALTER TABLE public.moved_issue_key OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: nodeassociation; Type: TABLE; Schema: public; Owner: jira
@@ -5149,7 +5149,7 @@ data:
     );
 
 
-    ALTER TABLE public.nodeassociation OWNER TO jira;
+    ALTER TABLE public.nodeassociation OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: nodeindexcounter; Type: TABLE; Schema: public; Owner: jira
@@ -5163,7 +5163,7 @@ data:
     );
 
 
-    ALTER TABLE public.nodeindexcounter OWNER TO jira;
+    ALTER TABLE public.nodeindexcounter OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: notification; Type: TABLE; Schema: public; Owner: jira
@@ -5180,7 +5180,7 @@ data:
     );
 
 
-    ALTER TABLE public.notification OWNER TO jira;
+    ALTER TABLE public.notification OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: notificationinstance; Type: TABLE; Schema: public; Owner: jira
@@ -5195,7 +5195,7 @@ data:
     );
 
 
-    ALTER TABLE public.notificationinstance OWNER TO jira;
+    ALTER TABLE public.notificationinstance OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: notificationscheme; Type: TABLE; Schema: public; Owner: jira
@@ -5208,7 +5208,7 @@ data:
     );
 
 
-    ALTER TABLE public.notificationscheme OWNER TO jira;
+    ALTER TABLE public.notificationscheme OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: oauthconsumer; Type: TABLE; Schema: public; Owner: jira
@@ -5229,7 +5229,7 @@ data:
     );
 
 
-    ALTER TABLE public.oauthconsumer OWNER TO jira;
+    ALTER TABLE public.oauthconsumer OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: oauthconsumertoken; Type: TABLE; Schema: public; Owner: jira
@@ -5246,7 +5246,7 @@ data:
     );
 
 
-    ALTER TABLE public.oauthconsumertoken OWNER TO jira;
+    ALTER TABLE public.oauthconsumertoken OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: oauthspconsumer; Type: TABLE; Schema: public; Owner: jira
@@ -5267,7 +5267,7 @@ data:
     );
 
 
-    ALTER TABLE public.oauthspconsumer OWNER TO jira;
+    ALTER TABLE public.oauthspconsumer OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: oauthsptoken; Type: TABLE; Schema: public; Owner: jira
@@ -5293,7 +5293,7 @@ data:
     );
 
 
-    ALTER TABLE public.oauthsptoken OWNER TO jira;
+    ALTER TABLE public.oauthsptoken OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: optionconfiguration; Type: TABLE; Schema: public; Owner: jira
@@ -5308,7 +5308,7 @@ data:
     );
 
 
-    ALTER TABLE public.optionconfiguration OWNER TO jira;
+    ALTER TABLE public.optionconfiguration OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: os_currentstep; Type: TABLE; Schema: public; Owner: jira
@@ -5328,7 +5328,7 @@ data:
     );
 
 
-    ALTER TABLE public.os_currentstep OWNER TO jira;
+    ALTER TABLE public.os_currentstep OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: os_currentstep_prev; Type: TABLE; Schema: public; Owner: jira
@@ -5340,7 +5340,7 @@ data:
     );
 
 
-    ALTER TABLE public.os_currentstep_prev OWNER TO jira;
+    ALTER TABLE public.os_currentstep_prev OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: os_historystep; Type: TABLE; Schema: public; Owner: jira
@@ -5360,7 +5360,7 @@ data:
     );
 
 
-    ALTER TABLE public.os_historystep OWNER TO jira;
+    ALTER TABLE public.os_historystep OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: os_historystep_prev; Type: TABLE; Schema: public; Owner: jira
@@ -5372,7 +5372,7 @@ data:
     );
 
 
-    ALTER TABLE public.os_historystep_prev OWNER TO jira;
+    ALTER TABLE public.os_historystep_prev OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: os_wfentry; Type: TABLE; Schema: public; Owner: jira
@@ -5386,7 +5386,7 @@ data:
     );
 
 
-    ALTER TABLE public.os_wfentry OWNER TO jira;
+    ALTER TABLE public.os_wfentry OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: permissionscheme; Type: TABLE; Schema: public; Owner: jira
@@ -5399,7 +5399,7 @@ data:
     );
 
 
-    ALTER TABLE public.permissionscheme OWNER TO jira;
+    ALTER TABLE public.permissionscheme OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: permissionschemeattribute; Type: TABLE; Schema: public; Owner: jira
@@ -5413,7 +5413,7 @@ data:
     );
 
 
-    ALTER TABLE public.permissionschemeattribute OWNER TO jira;
+    ALTER TABLE public.permissionschemeattribute OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: pluginstate; Type: TABLE; Schema: public; Owner: jira
@@ -5425,7 +5425,7 @@ data:
     );
 
 
-    ALTER TABLE public.pluginstate OWNER TO jira;
+    ALTER TABLE public.pluginstate OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: pluginversion; Type: TABLE; Schema: public; Owner: jira
@@ -5440,7 +5440,7 @@ data:
     );
 
 
-    ALTER TABLE public.pluginversion OWNER TO jira;
+    ALTER TABLE public.pluginversion OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: portalpage; Type: TABLE; Schema: public; Owner: jira
@@ -5458,7 +5458,7 @@ data:
     );
 
 
-    ALTER TABLE public.portalpage OWNER TO jira;
+    ALTER TABLE public.portalpage OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: portletconfiguration; Type: TABLE; Schema: public; Owner: jira
@@ -5476,7 +5476,7 @@ data:
     );
 
 
-    ALTER TABLE public.portletconfiguration OWNER TO jira;
+    ALTER TABLE public.portletconfiguration OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: priority; Type: TABLE; Schema: public; Owner: jira
@@ -5492,7 +5492,7 @@ data:
     );
 
 
-    ALTER TABLE public.priority OWNER TO jira;
+    ALTER TABLE public.priority OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: productlicense; Type: TABLE; Schema: public; Owner: jira
@@ -5504,7 +5504,7 @@ data:
     );
 
 
-    ALTER TABLE public.productlicense OWNER TO jira;
+    ALTER TABLE public.productlicense OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: project; Type: TABLE; Schema: public; Owner: jira
@@ -5525,7 +5525,7 @@ data:
     );
 
 
-    ALTER TABLE public.project OWNER TO jira;
+    ALTER TABLE public.project OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: project_key; Type: TABLE; Schema: public; Owner: jira
@@ -5538,7 +5538,7 @@ data:
     );
 
 
-    ALTER TABLE public.project_key OWNER TO jira;
+    ALTER TABLE public.project_key OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: projectcategory; Type: TABLE; Schema: public; Owner: jira
@@ -5551,7 +5551,7 @@ data:
     );
 
 
-    ALTER TABLE public.projectcategory OWNER TO jira;
+    ALTER TABLE public.projectcategory OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: projectchangedtime; Type: TABLE; Schema: public; Owner: jira
@@ -5563,7 +5563,7 @@ data:
     );
 
 
-    ALTER TABLE public.projectchangedtime OWNER TO jira;
+    ALTER TABLE public.projectchangedtime OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: projectrole; Type: TABLE; Schema: public; Owner: jira
@@ -5576,7 +5576,7 @@ data:
     );
 
 
-    ALTER TABLE public.projectrole OWNER TO jira;
+    ALTER TABLE public.projectrole OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: projectroleactor; Type: TABLE; Schema: public; Owner: jira
@@ -5591,7 +5591,7 @@ data:
     );
 
 
-    ALTER TABLE public.projectroleactor OWNER TO jira;
+    ALTER TABLE public.projectroleactor OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: projectversion; Type: TABLE; Schema: public; Owner: jira
@@ -5611,7 +5611,7 @@ data:
     );
 
 
-    ALTER TABLE public.projectversion OWNER TO jira;
+    ALTER TABLE public.projectversion OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: propertydata; Type: TABLE; Schema: public; Owner: jira
@@ -5623,7 +5623,7 @@ data:
     );
 
 
-    ALTER TABLE public.propertydata OWNER TO jira;
+    ALTER TABLE public.propertydata OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: propertydate; Type: TABLE; Schema: public; Owner: jira
@@ -5635,7 +5635,7 @@ data:
     );
 
 
-    ALTER TABLE public.propertydate OWNER TO jira;
+    ALTER TABLE public.propertydate OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: propertydecimal; Type: TABLE; Schema: public; Owner: jira
@@ -5647,7 +5647,7 @@ data:
     );
 
 
-    ALTER TABLE public.propertydecimal OWNER TO jira;
+    ALTER TABLE public.propertydecimal OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: propertyentry; Type: TABLE; Schema: public; Owner: jira
@@ -5662,7 +5662,7 @@ data:
     );
 
 
-    ALTER TABLE public.propertyentry OWNER TO jira;
+    ALTER TABLE public.propertyentry OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: propertynumber; Type: TABLE; Schema: public; Owner: jira
@@ -5674,7 +5674,7 @@ data:
     );
 
 
-    ALTER TABLE public.propertynumber OWNER TO jira;
+    ALTER TABLE public.propertynumber OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: propertystring; Type: TABLE; Schema: public; Owner: jira
@@ -5686,7 +5686,7 @@ data:
     );
 
 
-    ALTER TABLE public.propertystring OWNER TO jira;
+    ALTER TABLE public.propertystring OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: propertytext; Type: TABLE; Schema: public; Owner: jira
@@ -5698,7 +5698,7 @@ data:
     );
 
 
-    ALTER TABLE public.propertytext OWNER TO jira;
+    ALTER TABLE public.propertytext OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: qrtz_calendars; Type: TABLE; Schema: public; Owner: jira
@@ -5711,7 +5711,7 @@ data:
     );
 
 
-    ALTER TABLE public.qrtz_calendars OWNER TO jira;
+    ALTER TABLE public.qrtz_calendars OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: qrtz_cron_triggers; Type: TABLE; Schema: public; Owner: jira
@@ -5724,7 +5724,7 @@ data:
     );
 
 
-    ALTER TABLE public.qrtz_cron_triggers OWNER TO jira;
+    ALTER TABLE public.qrtz_cron_triggers OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: qrtz_fired_triggers; Type: TABLE; Schema: public; Owner: jira
@@ -5740,7 +5740,7 @@ data:
     );
 
 
-    ALTER TABLE public.qrtz_fired_triggers OWNER TO jira;
+    ALTER TABLE public.qrtz_fired_triggers OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: qrtz_job_details; Type: TABLE; Schema: public; Owner: jira
@@ -5758,7 +5758,7 @@ data:
     );
 
 
-    ALTER TABLE public.qrtz_job_details OWNER TO jira;
+    ALTER TABLE public.qrtz_job_details OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: qrtz_job_listeners; Type: TABLE; Schema: public; Owner: jira
@@ -5771,7 +5771,7 @@ data:
     );
 
 
-    ALTER TABLE public.qrtz_job_listeners OWNER TO jira;
+    ALTER TABLE public.qrtz_job_listeners OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: qrtz_simple_triggers; Type: TABLE; Schema: public; Owner: jira
@@ -5786,7 +5786,7 @@ data:
     );
 
 
-    ALTER TABLE public.qrtz_simple_triggers OWNER TO jira;
+    ALTER TABLE public.qrtz_simple_triggers OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: qrtz_trigger_listeners; Type: TABLE; Schema: public; Owner: jira
@@ -5799,7 +5799,7 @@ data:
     );
 
 
-    ALTER TABLE public.qrtz_trigger_listeners OWNER TO jira;
+    ALTER TABLE public.qrtz_trigger_listeners OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: qrtz_triggers; Type: TABLE; Schema: public; Owner: jira
@@ -5820,7 +5820,7 @@ data:
     );
 
 
-    ALTER TABLE public.qrtz_triggers OWNER TO jira;
+    ALTER TABLE public.qrtz_triggers OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: reindex_component; Type: TABLE; Schema: public; Owner: jira
@@ -5834,7 +5834,7 @@ data:
     );
 
 
-    ALTER TABLE public.reindex_component OWNER TO jira;
+    ALTER TABLE public.reindex_component OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: reindex_request; Type: TABLE; Schema: public; Owner: jira
@@ -5852,7 +5852,7 @@ data:
     );
 
 
-    ALTER TABLE public.reindex_request OWNER TO jira;
+    ALTER TABLE public.reindex_request OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: remembermetoken; Type: TABLE; Schema: public; Owner: jira
@@ -5866,7 +5866,7 @@ data:
     );
 
 
-    ALTER TABLE public.remembermetoken OWNER TO jira;
+    ALTER TABLE public.remembermetoken OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: remotelink; Type: TABLE; Schema: public; Owner: jira
@@ -5895,7 +5895,7 @@ data:
     );
 
 
-    ALTER TABLE public.remotelink OWNER TO jira;
+    ALTER TABLE public.remotelink OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: replicatedindexoperation; Type: TABLE; Schema: public; Owner: jira
@@ -5914,7 +5914,7 @@ data:
     );
 
 
-    ALTER TABLE public.replicatedindexoperation OWNER TO jira;
+    ALTER TABLE public.replicatedindexoperation OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: resolution; Type: TABLE; Schema: public; Owner: jira
@@ -5929,7 +5929,7 @@ data:
     );
 
 
-    ALTER TABLE public.resolution OWNER TO jira;
+    ALTER TABLE public.resolution OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: rundetails; Type: TABLE; Schema: public; Owner: jira
@@ -5945,7 +5945,7 @@ data:
     );
 
 
-    ALTER TABLE public.rundetails OWNER TO jira;
+    ALTER TABLE public.rundetails OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: schemeissuesecurities; Type: TABLE; Schema: public; Owner: jira
@@ -5960,7 +5960,7 @@ data:
     );
 
 
-    ALTER TABLE public.schemeissuesecurities OWNER TO jira;
+    ALTER TABLE public.schemeissuesecurities OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: schemeissuesecuritylevels; Type: TABLE; Schema: public; Owner: jira
@@ -5974,7 +5974,7 @@ data:
     );
 
 
-    ALTER TABLE public.schemeissuesecuritylevels OWNER TO jira;
+    ALTER TABLE public.schemeissuesecuritylevels OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: schemepermissions; Type: TABLE; Schema: public; Owner: jira
@@ -5990,7 +5990,7 @@ data:
     );
 
 
-    ALTER TABLE public.schemepermissions OWNER TO jira;
+    ALTER TABLE public.schemepermissions OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: searchrequest; Type: TABLE; Schema: public; Owner: jira
@@ -6010,7 +6010,7 @@ data:
     );
 
 
-    ALTER TABLE public.searchrequest OWNER TO jira;
+    ALTER TABLE public.searchrequest OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: sequence_value_item; Type: TABLE; Schema: public; Owner: jira
@@ -6022,7 +6022,7 @@ data:
     );
 
 
-    ALTER TABLE public.sequence_value_item OWNER TO jira;
+    ALTER TABLE public.sequence_value_item OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: serviceconfig; Type: TABLE; Schema: public; Owner: jira
@@ -6037,7 +6037,7 @@ data:
     );
 
 
-    ALTER TABLE public.serviceconfig OWNER TO jira;
+    ALTER TABLE public.serviceconfig OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: sharepermissions; Type: TABLE; Schema: public; Owner: jira
@@ -6054,7 +6054,7 @@ data:
     );
 
 
-    ALTER TABLE public.sharepermissions OWNER TO jira;
+    ALTER TABLE public.sharepermissions OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: tempattachmentsmonitor; Type: TABLE; Schema: public; Owner: jira
@@ -6070,7 +6070,7 @@ data:
     );
 
 
-    ALTER TABLE public.tempattachmentsmonitor OWNER TO jira;
+    ALTER TABLE public.tempattachmentsmonitor OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: trackback_ping; Type: TABLE; Schema: public; Owner: jira
@@ -6087,7 +6087,7 @@ data:
     );
 
 
-    ALTER TABLE public.trackback_ping OWNER TO jira;
+    ALTER TABLE public.trackback_ping OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: trustedapp; Type: TABLE; Schema: public; Owner: jira
@@ -6108,7 +6108,7 @@ data:
     );
 
 
-    ALTER TABLE public.trustedapp OWNER TO jira;
+    ALTER TABLE public.trustedapp OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: upgradehistory; Type: TABLE; Schema: public; Owner: jira
@@ -6123,7 +6123,7 @@ data:
     );
 
 
-    ALTER TABLE public.upgradehistory OWNER TO jira;
+    ALTER TABLE public.upgradehistory OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: upgradetaskhistory; Type: TABLE; Schema: public; Owner: jira
@@ -6138,7 +6138,7 @@ data:
     );
 
 
-    ALTER TABLE public.upgradetaskhistory OWNER TO jira;
+    ALTER TABLE public.upgradetaskhistory OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: upgradetaskhistoryauditlog; Type: TABLE; Schema: public; Owner: jira
@@ -6155,7 +6155,7 @@ data:
     );
 
 
-    ALTER TABLE public.upgradetaskhistoryauditlog OWNER TO jira;
+    ALTER TABLE public.upgradetaskhistoryauditlog OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: upgradeversionhistory; Type: TABLE; Schema: public; Owner: jira
@@ -6169,7 +6169,7 @@ data:
     );
 
 
-    ALTER TABLE public.upgradeversionhistory OWNER TO jira;
+    ALTER TABLE public.upgradeversionhistory OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: userassociation; Type: TABLE; Schema: public; Owner: jira
@@ -6185,7 +6185,7 @@ data:
     );
 
 
-    ALTER TABLE public.userassociation OWNER TO jira;
+    ALTER TABLE public.userassociation OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: userbase; Type: TABLE; Schema: public; Owner: jira
@@ -6198,7 +6198,7 @@ data:
     );
 
 
-    ALTER TABLE public.userbase OWNER TO jira;
+    ALTER TABLE public.userbase OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: userhistoryitem; Type: TABLE; Schema: public; Owner: jira
@@ -6214,7 +6214,7 @@ data:
     );
 
 
-    ALTER TABLE public.userhistoryitem OWNER TO jira;
+    ALTER TABLE public.userhistoryitem OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: userpickerfilter; Type: TABLE; Schema: public; Owner: jira
@@ -6228,7 +6228,7 @@ data:
     );
 
 
-    ALTER TABLE public.userpickerfilter OWNER TO jira;
+    ALTER TABLE public.userpickerfilter OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: userpickerfiltergroup; Type: TABLE; Schema: public; Owner: jira
@@ -6241,7 +6241,7 @@ data:
     );
 
 
-    ALTER TABLE public.userpickerfiltergroup OWNER TO jira;
+    ALTER TABLE public.userpickerfiltergroup OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: userpickerfilterrole; Type: TABLE; Schema: public; Owner: jira
@@ -6254,7 +6254,7 @@ data:
     );
 
 
-    ALTER TABLE public.userpickerfilterrole OWNER TO jira;
+    ALTER TABLE public.userpickerfilterrole OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: versioncontrol; Type: TABLE; Schema: public; Owner: jira
@@ -6268,7 +6268,7 @@ data:
     );
 
 
-    ALTER TABLE public.versioncontrol OWNER TO jira;
+    ALTER TABLE public.versioncontrol OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: votehistory; Type: TABLE; Schema: public; Owner: jira
@@ -6282,7 +6282,7 @@ data:
     );
 
 
-    ALTER TABLE public.votehistory OWNER TO jira;
+    ALTER TABLE public.votehistory OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: workflowscheme; Type: TABLE; Schema: public; Owner: jira
@@ -6295,7 +6295,7 @@ data:
     );
 
 
-    ALTER TABLE public.workflowscheme OWNER TO jira;
+    ALTER TABLE public.workflowscheme OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: workflowschemeentity; Type: TABLE; Schema: public; Owner: jira
@@ -6309,7 +6309,7 @@ data:
     );
 
 
-    ALTER TABLE public.workflowschemeentity OWNER TO jira;
+    ALTER TABLE public.workflowschemeentity OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: worklog; Type: TABLE; Schema: public; Owner: jira
@@ -6330,7 +6330,7 @@ data:
     );
 
 
-    ALTER TABLE public.worklog OWNER TO jira;
+    ALTER TABLE public.worklog OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: worklog_version; Type: TABLE; Schema: public; Owner: jira
@@ -6345,7 +6345,7 @@ data:
     );
 
 
-    ALTER TABLE public.worklog_version OWNER TO jira;
+    ALTER TABLE public.worklog_version OWNER TO {{ include "umbrella.databaseUser" . }};
 
     --
     -- Name: AO_0A5972_NOTIFICATION_SETTING ID; Type: DEFAULT; Schema: public; Owner: jira
@@ -16258,7 +16258,7 @@ data:
 
     REVOKE ALL ON SCHEMA public FROM postgres;
     REVOKE ALL ON SCHEMA public FROM PUBLIC;
-    GRANT ALL ON SCHEMA public TO jira;
+    GRANT ALL ON SCHEMA public TO {{ include "umbrella.databaseUser" . }};
     GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
