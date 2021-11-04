@@ -1,2 +1,36 @@
+# General
+*.log
+*.pid
+*.swp
+*.bak
+*~
+.DS_Store
+Thumbs.db
+logs/
+log/
+temp/
+tmp/
+
+# IDEs and tools
+*.bin
+.vscode/
+.idea/
+.idea_modules/
+target/
+out/
+
+# Helm
 Chart.lock
+
+# Packages
+*.jar
+*.ear
+*.war
+*.tar
+*.bz2
+*.gz
+*.zip
+*.7z
+*.rar
+*.iso
 *.tgz
