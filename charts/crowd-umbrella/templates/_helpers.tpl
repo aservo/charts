@@ -127,7 +127,7 @@ Return PostgreSQL password
 {{- end }}
 {{ include "crowd.volumes.sharedHome" . }}
 # -- Volume with additional configuration files
-- name: {{ include "crowd.fullname" . }}-server-config
+- name: server-config
   configMap:
     name: {{ include "crowd.fullname" . }}-server-config
     items:
@@ -146,7 +146,7 @@ Return PostgreSQL password
       path: javax.crypto.spec.SecretKeySpec
       mode: 0755
 # -- Volume with additional dump file for SQL import to the database
-- name: {{ include "crowd.fullname" . }}-dump-config
+- name: dump-config
   configMap:
     name: {{ include "crowd.fullname" . }}-dump-config
     items:
@@ -178,7 +178,7 @@ Return PostgreSQL password
       /var/atlassian/application-data/crowd/shared/keys/javax.crypto.spec.SecretKeySpec_1619611916201
   resources: {}
   volumeMounts:
-    - name: {{ include "crowd.fullname" . }}-server-config
+    - name: server-config
       mountPath: /tmp/crowd.cfg.xml
       subPath: crowd.cfg.xml
     - name: shared-home
@@ -193,10 +193,10 @@ Return PostgreSQL password
   imagePullPolicy: IfNotPresent
   resources: {}
   volumeMounts:
-    - name: {{ include "crowd.fullname" . }}-server-config
+    - name: server-config
       mountPath: /tmp/restore-db.sh
       subPath: restore-db.sh
-    - name: {{ include "crowd.fullname" . }}-dump-config
+    - name: dump-config
       mountPath: /tmp/db.dump
       subPath: db.dump
   env:

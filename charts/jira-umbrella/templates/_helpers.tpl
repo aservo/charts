@@ -143,13 +143,13 @@ Return PostgreSQL password
       chown 2001:2001 /opt/atlassian/jira/atlassian-jira/WEB-INF/classes/seraph-config.xml
   resources: {}
   volumeMounts:
-    - name: {{ include "jira.fullname" . }}-server-config
+    - name: server-config
       mountPath: /tmp/dbconfig.xml
       subPath: dbconfig.xml
-    - name: {{ include "jira.fullname" . }}-server-config
+    - name: server-config
       mountPath: /tmp/server.xml
       subPath: server.xml
-    - name: {{ include "jira.fullname" . }}-server-config
+    - name: server-config
       mountPath: /tmp/seraph-config.xml
       subPath: seraph-config.xml
     - name: local-home
@@ -165,10 +165,10 @@ Return PostgreSQL password
   imagePullPolicy: IfNotPresent
   resources: {}
   volumeMounts:
-    - name: {{ include "jira.fullname" . }}-server-config
+    - name: server-config
       mountPath: /tmp/restore-db.sh
       subPath: restore-db.sh
-    - name: {{ include "jira.fullname" . }}-dump-config
+    - name: dump-config
       mountPath: /tmp/db.dump
       subPath: db.dump
   env:
@@ -189,7 +189,7 @@ Return PostgreSQL password
 {{- end }}
 {{ include "jira.volumes.sharedHome" . }}
 # -- Volume with additional configuration files
-- name: {{ include "jira.fullname" . }}-server-config
+- name: server-config
   configMap:
     name: {{ include "jira.fullname" . }}-server-config
     items:
@@ -205,9 +205,8 @@ Return PostgreSQL password
     - key: seraph-config.xml
       path: seraph-config.xml
       mode: 0755
-
 # -- Volume with additional dump file for SQL import to the database
-- name: {{ include "jira.fullname" . }}-dump-config
+- name: dump-config
   configMap:
     name: {{ include "jira.fullname" . }}-dump-config
     items:
