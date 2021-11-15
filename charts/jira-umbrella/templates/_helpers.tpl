@@ -119,44 +119,43 @@ Return PostgreSQL password
 {{- end -}}
 {{- end -}}
 
-{{- define "jira.additionalInitContainers" -}}
-# -- Additional initContainer to copy the Jira configuration.
-# Copies dbconfig.xml file to the proper location
-- name: copy-config
-  image: busybox
-  imagePullPolicy: IfNotPresent
-  command:
-    - /bin/sh
-  args:
-    - '-c'
-    - >-
-      set -x &&
-      mkdir -p /opt/atlassian/jira/conf/ &&
-      cp /tmp/server.xml /opt/atlassian/jira/conf/server.xml &&
-      cp /tmp/dbconfig.xml /var/atlassian/application-data/jira/dbconfig.xml &&
-      cp /tmp/dbconfig.xml /var/atlassian/application-data/shared-home/dbconfig.xml &&
-      mkdir -p /opt/atlassian/jira/atlassian-jira/WEB-INF/classes/ &&
-      cp /tmp/seraph-config.xml /opt/atlassian/jira/atlassian-jira/WEB-INF/classes/seraph-config.xml &&
-      chown 2001:2001 /var/atlassian/application-data/jira/dbconfig.xml &&
-      chown 2001:2001 /var/atlassian/application-data/shared-home/dbconfig.xml &&
-      chown 2001:2001 /opt/atlassian/jira/conf/server.xml &&
-      chown 2001:2001 /opt/atlassian/jira/atlassian-jira/WEB-INF/classes/seraph-config.xml
-  resources: {}
-  volumeMounts:
-    - name: server-config
-      mountPath: /tmp/dbconfig.xml
-      subPath: dbconfig.xml
-    - name: server-config
-      mountPath: /tmp/server.xml
-      subPath: server.xml
-    - name: server-config
-      mountPath: /tmp/seraph-config.xml
-      subPath: seraph-config.xml
-    - name: local-home
-      mountPath: /var/atlassian/application-data/jira
-    - name: shared-home
-      mountPath: /var/atlassian/application-data/shared-home
+{{- define "jira.databaseEnvVars" -}}
+- name: ATL_DB_TYPE
+  value: postgres72
+- name: ATL_DB_DRIVER
+  value: org.postgresql.Driver
+- name: ATL_JDBC_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "jira.fullname" . }}-secrets
+      key: postgresql-url
+- name: ATL_JDBC_USER
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "jira.fullname" . }}-secrets
+      key: postgresql-username
+- name: ATL_JDBC_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "jira.fullname" . }}-secrets
+      key: postgresql-password
+{{ end }}
 
+
+{{- define "jira.additionalEnvironmentVariables" -}}
+{{ if not .Values.jira.license.secretName }}
+- name: JIRA_SETUP_LICENSE
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "jira.fullname" . }}-secrets
+      key: license-key
+{{ end }}
+{{- with .Values.jira.additionalEnvironmentVariables }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
+
+{{- define "jira.additionalInitContainers" -}}
 # -- Additional initContainer to load initial Jira database.
 # The initial Jira setup was performed in order to connect to a ready Postgresql database
 # After the chart deployment the default user is able immediately to login without init routine
@@ -165,7 +164,7 @@ Return PostgreSQL password
   imagePullPolicy: IfNotPresent
   resources: {}
   volumeMounts:
-    - name: server-config
+    - name: dump-config
       mountPath: /tmp/restore-db.sh
       subPath: restore-db.sh
     - name: dump-config
@@ -188,28 +187,14 @@ Return PostgreSQL password
 {{ include "jira.volumes.localHome" . }}
 {{- end }}
 {{ include "jira.volumes.sharedHome" . }}
-# -- Volume with additional configuration files
-- name: server-config
-  configMap:
-    name: {{ include "jira.fullname" . }}-server-config
-    items:
-    - key: restore-db.sh
-      path: restore-db.sh
-      mode: 0755
-    - key: dbconfig.xml
-      path: dbconfig.xml
-      mode: 0755
-    - key: server.xml
-      path: server.xml
-      mode: 0755
-    - key: seraph-config.xml
-      path: seraph-config.xml
-      mode: 0755
 # -- Volume with additional dump file for SQL import to the database
 - name: dump-config
   configMap:
     name: {{ include "jira.fullname" . }}-dump-config
     items:
+    - key: restore-db.sh
+      path: restore-db.sh
+      mode: 0755
     - key: db.dump
       path: db.dump
 {{- with .Values.volumes.additional }}
