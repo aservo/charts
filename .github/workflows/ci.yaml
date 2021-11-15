@@ -2,68 +2,33 @@ name: CI
 
 on: pull_request
 
-env:
-  ENV_FILE: .env
-
 jobs:
-
   tests:
-
-    runs-on: ubuntu-latest
-
-    timeout-minutes: 15
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
         kubernetes_version:
-          - "1.20.7"
-          - "1.19.11"
-          - "1.18.19"
+          # - "v1.22.2"
+          - "v1.21.2"
+          - "v1.20.7"
+          - "v1.19.11"
+          - "v1.18.19"
       fail-fast: false
 
     env:
       KUBERNETES_VERSION: ${{ matrix.kubernetes_version }}
 
     steps:
-
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: Load environment variables from .env file
-        shell: bash
-        run: |
-          while read line; do
-            echo "$line" >> $GITHUB_ENV
-          done < ${{ env.ENV_FILE }}
-
-      - name: Install Kubectl
-        uses: azure/setup-kubectl@v1
-        with:
-          version: v${{ env.KUBECTL_VERSION }}
-
-      - name: Install Helm
-        uses: azure/setup-helm@v1
-        with:
-          version: ${{ env.HELM_VERSION }}
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.0.1
         with:
-          version: v${{ env.CHART_TESTING_VERSION }}
-
-      - name: Set AKS Kubectl Context
-        uses: azure/aks-set-context@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          resource-group: gha-k8s-cluster-rg
-          cluster-name: gha-k8s-cluster
+          version: v3.4.0
 
       - name: List changed charts
         id: list-changed
@@ -77,19 +42,18 @@ jobs:
       - name: Lint changed charts
         run: ct lint --config ct.yaml
 
-      - name: Install Helm unittest plugin
-        if: steps.list-changed.outputs.changed == 'true'
-        run: |
-          helm env
-          helm plugin install https://github.com/quintush/helm-unittest --version 0.2.4
+      # - name: Install Helm unittest plugin
+      #   if: steps.list-changed.outputs.changed == 'true'
+      #   run: |
+      #     helm env
+      #     helm plugin install https://github.com/quintush/helm-unittest --version 0.2.4
 
-      # Currently not used because of this bug (and in meantime missing features):
-      # https://github.com/helm/chart-testing/issues/332
-      # - name: Run chart-testing (install)
-      #   run: ct install --config ct.yaml
-
-      - name: Install and test changed charts
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.2.0
         if: steps.list-changed.outputs.changed == 'true'
-        run: |
-          changed=$(ct list-changed --config ct.yaml | tr \\n ',')
-          ./scripts/helm-install-test.sh ${changed%?}
+        with:
+          version: v0.11.1
+          node_image: kindest/node:${{ matrix.kubernetes_version }}
+
+      - name: Run chart-testing (install)
+        run: ct install --config ct.yaml

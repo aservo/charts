@@ -1,0 +1,13 @@
+crowd:
+  crowd:
+    resources:
+      container:
+        requests:
+          cpu: 800m
+    additionalJvmArgs:
+      - -XX:ActiveProcessorCount=1
+
+postgresql:
+  resources:
+    requests:
+      cpu: 200m
