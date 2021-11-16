@@ -3,6 +3,31 @@ entries:
   confluence-umbrella:
   - apiVersion: v2
     appVersion: 7.12.4-jdk11
+    created: "2021-11-16T09:36:31.769671761Z"
+    dependencies:
+    - name: confluence
+      repository: https://atlassian.github.io/data-center-helm-charts
+      version: 0.15.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.3.17
+    description: Helm chart for Confluence with Postgresql, plugins and parametrization
+    digest: 0af68b082b7ac41299cf1da36f45d7ef40f2f24df2819523c413414ce9512db9
+    maintainers:
+    - email: opensource@aservo.com
+      name: ASERVO Software GmbH
+    name: confluence-umbrella
+    sources:
+    - https://github.com/aservo/charts
+    - https://github.com/atlassian/data-center-helm-charts/tree/main/src/main/charts/confluence
+    - https://github.com/bitnami/charts/tree/master/bitnami/postgresql
+    type: application
+    urls:
+    - https://github.com/aservo/charts/releases/download/confluence-umbrella-0.15.3/confluence-umbrella-0.15.3.tgz
+    version: 0.15.3
+  - apiVersion: v2
+    appVersion: 7.12.4-jdk11
     created: "2021-11-04T03:38:01.42328613Z"
     dependencies:
     - name: confluence
@@ -202,6 +227,31 @@ entries:
     - https://github.com/aservo/charts/releases/download/confluence-umbrella-0.11.0/confluence-umbrella-0.11.0.tgz
     version: 0.11.0
   crowd-umbrella:
+  - apiVersion: v2
+    appVersion: 4.3.5-jdk11
+    created: "2021-11-16T09:36:31.930624092Z"
+    dependencies:
+    - name: crowd
+      repository: https://atlassian.github.io/data-center-helm-charts
+      version: 0.15.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.3.17
+    description: Helm chart for Crowd with Postgresql, plugins and parametrization
+    digest: cc99430fa31bbb8cefeec0e55b449a77074c7c02a4cdd5f168041a6778162203
+    maintainers:
+    - email: opensource@aservo.com
+      name: ASERVO Software GmbH
+    name: crowd-umbrella
+    sources:
+    - https://github.com/aservo/charts
+    - https://github.com/atlassian/data-center-helm-charts/tree/main/src/main/charts/crowd
+    - https://github.com/bitnami/charts/tree/master/bitnami/postgresql
+    type: application
+    urls:
+    - https://github.com/aservo/charts/releases/download/crowd-umbrella-0.15.3/crowd-umbrella-0.15.3.tgz
+    version: 0.15.3
   - apiVersion: v2
     appVersion: 4.3.5-jdk11
     created: "2021-11-04T03:38:01.609700877Z"
@@ -405,6 +455,31 @@ entries:
   jira-umbrella:
   - apiVersion: v2
     appVersion: 8.13.9-jdk11
+    created: "2021-11-16T09:36:32.09133592Z"
+    dependencies:
+    - name: jira
+      repository: https://atlassian.github.io/data-center-helm-charts
+      version: 0.15.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.3.17
+    description: Helm chart for Jira with Postgresql, plugins and parametrization
+    digest: 1d36b432aca3176f408e19ab1e53488bfd55e5fa70f356d6860e2ff41f62401c
+    maintainers:
+    - email: opensource@aservo.com
+      name: ASERVO Software GmbH
+    name: jira-umbrella
+    sources:
+    - https://github.com/aservo/charts
+    - https://github.com/atlassian/data-center-helm-charts/tree/main/src/main/charts/jira
+    - https://github.com/bitnami/charts/tree/master/bitnami/postgresql
+    type: application
+    urls:
+    - https://github.com/aservo/charts/releases/download/jira-umbrella-0.15.3/jira-umbrella-0.15.3.tgz
+    version: 0.15.3
+  - apiVersion: v2
+    appVersion: 8.13.9-jdk11
     created: "2021-11-04T03:38:01.764217307Z"
     dependencies:
     - name: jira
@@ -578,4 +653,4 @@ entries:
     urls:
     - https://github.com/aservo/charts/releases/download/jira-umbrella-0.11.0/jira-umbrella-0.11.0.tgz
     version: 0.11.0
-generated: "2021-11-04T03:38:01.764365809Z"
+generated: "2021-11-16T09:36:32.091459621Z"
