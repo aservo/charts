@@ -23,6 +23,3 @@ jobs:
         uses: helm/chart-releaser-action@v1.2.1
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Push to container registry
-        run: ./scripts/helm-push-oci.sh ${{ secrets.AZ_CR_HOSTNAME }} ${{ secrets.AZ_CR_USERNAME }} ${{ secrets.AZ_CR_PASSWORD }}
