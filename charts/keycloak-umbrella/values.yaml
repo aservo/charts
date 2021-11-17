@@ -1,0 +1,30 @@
+keycloak:
+  extraEnvFrom: |
+    - configMapRef:
+        name: {{ .Release.Name }}-env-config
+    - secretRef:
+        name: {{ .Release.Name }}-env-secret
+
+umbrella:
+  keycloak:
+    logLevel: "INFO"
+    # frontendUrl: "http://localhost:8080/auth/"
+    adminUsername: "admin"
+    adminPassword: "password"
+  realmConfig: {}
+
+image:
+  repository: ghcr.io/aservo/networking
+  tag: 1.0.0  # version of aservo/networking image used for settings customization
+  pullPolicy: IfNotPresent
+
+resources: {}
+
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  runAsNonRoot: true
+
+terminationGracePeriodSeconds: 5
+
+labels: {}

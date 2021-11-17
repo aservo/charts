@@ -6,6 +6,7 @@ chart-dirs:
 chart-repos:
   - atlassian-data-center=https://atlassian.github.io/data-center-helm-charts
   - bitnami=https://charts.bitnami.com/bitnami
+  - codecentric=https://codecentric.github.io/helm-charts
 excluded-charts:
   - crowd-umbrella
 helm-extra-args: --timeout 600s

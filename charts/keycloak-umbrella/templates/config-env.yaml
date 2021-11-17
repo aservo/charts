@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-env-config
+  {{- with .Values.annotations }}
+  annotations:
+    {{- range $key, $value := . }}
+    {{- printf "%s: %s" $key (tpl $value $ | quote) | nindent 4 }}
+    {{- end }}
+  {{- end }}
+  labels:
+    {{- include "umbrella.labels" . | nindent 4 }}
+    {{- range $key, $value := .Values.labels }}
+    {{- printf "%s: %s" $key (tpl $value $ | quote) | nindent 4 }}
+    {{- end }}
+data:
+  KEYCLOAK_LOGLEVEL: {{ .Values.umbrella.keycloak.logLevel }}
+  {{- with .Values.umbrella.keycloak.frontendUrl }}
+  KEYCLOAK_FRONTEND_URL: {{ . }}
+  {{- end }}
+  KEYCLOAK_INTERNAL_FRONTEND_URL: {{ printf "http://%s-http:%s/auth/" (include "keycloak.fullname" .Subcharts.keycloak) (.Values.keycloak.service.httpPort | toString) }}
+  KEYCLOAK_USER: {{ .Values.umbrella.keycloak.adminUsername }}
