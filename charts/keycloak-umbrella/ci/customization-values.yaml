@@ -575,23 +575,40 @@ umbrella:
               - oidc-sha256-pairwise-sub-mapper
       org.keycloak.storage.UserStorageProvider: []
       org.keycloak.keys.KeyProvider:
-        - id: 3e216528-4ff1-40b6-90a5-edb4e578a04b
-          name: rsa-imported
-          providerId: rsa
+        - id: a174f653-2f57-4a9e-8a4f-a3502ae17e14
+          name: hmac-generated
+          providerId: hmac-generated
           subComponents: {}
           config:
-            privateKey:
-              - "MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDBV7mPffhgwpHnoxF7UA8AmUjKfEp73gYOVu2E2zGMXy2s11WKnQYr7uo+31XNdWg5wd5XU9ZCQbaKxCvEvXmHRPSNPXpIWbY/av4Eu3HFLQDsU7lGL1Cic0PG/4M1yx6B668UAxJjVraQX84KaB523u6RFXimOLa3WPRrAa9my6Qc9M077pfjTNiuNRzMRJW30yLjrwZsbcGg16cyLwAF1eNdCyz7NKQYtLgbPz6+OMoEC9pZsin7TWeoj1hBunVpdKSsvZ9GqBKFrAl5KWDMAeNKmnngYFki9tFFegnpLON0YGnX4O3a6eR8tSoQpshIbXfdaGdVekneDTeEGVQjAgMBAAECggEBAJPpIct1yoNztp1n8iLNX3zMx5Qou+7BLw7fT7w42FIUKmQ1JHrzn9oSX+ATiZex/zdYalmSiLKNhTHp27YaYhOrHA/FfXxGLZecqZJDOElpIXCqqG3aGqz801g091M6/i7UeE8t/m5C003mDUGG3+9+ozIZJAC+GIJxqiMG2gIf6Q/1SANVV3DRXZLqL1IgweBDrsA2MJkzJNicLEWnSBuMVJYKT+rA5P1D+bpANTJzNOD6nzR+6080M5ypOJwfqrMLNuetCquZ2ywLAwP8wR1LVYRokzuvZNIGnjV4pxd7FYzGdRs3vC8sPWaO0pz5hyf1oEv/QNSB15toVDCcwekCgYEA8Idp3EMTGUwtL5hBOQ0Vp8BicNrq6B6XCWqB86xDKx1+lLliGDtS2/NxI42W81agZZLqjZ9fF41ZO0RTjgZv62/+6OZpas/w9RAAv0uhortN3jNob6B2B6Xil8RaegVi5HUp7simzIXLWBLW5/oZDdjuszseDC9HKuR7RbxElI0CgYEAzcdVtMjQKlhwLNb8kuGfeegnsynIJzEOt4odNDC6z2I9W5YUOcxkhHRSDP4ko4/JqJdDqYdpbqS2kLMl1S6nAnuczhCkXhWq9CcNCfWmuFdWYwhD2LW3zAACmkNHrqXRBuLs7JP0GBigUzOldpBHuWWCSjlyKdOONN5A1mmlV28CgYEAkfbrRBKkVXbH+Rkhg5iwKpPyaWBAq8pciAdNg21neZO1jFWP9PqTRw1N/HBhSZypS9rDYlxz3ZwWqYPGXOsFIlBd1kJ1eK9mH6GtgmlIVrPqBk0WNJ+g4PVHNCiha2k3YULExraXmogbJYCRUEeSyrd56+SVUHmka6AqOuCMkcUCgYEArZt90F8XWJJyWTIrttPJUvUtATe/2GjIDMrmJpDyGmK8d1dfyv+I0kK8sp97U87MiILNn+pRZfpq2Bt8UKXiWvLk8OkTcxj+uKt1kbCBLsboZ/aiHuP4o5BiobkfcdYNSq0Ky/FrHyUvpeJNt4C0MlLUoEBk86q7MBlORFavGtsCgYAXoL3Zlc+DMfbKV912e1HECRBNayq/5zp/Yb82TpWrrcHgaogBT8I0JQucXDpufgQZlvh9KfCTs21TXCOL3geQ++Sw2qqq+Jo0KCEnIZmaLAfIehcLnkptooQfQkAGr4TCLPrupSfRSHZj/N7nKkgB9hjpfkqioxN0KsqJ2FrHDg=="
-            certificate:
-              - "MIIDETCCAfkCFF5WhNz+3VlvXtDAkSHMmcwTwRnKMA0GCSqGSIb3DQEBCwUAMEQxCzAJBgNVBAYTAkRFMR0wGwYDVQQKDBRBU0VSVk8gU29mdHdhcmUgR21iSDEWMBQGA1UEAwwNaWRlbnRpdHktbWdtdDAgFw0yMTExMTcwNTI3MTVaGA8yMTIxMTAyNDA1MjcxNVowRDELMAkGA1UEBhMCREUxHTAbBgNVBAoMFEFTRVJWTyBTb2Z0d2FyZSBHbWJIMRYwFAYDVQQDDA1pZGVudGl0eS1tZ210MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwVe5j334YMKR56MRe1APAJlIynxKe94GDlbthNsxjF8trNdVip0GK+7qPt9VzXVoOcHeV1PWQkG2isQrxL15h0T0jT16SFm2P2r+BLtxxS0A7FO5Ri9QonNDxv+DNcsegeuvFAMSY1a2kF/OCmgedt7ukRV4pji2t1j0awGvZsukHPTNO+6X40zYrjUczESVt9Mi468GbG3BoNenMi8ABdXjXQss+zSkGLS4Gz8+vjjKBAvaWbIp+01nqI9YQbp1aXSkrL2fRqgShawJeSlgzAHjSpp54GBZIvbRRXoJ6SzjdGBp1+Dt2unkfLUqEKbISG133WhnVXpJ3g03hBlUIwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQBp+Ri2A9Oi0bqO4nlayXFI+42rsoWT0JC92KPW5nBIdHFEkE2fNmGCP/FXceyBgOf+w5OlwfXn745UHqdIp7LLt8aLhw5w2grf0kQoQmEO4d4sJYPIv0fXG+OxJ2xVax6U9ut7A3oQMchv1L7F8liJjw/s1oWUGJJ11ZCcjgt8Ko1JVVrWVkOLiUYkX5lKLqaF6Wx2e4/SuJA3D88MWcB+TFfWbIKfIV+03vNjrk4V8v1gXVULGHNYxISvvTmU6Q5bU+Frb4K66PdL0z0RIcdDLYSGIwS4/fABOfiyNKuAdz4d6lmQZw8uHQPYNJlqkK/lmfXMJkqAZOjsNFKiTTDI"
-            active:
-              - 'true'
             priority:
-              - '20'
-            enabled:
-              - 'true'
+              - '100'
             algorithm:
-              - RS256
+              - HS256
+        - id: 04f84d2b-22ab-4f18-9066-1dfe00ab7281
+          name: aes-generated
+          providerId: aes-generated
+          subComponents: {}
+          config:
+            priority:
+              - '100'
+        - id: 525db981-b1e1-44ee-bc21-1e24b313cd44
+          name: rsa-generated
+          providerId: rsa-generated
+          subComponents: {}
+          config:
+            keyUse:
+              - sig
+            priority:
+              - '100'
+        - id: 04c4c794-0f13-4f77-9b99-3456a27b9d9f
+          name: rsa-enc-generated
+          providerId: rsa-generated
+          subComponents: {}
+          config:
+            keyUse:
+              - enc
+            priority:
+              - '100'
     internationalizationEnabled: false
     supportedLocales: []
     authenticationFlows:
