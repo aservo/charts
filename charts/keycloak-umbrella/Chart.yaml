@@ -1,6 +1,6 @@
 apiVersion: v2
 name: keycloak-umbrella
-version: 15.1.0
+version: 15.1.1
 appVersion: 15.1.0
 description: Helm chart for Keycloak with PostgreSQL and settings customization
 type: application

@@ -51,11 +51,11 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: {{ template "umbrella.fullname" . }}-config
-              mountPath: "/opt/realm-config.json"
-              subPath: "realm-config.json"
-            - name: {{ template "umbrella.fullname" . }}-config
               mountPath: "/opt/realm-import.sh"
               subPath: "realm-import.sh"
+            - name: {{ template "umbrella.fullname" . }}-secret
+              mountPath: "/opt/realm-config.json"
+              subPath: "realm-config.json"
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -70,12 +70,15 @@ spec:
       volumes:
         - name: {{ template "umbrella.fullname" . }}-config
           configMap:
-            name: {{ .Release.Name }}-config
+            name: {{ .Release.Name }}-realm-config
+            defaultMode: 0555
+            items:
+              - key: realm-import.sh
+                path: realm-import.sh
+        - name: {{ template "umbrella.fullname" . }}-secret
+          secret:
+            secretName: {{ .Release.Name }}-realm-secret
             defaultMode: 0444
             items:
               - key: realm-config.json
                 path: realm-config.json
-                mode: 0444
-              - key: realm-import.sh
-                path: realm-import.sh
-                mode: 0555
