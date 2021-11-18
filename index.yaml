@@ -656,6 +656,29 @@ entries:
   keycloak-umbrella:
   - apiVersion: v2
     appVersion: 15.1.0
+    created: "2021-11-18T06:34:18.918412752Z"
+    dependencies:
+    - name: keycloak
+      repository: https://codecentric.github.io/helm-charts
+      version: 15.1.0
+    description: Helm chart for Keycloak with PostgreSQL and settings customization
+    digest: 6c45c23a10e5665af528d6f51b2855f3dc222b288aa25d1e395a5f5f54af5412
+    maintainers:
+    - email: opensource@aservo.com
+      name: ASERVO Software GmbH
+    name: keycloak-umbrella
+    sources:
+    - https://github.com/aservo/charts
+    - https://github.com/codecentric/helm-charts
+    - https://github.com/aservo/docker-networking
+    - https://github.com/jboss-dockerfiles/keycloak
+    - https://github.com/keycloak/keycloak
+    type: application
+    urls:
+    - https://github.com/aservo/charts/releases/download/keycloak-umbrella-15.1.1/keycloak-umbrella-15.1.1.tgz
+    version: 15.1.1
+  - apiVersion: v2
+    appVersion: 15.1.0
     created: "2021-11-17T07:14:48.173636007Z"
     dependencies:
     - name: keycloak
@@ -677,4 +700,4 @@ entries:
     urls:
     - https://github.com/aservo/charts/releases/download/keycloak-umbrella-15.1.0/keycloak-umbrella-15.1.0.tgz
     version: 15.1.0
-generated: "2021-11-17T07:14:48.173723208Z"
+generated: "2021-11-18T06:34:18.918539863Z"
