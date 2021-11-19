@@ -1,0 +1,12 @@
+apiVersion: v2
+name: util
+version: 0.0.1
+appVersion: 0.0.0
+description: A Helm chart for generic resource deployments
+type: application
+sources:
+  - https://github.com/aservo/charts
+maintainers:
+  - name: ASERVO Software GmbH
+    email: opensource@aservo.com
+engine: gotpl

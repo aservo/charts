@@ -1,0 +1,12 @@
+manifests:
+  configmap1: |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: configmap1
+    data:
+      number: "3"
+      string-oneline: "user-interface.properties"
+      string-multiline: |
+        first line
+        second line

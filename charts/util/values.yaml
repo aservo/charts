@@ -1,0 +1,11 @@
+nameOverride: ""
+fullnameOverride: ""
+
+manifests: {}
+  # manifest1: |
+  #   apiVersion: <VERSION>
+  #   kind: <KIND>
+  #   metadata:
+  #     name: <NAME>
+  #   spec:
+  #     ...
