@@ -700,4 +700,20 @@ entries:
     urls:
     - https://github.com/aservo/charts/releases/download/keycloak-umbrella-15.1.0/keycloak-umbrella-15.1.0.tgz
     version: 15.1.0
-generated: "2021-11-18T06:34:18.918539863Z"
+  util:
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2021-11-19T02:36:00.368160092Z"
+    description: A Helm chart for generic resource deployments
+    digest: 3028dd2c38a8833c803ef9358653e5ce245250e837f42b0235b8771ae2c25b24
+    maintainers:
+    - email: opensource@aservo.com
+      name: ASERVO Software GmbH
+    name: util
+    sources:
+    - https://github.com/aservo/charts
+    type: application
+    urls:
+    - https://github.com/aservo/charts/releases/download/util-0.0.1/util-0.0.1.tgz
+    version: 0.0.1
+generated: "2021-11-19T02:36:00.368255192Z"
