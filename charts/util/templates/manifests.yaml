@@ -1,0 +1,6 @@
+{{- range $m, $manifest := .Values.manifests }}
+{{- with $manifest }}
+{{ tpl . $ | indent 0 }}
+{{- end }}
+---
+{{ end }}
