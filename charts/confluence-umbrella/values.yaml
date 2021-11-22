@@ -10,6 +10,16 @@ umbrella:
   serverId: ""
   licenseKey: ""
 
+## Confluence chart configuration
+## ref: https://github.com/atlassian/data-center-helm-charts/blob/main/src/main/charts/confluence/values.yaml
+##
+confluence:
+  database: {}  # this section of the 'confluence' subchart is disabled in this 'umbrella' chart
+  license: {}  # this section of the 'confluence' subchart should not be used in this 'umbrella' chart
+
+## PostgreSQL chart configuration
+## ref: https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml
+##
 postgresql:
   enabled: true
   postgresqlDatabase: confluence

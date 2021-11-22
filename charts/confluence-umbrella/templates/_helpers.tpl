@@ -43,6 +43,25 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+{{- define "umbrella.serverId" -}}
+{{- if .Values.umbrella.serverId -}}
+{{- .Values.umbrella.serverId -}}
+{{- else -}}
+AB0C-1D2E-FGHI-JKL3
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get license-key. If none set, use default.
+*/}}
+{{- define "umbrella.licenseKey" -}}
+{{- if .Values.umbrella.licenseKey }}
+{{- .Values.umbrella.licenseKey }}
+{{- else -}}
+{{- "AAACiA0ODAoPeNp9VF1vmzAUfedXWNpbJGgg6tZGQlqauF2mhkSEbOrWaTLmJrgFG9kmHf9+DoQOuqSPvr4f555z7A9RCWhBKuRdo+FoPHTHo0t0t4iQN3SvrDXIPcj5zL/BC2yHD/MHe/rD29ij76Ohdc8ocAVRVUBAcvAjvI7mwZ1FpXhJnM6tPz1EHsdoBnvIRAHSooJvHUI124OvZQmmqKQszqAX1EDy35RkwBMilROUeQxyub0heSxECLnQMNkB18p3WzT4T8FkNSMa/JXruV/+Ne4DaoI9TLHBxCS8P+aJSdLD2GZvFEjle5fWDBSVrNBMcD8CpVHWDEZbIVGRlTvGUdIOVa9Tuz2PFd/M/aGLV9OVlcApOHFVEKWchGjimCwN0qEp0OemEu9JVpJ6dn3eSQCeisKMagnACavvcRDhcBXO19haEGYacWL6/8/fQaked69YeuxNJdRz61LPdT/awyvb+9TUtyRNs1IZxIFIQPlDazAYTEM8ifDMvnkwB19rSXjOePqZ6MysyQh3qMgtmgnjwx5Hca3OG7HuhXHLUSvbbXO66Js8hA/EFZKp/hKNPMoZnBp1nr8jvB5LdajPkODatMWG7ezspifXeuPB5oF1EdauPI9vy1QKVd9jhu5gGdm3y9BehcvZZhrNl4G9WeODDrWYkKC4QjoFdOxsWKNGOeNiKZ6AavQz1bp4HF9c7ITTW+Pi6GAbmopfDpoJxIVGCVNasrjUYDozhbRA1HhC5MbrzuntVxnhtZxLuSOcqcbek3Ze+/LNL7Xhz1y88J7ruzsrTVR6Stp3Pp3u1aqUNCUK3nq8S3+t/td5ODnnsVaMbv6tieEKTtml/lrPueUvBz0PSzAsAhQ6RaKTu/EXAEWe8s2VygT6BSnI0AIUefIYpLQa5h0VcBofQ//kkVdTg+A=X02u2" }}
+{{- end -}}
+{{- end -}}
+
 {{/*
 Determine the hostname to use for PostgreSQL
 */}}
@@ -100,65 +119,40 @@ Return PostgreSQL password
 {{- end -}}
 {{- end -}}
 
-{{- define "umbrella.serverId" -}}
-{{- if .Values.umbrella.serverId -}}
-{{- .Values.umbrella.serverId -}}
-{{- else -}}
-AB0C-1D2E-FGHI-JKL3
-{{- end -}}
-{{- end -}}
+{{- define "confluence.databaseEnvVars" -}}
+- name: ATL_DB_TYPE
+  value: postgresql
+- name: ATL_JDBC_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "confluence.fullname" . }}-secrets
+      key: postgresql-url
+- name: ATL_JDBC_USER
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "confluence.fullname" . }}-secrets
+      key: postgresql-username
+- name: ATL_JDBC_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "confluence.fullname" . }}-secrets
+      key: postgresql-password
+{{ end }}
 
-{{/*
-Get license-key. If none set, use default.
-*/}}
-{{- define "umbrella.licenseKey" -}}
-{{- if .Values.umbrella.licenseKey }}
-{{- .Values.umbrella.licenseKey }}
-{{- else -}}
-{{- "AAACiA0ODAoPeNp9VF1vmzAUfedXWNpbJGgg6tZGQlqauF2mhkSEbOrWaTLmJrgFG9kmHf9+DoQOuqSPvr4f555z7A9RCWhBKuRdo+FoPHTHo0t0t4iQN3SvrDXIPcj5zL/BC2yHD/MHe/rD29ij76Ohdc8ocAVRVUBAcvAjvI7mwZ1FpXhJnM6tPz1EHsdoBnvIRAHSooJvHUI124OvZQmmqKQszqAX1EDy35RkwBMilROUeQxyub0heSxECLnQMNkB18p3WzT4T8FkNSMa/JXruV/+Ne4DaoI9TLHBxCS8P+aJSdLD2GZvFEjle5fWDBSVrNBMcD8CpVHWDEZbIVGRlTvGUdIOVa9Tuz2PFd/M/aGLV9OVlcApOHFVEKWchGjimCwN0qEp0OemEu9JVpJ6dn3eSQCeisKMagnACavvcRDhcBXO19haEGYacWL6/8/fQaked69YeuxNJdRz61LPdT/awyvb+9TUtyRNs1IZxIFIQPlDazAYTEM8ifDMvnkwB19rSXjOePqZ6MysyQh3qMgtmgnjwx5Hca3OG7HuhXHLUSvbbXO66Js8hA/EFZKp/hKNPMoZnBp1nr8jvB5LdajPkODatMWG7ezspifXeuPB5oF1EdauPI9vy1QKVd9jhu5gGdm3y9BehcvZZhrNl4G9WeODDrWYkKC4QjoFdOxsWKNGOeNiKZ6AavQz1bp4HF9c7ITTW+Pi6GAbmopfDpoJxIVGCVNasrjUYDozhbRA1HhC5MbrzuntVxnhtZxLuSOcqcbek3Ze+/LNL7Xhz1y88J7ruzsrTVR6Stp3Pp3u1aqUNCUK3nq8S3+t/td5ODnnsVaMbv6tieEKTtml/lrPueUvBz0PSzAsAhQ6RaKTu/EXAEWe8s2VygT6BSnI0AIUefIYpLQa5h0VcBofQ//kkVdTg+A=X02u2" }}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Get confluence contextPath
-*/}}
-{{- define "confluence.contextPath" -}}
-{{- default .Values.confluence.confluence.service.contextPath "" }}
-{{- end -}}
-
-{{/*
-Generate confluence baseurl
-*/}}
-{{- define "confluence.baseurl" -}}
-{{- $contextPath := include "common.names.fullname" . }}
-{{- if .Values.confluence.ingress.host -}}
-{{- printf "https://%s%s" .Values.confluence.ingress.host $contextPath -}}
-{{- else -}}
-{{- printf "http://127.0.0.1:8090%s" $contextPath -}}
-{{- end -}}
-{{- end -}}
+{{- define "confluence.additionalEnvironmentVariables" -}}
+{{ if not .Values.confluence.license.secretName }}
+- name: ATL_LICENSE_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "confluence.fullname" . }}-secrets
+      key: license-key
+{{ end }}
+{{- with .Values.confluence.additionalEnvironmentVariables }}
+{{- toYaml . }}
+{{- end }}
+{{- end }}
 
 {{- define "confluence.additionalInitContainers" -}}
-# -- Additional initContainer to copy the Confluence configuration.
-# Copies confluence.cfg.xml file to the proper location
-- name: copy-config
-  image: busybox
-  imagePullPolicy: IfNotPresent
-  command:
-    - /bin/sh
-  args:
-    - '-c'
-    - >-
-      set -x
-      ; cp /tmp/confluence.cfg.xml /var/atlassian/application-data/confluence/confluence.cfg.xml
-  resources: {}
-  volumeMounts:
-    - name: server-config
-      mountPath: /tmp/confluence.cfg.xml
-      subPath: confluence.cfg.xml
-    - name: local-home
-      mountPath: /var/atlassian/application-data/confluence
-
 # -- Additional initContainer to load initial Confluence database.
 # The initial Confluence setup was performed in order to connect to a ready Postgresql database
 # After the chart deployment the default user is able immediately to login without init routine
@@ -167,7 +161,7 @@ Generate confluence baseurl
   imagePullPolicy: IfNotPresent
   resources: {}
   volumeMounts:
-    - name: server-config
+    - name: dump-config
       mountPath: /tmp/restore-db.sh
       subPath: restore-db.sh
     - name: dump-config
@@ -193,22 +187,14 @@ Generate confluence baseurl
 {{ include "confluence.volumes.localHome" . }}
 {{- end }}
 {{ include "confluence.volumes.sharedHome" . }}
-# -- Volume with additional configuration files
-- name: server-config
-  configMap:
-    name: {{ include "confluence.fullname" . }}-server-config
-    items:
-    - key: restore-db.sh
-      path: restore-db.sh
-      mode: 0755
-    - key: confluence.cfg.xml
-      path: confluence.cfg.xml
-      mode: 0755
 # -- Volume with additional dump file for SQL import to the database
 - name: dump-config
   configMap:
     name: {{ include "confluence.fullname" . }}-dump-config
     items:
+    - key: restore-db.sh
+      path: restore-db.sh
+      mode: 0755
     - key: db.dump
       path: db.dump
 # -- Volume with additional dump file for SQL import to the database part2.
