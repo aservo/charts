@@ -63,6 +63,25 @@ Get license-key. If none set, use default.
 {{- end -}}
 
 {{/*
+Get confluence contextPath
+*/}}
+{{- define "confluence.contextPath" -}}
+{{- default .Values.confluence.confluence.service.contextPath "" }}
+{{- end -}}
+
+{{/*
+Generate confluence baseurl
+*/}}
+{{- define "confluence.baseurl" -}}
+{{- $contextPath := include "common.names.fullname" . }}
+{{- if .Values.confluence.ingress.host -}}
+{{- printf "https://%s%s" .Values.confluence.ingress.host $contextPath -}}
+{{- else -}}
+{{- printf "http://127.0.0.1:8090%s" $contextPath -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Determine the hostname to use for PostgreSQL
 */}}
 {{- define "umbrella.databaseHost" -}}
@@ -153,6 +172,25 @@ Return PostgreSQL password
 {{- end }}
 
 {{- define "confluence.additionalInitContainers" -}}
+# -- Additional initContainer to copy the Confluence configuration.
+# Copies confluence.cfg.xml file to the proper location
+- name: copy-config
+  image: busybox
+  imagePullPolicy: IfNotPresent
+  command:
+    - /bin/sh
+  args:
+    - '-c'
+    - >-
+      set -x
+      ; cp /tmp/confluence.cfg.xml /var/atlassian/application-data/confluence/confluence.cfg.xml
+  resources: {}
+  volumeMounts:
+    - name: server-config
+      mountPath: /tmp/confluence.cfg.xml
+      subPath: confluence.cfg.xml
+    - name: local-home
+      mountPath: /var/atlassian/application-data/confluence
 # -- Additional initContainer to load initial Confluence database.
 # The initial Confluence setup was performed in order to connect to a ready Postgresql database
 # After the chart deployment the default user is able immediately to login without init routine
@@ -187,6 +225,14 @@ Return PostgreSQL password
 {{ include "confluence.volumes.localHome" . }}
 {{- end }}
 {{ include "confluence.volumes.sharedHome" . }}
+# -- Volume with additional configuration files
+- name: server-config
+  configMap:
+    name: {{ include "confluence.fullname" . }}-server-config
+    items:
+    - key: confluence.cfg.xml
+      path: confluence.cfg.xml
+      mode: 0755
 # -- Volume with additional dump file for SQL import to the database
 - name: dump-config
   configMap:
