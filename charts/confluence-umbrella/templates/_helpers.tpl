@@ -158,6 +158,24 @@ Return PostgreSQL password
       key: postgresql-password
 {{ end }}
 
+{{- define "synchrony.databaseEnvVars" -}}
+- name: SYNCHRONY_DATABASE_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "confluence.fullname" . }}-secrets
+      key: postgresql-url
+- name: SYNCHRONY_DATABASE_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "confluence.fullname" . }}-secrets
+      key: postgresql-username
+- name: SYNCHRONY_DATABASE_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "confluence.fullname" . }}-secrets
+      key: postgresql-password
+{{ end }}
+
 {{- define "confluence.additionalEnvironmentVariables" -}}
 {{ if not .Values.confluence.license.secretName }}
 - name: ATL_LICENSE_KEY
