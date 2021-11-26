@@ -1,6 +1,6 @@
 apiVersion: v2
 name: crowd-umbrella
-version: 0.15.3
+version: 1.0.0
 appVersion: 4.3.5-jdk11
 description: Helm chart for Crowd with Postgresql, plugins and parametrization
 type: application
@@ -10,7 +10,7 @@ sources:
   - https://github.com/bitnami/charts/tree/master/bitnami/postgresql
 dependencies:
   - name: crowd
-    version: 0.15.0
+    version: 1.0.0
     repository: https://atlassian.github.io/data-center-helm-charts
   - name: postgresql
     version: 10.3.17
