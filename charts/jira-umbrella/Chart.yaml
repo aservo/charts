@@ -1,7 +1,7 @@
 apiVersion: v2
 name: jira-umbrella
-version: 0.15.4
-appVersion: 8.13.9-jdk11
+version: 1.0.0
+appVersion: 8.19.0-jdk11
 description: Helm chart for Jira with Postgresql, plugins and parametrization
 type: application
 sources:
@@ -10,7 +10,7 @@ sources:
   - https://github.com/bitnami/charts/tree/master/bitnami/postgresql
 dependencies:
   - name: jira
-    version: 0.15.0
+    version: 1.0.0
     repository: https://atlassian.github.io/data-center-helm-charts
   - name: postgresql
     version: 10.3.17
