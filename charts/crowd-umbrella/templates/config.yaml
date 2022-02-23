@@ -9,7 +9,9 @@ data:
     #! /bin/bash -xe
     until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/{{ include "umbrella.databaseHost" . }}/{{ include "umbrella.databasePort" . }}'; do echo "WAITING: db host {{ include "umbrella.databaseHost" . }} port {{ include "umbrella.databasePort" . }}"; sleep 1; done
     psql -h {{ include "umbrella.databaseHost" . }} -p {{ include "umbrella.databasePort" . }} -U {{ include "umbrella.databaseUser" . }} -d {{ include "umbrella.databaseName" . }} -c 'SELECT 1 FROM cwd_user' && exit 0
+    {{- if .Values.umbrella.initDB }}
     psql -h {{ include "umbrella.databaseHost" . }} -p {{ include "umbrella.databasePort" . }} -U {{ include "umbrella.databaseUser" . }} -d {{ include "umbrella.databaseName" . }} < /tmp/db.dump
+    {{- end }}
     unset PGPASSWORD
 
   crowd.cfg.xml: |-
@@ -53,13 +55,10 @@ metadata:
   {{- include "umbrella.labels" . | nindent 4 }}
 data:
   db.dump: |-
-    --
-    -- PostgreSQL database dump
-    --
-
     -- Dumped from database version 11.12
     -- Dumped by pg_dump version 11.12
 
+{{- if .Values.umbrella.initDB }}
     SET statement_timeout = 0;
     SET lock_timeout = 0;
     SET idle_in_transaction_session_timeout = 0;
@@ -75,22 +74,13 @@ data:
 
     SET default_with_oids = false;
 
-    --
-    -- Name: cwd_app_dir_default_groups; Type: TABLE; Schema: public; Owner: crowd
-    --
-
     CREATE TABLE public.cwd_app_dir_default_groups (
         id bigint NOT NULL,
         application_mapping_id bigint NOT NULL,
         group_name character varying(255) NOT NULL
     );
 
-
     ALTER TABLE public.cwd_app_dir_default_groups OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_app_dir_group_mapping; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_app_dir_group_mapping (
         id bigint NOT NULL,
@@ -100,12 +90,7 @@ data:
         group_name character varying(255) NOT NULL
     );
 
-
     ALTER TABLE public.cwd_app_dir_group_mapping OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_app_dir_mapping; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_app_dir_mapping (
         id bigint NOT NULL,
@@ -115,24 +100,14 @@ data:
         list_index integer
     );
 
-
     ALTER TABLE public.cwd_app_dir_mapping OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_app_dir_operation; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_app_dir_operation (
         app_dir_mapping_id bigint NOT NULL,
         operation_type character varying(32) NOT NULL
     );
 
-
     ALTER TABLE public.cwd_app_dir_operation OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_app_licensed_user; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_app_licensed_user (
         id bigint NOT NULL,
@@ -146,12 +121,7 @@ data:
         lower_email character varying(255)
     );
 
-
     ALTER TABLE public.cwd_app_licensed_user OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_app_licensing; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_app_licensing (
         id bigint NOT NULL,
@@ -165,12 +135,7 @@ data:
         active character(1) NOT NULL
     );
 
-
     ALTER TABLE public.cwd_app_licensing OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_app_licensing_dir_info; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_app_licensing_dir_info (
         id bigint NOT NULL,
@@ -179,12 +144,7 @@ data:
         licensing_summary_id bigint NOT NULL
     );
 
-
     ALTER TABLE public.cwd_app_licensing_dir_info OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_application; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_application (
         id bigint NOT NULL,
@@ -198,24 +158,14 @@ data:
         credential character varying(255) NOT NULL
     );
 
-
     ALTER TABLE public.cwd_application OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_application_address; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_application_address (
         application_id bigint NOT NULL,
         remote_address character varying(255) NOT NULL
     );
 
-
     ALTER TABLE public.cwd_application_address OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_application_alias; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_application_alias (
         id bigint NOT NULL,
@@ -226,12 +176,7 @@ data:
         lower_alias_name character varying(255) NOT NULL
     );
 
-
     ALTER TABLE public.cwd_application_alias OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_application_attribute; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_application_attribute (
         application_id bigint NOT NULL,
@@ -239,12 +184,7 @@ data:
         attribute_value text
     );
 
-
     ALTER TABLE public.cwd_application_attribute OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_application_saml_config; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_application_saml_config (
         application_id bigint NOT NULL,
@@ -253,12 +193,7 @@ data:
         enabled character(1) NOT NULL
     );
 
-
     ALTER TABLE public.cwd_application_saml_config OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_audit_log_changeset; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_audit_log_changeset (
         id bigint NOT NULL,
@@ -272,12 +207,7 @@ data:
         event_source character varying(255) NOT NULL
     );
 
-
     ALTER TABLE public.cwd_audit_log_changeset OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_audit_log_entity; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_audit_log_entity (
         id bigint NOT NULL,
@@ -288,12 +218,7 @@ data:
         changeset_id bigint NOT NULL
     );
 
-
     ALTER TABLE public.cwd_audit_log_entity OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_audit_log_entry; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_audit_log_entry (
         id bigint NOT NULL,
@@ -303,12 +228,7 @@ data:
         new_value text
     );
 
-
     ALTER TABLE public.cwd_audit_log_entry OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_cluster_heartbeat; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_cluster_heartbeat (
         node_id character varying(36) NOT NULL,
@@ -316,12 +236,7 @@ data:
         hearbeat_timestamp bigint NOT NULL
     );
 
-
     ALTER TABLE public.cwd_cluster_heartbeat OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_cluster_info; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_cluster_info (
         node_id character varying(255) NOT NULL,
@@ -334,12 +249,7 @@ data:
         info_timestamp bigint NOT NULL
     );
 
-
     ALTER TABLE public.cwd_cluster_info OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_cluster_job; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_cluster_job (
         id character varying(255) NOT NULL,
@@ -354,12 +264,7 @@ data:
         claim_timestamp bigint
     );
 
-
     ALTER TABLE public.cwd_cluster_job OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_cluster_lock; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_cluster_lock (
         lock_name character varying(255) NOT NULL,
@@ -367,12 +272,7 @@ data:
         node_id character varying(36)
     );
 
-
     ALTER TABLE public.cwd_cluster_lock OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_cluster_message; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_cluster_message (
         id bigint NOT NULL,
@@ -382,23 +282,13 @@ data:
         sender_node_id character varying(36)
     );
 
-
     ALTER TABLE public.cwd_cluster_message OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_cluster_message_id; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_cluster_message_id (
         next_val bigint
     );
 
-
     ALTER TABLE public.cwd_cluster_message_id OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_cluster_safety; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_cluster_safety (
         entry_key character varying(255) NOT NULL,
@@ -408,12 +298,7 @@ data:
         "timestamp" bigint NOT NULL
     );
 
-
     ALTER TABLE public.cwd_cluster_safety OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_databasechangelog; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_databasechangelog (
         id character varying(255) NOT NULL,
@@ -432,12 +317,7 @@ data:
         deployment_id character varying(10)
     );
 
-
     ALTER TABLE public.cwd_databasechangelog OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_databasechangeloglock; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_databasechangeloglock (
         id integer NOT NULL,
@@ -446,12 +326,7 @@ data:
         lockedby character varying(255)
     );
 
-
     ALTER TABLE public.cwd_databasechangeloglock OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_directory; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_directory (
         id bigint NOT NULL,
@@ -466,12 +341,7 @@ data:
         directory_type character varying(32) NOT NULL
     );
 
-
     ALTER TABLE public.cwd_directory OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_directory_attribute; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_directory_attribute (
         directory_id bigint NOT NULL,
@@ -479,24 +349,14 @@ data:
         attribute_value text
     );
 
-
     ALTER TABLE public.cwd_directory_attribute OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_directory_operation; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_directory_operation (
         directory_id bigint NOT NULL,
         operation_type character varying(32) NOT NULL
     );
 
-
     ALTER TABLE public.cwd_directory_operation OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_expirable_user_token; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_expirable_user_token (
         id bigint NOT NULL,
@@ -507,12 +367,7 @@ data:
         directory_id bigint NOT NULL
     );
 
-
     ALTER TABLE public.cwd_expirable_user_token OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_granted_perm; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_granted_perm (
         id bigint NOT NULL,
@@ -522,12 +377,7 @@ data:
         group_name character varying(255) NOT NULL
     );
 
-
     ALTER TABLE public.cwd_granted_perm OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_group; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_group (
         id bigint NOT NULL,
@@ -543,12 +393,7 @@ data:
         external_id character varying(255)
     );
 
-
     ALTER TABLE public.cwd_group OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_group_admin_group; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_group_admin_group (
         id bigint NOT NULL,
@@ -556,12 +401,7 @@ data:
         target_group_id bigint NOT NULL
     );
 
-
     ALTER TABLE public.cwd_group_admin_group OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_group_admin_user; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_group_admin_user (
         id bigint NOT NULL,
@@ -569,12 +409,7 @@ data:
         target_group_id bigint NOT NULL
     );
 
-
     ALTER TABLE public.cwd_group_admin_user OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_group_attribute; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_group_attribute (
         id bigint NOT NULL,
@@ -585,12 +420,7 @@ data:
         attribute_lower_value character varying(255)
     );
 
-
     ALTER TABLE public.cwd_group_attribute OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_membership; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_membership (
         id bigint NOT NULL,
@@ -606,12 +436,7 @@ data:
         created_date timestamp without time zone
     );
 
-
     ALTER TABLE public.cwd_membership OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_property; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_property (
         property_key character varying(255) NOT NULL,
@@ -619,12 +444,7 @@ data:
         property_value text
     );
 
-
     ALTER TABLE public.cwd_property OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_remember_me_token; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_remember_me_token (
         id bigint NOT NULL,
@@ -637,12 +457,7 @@ data:
         directory_id bigint NOT NULL
     );
 
-
     ALTER TABLE public.cwd_remember_me_token OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_saml_trust_entity_idp; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_saml_trust_entity_idp (
         id bigint NOT NULL,
@@ -652,12 +467,7 @@ data:
         private_key character varying(4000) NOT NULL
     );
 
-
     ALTER TABLE public.cwd_saml_trust_entity_idp OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_synchronisation_status; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_synchronisation_status (
         id integer NOT NULL,
@@ -672,24 +482,14 @@ data:
         node_name character varying(255)
     );
 
-
     ALTER TABLE public.cwd_synchronisation_status OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_synchronisation_token; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_synchronisation_token (
         directory_id bigint NOT NULL,
         sync_status_token text
     );
 
-
     ALTER TABLE public.cwd_synchronisation_token OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_token; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_token (
         id bigint NOT NULL,
@@ -704,12 +504,7 @@ data:
         duration bigint
     );
 
-
     ALTER TABLE public.cwd_token OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_tombstone; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_tombstone (
         id bigint NOT NULL,
@@ -721,12 +516,7 @@ data:
         application_id bigint
     );
 
-
     ALTER TABLE public.cwd_tombstone OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_user; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_user (
         id bigint NOT NULL,
@@ -748,12 +538,7 @@ data:
         external_id character varying(255)
     );
 
-
     ALTER TABLE public.cwd_user OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_user_attribute; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_user_attribute (
         id bigint NOT NULL,
@@ -765,12 +550,7 @@ data:
         attribute_numeric_value bigint
     );
 
-
     ALTER TABLE public.cwd_user_attribute OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_user_credential_record; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_user_credential_record (
         id bigint NOT NULL,
@@ -779,12 +559,7 @@ data:
         list_index integer
     );
 
-
     ALTER TABLE public.cwd_user_credential_record OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: cwd_webhook; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.cwd_webhook (
         id bigint NOT NULL,
@@ -795,43 +570,17 @@ data:
         failures_since_last_success bigint NOT NULL
     );
 
-
     ALTER TABLE public.cwd_webhook OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Name: hibernate_unique_key; Type: TABLE; Schema: public; Owner: crowd
-    --
 
     CREATE TABLE public.hibernate_unique_key (
         next_hi bigint
     );
 
-
     ALTER TABLE public.hibernate_unique_key OWNER TO {{ include "umbrella.databaseUser" . }};
-
-    --
-    -- Data for Name: cwd_app_dir_default_groups; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_app_dir_group_mapping; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
 
     INSERT INTO public.cwd_app_dir_group_mapping VALUES (360449, 327681, 2, 131073, 'crowd-administrators');
 
-
-    --
-    -- Data for Name: cwd_app_dir_mapping; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_app_dir_mapping VALUES (327681, 2, 131073, 'F', 0);
-
-
-    --
-    -- Data for Name: cwd_app_dir_operation; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
 
     INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'CREATE_USER');
     INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'UPDATE_ROLE');
@@ -846,48 +595,8 @@ data:
     INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'DELETE_GROUP');
     INSERT INTO public.cwd_app_dir_operation VALUES (327681, 'UPDATE_GROUP_ATTRIBUTE');
 
-
-    --
-    -- Data for Name: cwd_app_licensed_user; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_app_licensing; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_app_licensing_dir_info; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_application; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_application VALUES (1, 'google-apps', 'google-apps', '2021-07-07 14:46:28.885', '2021-07-07 14:47:36.916', 'T', 'Google Applications Connector', 'PLUGIN', '{PKCS5S2}L3DYnJAmQUdDSpDZawJQAOOTE/vFrzGexd0TX/WPIXREAuMKKWnYpRUmFSn9PpjE');
     INSERT INTO public.cwd_application VALUES (2, 'crowd', 'crowd', '2021-07-07 14:47:34.47', '2021-07-07 14:47:36.949', 'T', 'Crowd console', 'CROWD', '{PKCS5S2}b/1heBxixZNgxvS40Aviu9Nb5MM8PSYUz7tiAyZ42lo0vKblikkZQSnTNBzd0sFw');
-
-
-    --
-    -- Data for Name: cwd_application_address; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_application_alias; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_application_attribute; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
 
     INSERT INTO public.cwd_application_attribute VALUES (1, 'atlassian_sha1_applied', 'true');
     INSERT INTO public.cwd_application_attribute VALUES (2, 'atlassian_sha1_applied', 'true');
@@ -899,17 +608,6 @@ data:
     INSERT INTO public.cwd_application_attribute VALUES (1, 'lowerCaseOutput', 'false');
     INSERT INTO public.cwd_application_attribute VALUES (1, 'aliasingEnabled', 'false');
     INSERT INTO public.cwd_application_attribute VALUES (1, 'optimizeCachedDirectoriesAuthenticationAuthenticationOrder', 'false');
-
-
-    --
-    -- Data for Name: cwd_application_saml_config; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_audit_log_changeset; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
 
     INSERT INTO public.cwd_audit_log_changeset VALUES (32769, 1625669189447, 'OTHER', NULL, '', 'APPLICATION_CREATED', '127.0.0.1', '', 'MANUAL');
     INSERT INTO public.cwd_audit_log_changeset VALUES (32770, 1625669217365, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
@@ -940,11 +638,6 @@ data:
     INSERT INTO public.cwd_audit_log_changeset VALUES (458755, 1625669257289, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
     INSERT INTO public.cwd_audit_log_changeset VALUES (458756, 1625669257311, 'OTHER', NULL, '', 'CONFIGURATION_MODIFIED', '127.0.0.1', '', 'MANUAL');
 
-
-    --
-    -- Data for Name: cwd_audit_log_entity; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_audit_log_entity VALUES (98305, 'APPLICATION', 1, 'google-apps', 'T', 32769);
     INSERT INTO public.cwd_audit_log_entity VALUES (98306, 'DIRECTORY', 131073, 'Crowd server', 'T', 32779);
     INSERT INTO public.cwd_audit_log_entity VALUES (98307, 'USER', 163841, 'admin', 'T', 32780);
@@ -957,11 +650,6 @@ data:
     INSERT INTO public.cwd_audit_log_entity VALUES (98314, 'APPLICATION', 2, 'crowd', 'T', 32783);
     INSERT INTO public.cwd_audit_log_entity VALUES (98315, 'APPLICATION', 2, 'crowd', 'T', 32784);
     INSERT INTO public.cwd_audit_log_entity VALUES (98316, 'APPLICATION', 1, 'google-apps', 'T', 32791);
-
-
-    --
-    -- Data for Name: cwd_audit_log_entry; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
 
     INSERT INTO public.cwd_audit_log_entry VALUES (65537, 'Type', 32769, '', 'PLUGIN');
     INSERT INTO public.cwd_audit_log_entry VALUES (65538, 'Created Date', 32769, '', '2021-07-07T14:46:28.885+0000');
@@ -1059,24 +747,9 @@ data:
     INSERT INTO public.cwd_audit_log_entry VALUES (491523, 'crowd.encryption.encryptor.default', 458755, '', 'AES_CBC_PKCS5Padding');
     INSERT INTO public.cwd_audit_log_entry VALUES (491524, 'build.number', 458756, '', '1581');
 
-
-    --
-    -- Data for Name: cwd_cluster_heartbeat; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_cluster_heartbeat VALUES ('8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0', '', 1625669369479);
 
-
-    --
-    -- Data for Name: cwd_cluster_info; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_cluster_info VALUES ('8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0', '10.244.0.10', 'crowd-0', 320, 683, 10.5, 622220, 1625669378411);
-
-
-    --
-    -- Data for Name: cwd_cluster_job; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
 
     INSERT INTO public.cwd_cluster_job VALUES ('heartbeat-cleanup', 'com.atlassian.crowd.manager.cluster.heartbeat.CrowdClusterNodeHeartbeatService', NULL, '0 0 0/4 * * ?', NULL, 1625673600000, 1, NULL, NULL, NULL);
     INSERT INTO public.cwd_cluster_job VALUES ('LocalPluginLicenseNotificationJob-job', 'LocalPluginLicenseNotificationJob-runner', 86400000, NULL, NULL, 1625755657359, 2, NULL, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0', 1625669257361);
@@ -1100,11 +773,6 @@ data:
     INSERT INTO public.cwd_cluster_job VALUES ('passwordExpirationMailNotificationJob', 'passwordExpirationMailNotificationJob', NULL, '0 0 */1 * * ?', NULL, 1625670000000, 1, NULL, NULL, NULL);
     INSERT INTO public.cwd_cluster_job VALUES ('com.atlassian.crowd.manager.directory.monitor.DirectoryMonitorRefresherStarter-job', 'com.atlassian.crowd.manager.directory.monitor.DirectoryMonitorRefresherJob-runner', 120000, NULL, NULL, 1625669498379, 3, NULL, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0', 1625669378382);
 
-
-    --
-    -- Data for Name: cwd_cluster_lock; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_cluster_lock VALUES ('CROWD_ENCRYPTION', 1625669257279, NULL);
     INSERT INTO public.cwd_cluster_lock VALUES ('com.atlassian.crowd.manager.upgrade.UpgradeManagerImpl', 1625669257299, NULL);
     INSERT INTO public.cwd_cluster_lock VALUES ('com.atlassian.upm.impl.PluginManagerPluginAsynchronousTaskStatusStoreImpl', 1625669257349, NULL);
@@ -1113,11 +781,6 @@ data:
     INSERT INTO public.cwd_cluster_lock VALUES ('sal.upgrade.crowd-saml-plugin', 1625669258241, NULL);
     INSERT INTO public.cwd_cluster_lock VALUES ('com.atlassian.upm.notification.PluginSettingsNotificationCache', 1625669262423, NULL);
     INSERT INTO public.cwd_cluster_lock VALUES ('com.atlassian.crowd.manager.directory.monitor.DirectoryMonitorRefresherJob-lock', 1625669378391, NULL);
-
-
-    --
-    -- Data for Name: cwd_cluster_message; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
 
     INSERT INTO public.cwd_cluster_message VALUES (1, 'ClusterAwareUserAuthorisationCache', 'clear', 1625669254544, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
     INSERT INTO public.cwd_cluster_message VALUES (2, 'ClusterAwareUserAuthorisationCache', 'clear', 1625669256655, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
@@ -1130,23 +793,7 @@ data:
     INSERT INTO public.cwd_cluster_message VALUES (9, 'ANALYTICS_CACHE', 'EXPIRE_CACHE', 1625669258305, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
     INSERT INTO public.cwd_cluster_message VALUES (10, 'ANALYTICS_CACHE', 'EXPIRE_CACHE', 1625669269751, '8576dacf-a2d0-43d4-9fb2-35a3dbb39fc0');
 
-
-    --
-    -- Data for Name: cwd_cluster_message_id; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_cluster_message_id VALUES (11);
-
-
-    --
-    -- Data for Name: cwd_cluster_safety; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_databasechangelog; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
 
     INSERT INTO public.cwd_databasechangelog VALUES ('Clean liquibase changelog', 'crowd', 'liquibase/drop.xml', '2021-07-07 14:46:07.664773', 45, 'EXECUTED', '7:ea8b0312b091e956938886ff3b6eccb1', 'delete tableName=CWD_DATABASECHANGELOG', '', NULL, '3.5.3', NULL, NULL, '5669167082');
     INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-707: cwd_token', 'crowd', 'liquibase/bootstrap/02_cwd_token.xml', '2021-07-07 14:46:08.463806', 46, 'EXECUTED', '7:b0c100012b28201504b3ee2579225986', 'createTable tableName=cwd_token; addUniqueConstraint constraintName=uk_token_id_hash, tableName=cwd_token; createIndex indexName=idx_token_dir_id, tableName=cwd_token; createIndex indexName=idx_token_key, tableName=cwd_token; createIndex indexName...', 'Creates the cwd_token table', NULL, '3.5.3', NULL, NULL, '5669168353');
@@ -1249,35 +896,15 @@ data:
     INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-3496: Add the incremental_sync_error and full_sync_error columns to cwd_synchronisation_status', 'crowd', 'liquibase/crowd_4_2_0/01_cwd_synchronisation_status_inc_and_full_sync_errors.xml', '2021-07-07 14:46:09.943878', 143, 'EXECUTED', '7:65553d8d08bd1f60070cc204ad42403c', 'addColumn tableName=cwd_synchronisation_status', '', NULL, '3.5.3', NULL, NULL, '5669168353');
     INSERT INTO public.cwd_databasechangelog VALUES ('KRAK-3494: Add the node_name column to cwd_synchronisation_status', 'crowd', 'liquibase/crowd_4_2_0/02_cwd_synchronisation_status_node_name.xml', '2021-07-07 14:46:09.948229', 144, 'EXECUTED', '7:41a34c1c5d891724b80e25dee145e654', 'addColumn tableName=cwd_synchronisation_status', '', NULL, '3.5.3', NULL, NULL, '5669168353');
 
-
-    --
-    -- Data for Name: cwd_databasechangeloglock; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_databasechangeloglock VALUES (1, false, NULL, NULL);
 
-
-    --
-    -- Data for Name: cwd_directory; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_directory VALUES (131073, 'Crowd server', 'crowd server', '2021-07-07 14:47:13.365', '2021-07-07 14:47:37.273', 'T', '', 'com.atlassian.crowd.directory.InternalDirectory', 'com.atlassian.crowd.directory.internaldirectory', 'INTERNAL');
-
-
-    --
-    -- Data for Name: cwd_directory_attribute; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
 
     INSERT INTO public.cwd_directory_attribute VALUES (131073, 'user_encryption_method', 'atlassian-security');
     INSERT INTO public.cwd_directory_attribute VALUES (131073, 'password_max_change_time', '0');
     INSERT INTO public.cwd_directory_attribute VALUES (131073, 'password_max_attempts', '0');
     INSERT INTO public.cwd_directory_attribute VALUES (131073, 'password_history_count', '0');
     INSERT INTO public.cwd_directory_attribute VALUES (131073, 'configuration.change.timestamp', '1625669256731');
-
-
-    --
-    -- Data for Name: cwd_directory_operation; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
 
     INSERT INTO public.cwd_directory_operation VALUES (131073, 'CREATE_USER');
     INSERT INTO public.cwd_directory_operation VALUES (131073, 'CREATE_GROUP');
@@ -1288,56 +915,12 @@ data:
     INSERT INTO public.cwd_directory_operation VALUES (131073, 'DELETE_GROUP');
     INSERT INTO public.cwd_directory_operation VALUES (131073, 'UPDATE_GROUP_ATTRIBUTE');
 
-
-    --
-    -- Data for Name: cwd_expirable_user_token; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_granted_perm; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_granted_perm VALUES (393217, '2021-07-07 14:47:34.5', 2, 327681, 'crowd-administrators');
     INSERT INTO public.cwd_granted_perm VALUES (393218, '2021-07-07 14:47:36.978', 2, 327681, 'crowd-administrators');
 
-
-    --
-    -- Data for Name: cwd_group; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_group VALUES (262145, 'crowd-administrators', 'crowd-administrators', 'T', '2021-07-07 14:47:34.413', '2021-07-07 14:47:34.413', NULL, 'GROUP', 131073, 'F', NULL);
 
-
-    --
-    -- Data for Name: cwd_group_admin_group; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_group_admin_user; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_group_attribute; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_membership; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_membership VALUES (294913, 262145, 163841, 'GROUP_USER', 'GROUP', 'crowd-administrators', 'crowd-administrators', 'admin', 'admin', 131073, '2021-07-07 14:47:34.444');
-
-
-    --
-    -- Data for Name: cwd_property; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
 
     INSERT INTO public.cwd_property VALUES ('crowd', 'deployment.title', 'Crowd server');
     INSERT INTO public.cwd_property VALUES ('crowd', 'des.encryption.key', 'QyOoBxpUpwg=');
@@ -1422,41 +1005,7 @@ data:
     com.atlassian.troubleshooting.plugin-crowd');
     INSERT INTO public.cwd_property VALUES ('plugin.null', 'com.atlassian.analytics.client.configuration..logged_base_analytics_data', 'true');
 
-
-    --
-    -- Data for Name: cwd_remember_me_token; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_saml_trust_entity_idp; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_synchronisation_status; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_synchronisation_token; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: cwd_token; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_token VALUES (557057, 131073, 'admin', 5804501752893499698, 'CSRlvRtAx72jSomTRTbskw', 'oSKplFrFWBRYFtlMGdYXjAAAAAAAAgABYWRtaW4', '2021-07-07 14:47:44.357', '2021-07-07 14:47:44.357', 1625669264357, NULL);
-
-
-    --
-    -- Data for Name: cwd_tombstone; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
 
     INSERT INTO public.cwd_tombstone VALUES (425985, 'APPLICATION_UPDATED', 1625669254563, NULL, NULL, NULL, 2);
     INSERT INTO public.cwd_tombstone VALUES (425986, 'EVENTS', 1625669256645, 'com.atlassian.crowd.event.directory.DirectoryUpdatedEvent', 131073, NULL, NULL);
@@ -1466,17 +1015,7 @@ data:
     INSERT INTO public.cwd_tombstone VALUES (425990, 'APPLICATION_UPDATED', 1625669256925, NULL, NULL, NULL, 2);
     INSERT INTO public.cwd_tombstone VALUES (425991, 'APPLICATION_UPDATED', 1625669256938, NULL, NULL, NULL, 1);
 
-
-    --
-    -- Data for Name: cwd_user; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_user VALUES (163841, 'admin', 'admin', 'T', '2021-07-07 14:47:34.337', '2021-07-07 14:47:34.337', 'Crowd', 'crowd', 'Admin', 'admin', 'Crowd Admin', 'crowd admin', 'admin@admin.com', 'admin@admin.com', 131073, '{PKCS5S2}opsfcJ06jsYAHH2uiORuXwYCJofsIOwczVVWEu1uTnPp2vuCgd0d7+UBypHJ5saM', '211ade80-a976-421e-9c10-70223e602c53');
-
-
-    --
-    -- Data for Name: cwd_user_attribute; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
 
     INSERT INTO public.cwd_user_attribute VALUES (229377, 163841, 131073, 'requiresPasswordChange', 'false', 'false', NULL);
     INSERT INTO public.cwd_user_attribute VALUES (229378, 163841, 131073, 'invalidPasswordAttempts', '0', '0', 0);
@@ -1484,1254 +1023,429 @@ data:
     INSERT INTO public.cwd_user_attribute VALUES (524289, 163841, 131073, 'lastAuthenticated', '1625669264299', '1625669264299', 1625669264299);
     INSERT INTO public.cwd_user_attribute VALUES (524290, 163841, 131073, 'lastActive', '1625669264357', '1625669264357', 1625669264357);
 
-
-    --
-    -- Data for Name: cwd_user_credential_record; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.cwd_user_credential_record VALUES (196609, 163841, '{PKCS5S2}opsfcJ06jsYAHH2uiORuXwYCJofsIOwczVVWEu1uTnPp2vuCgd0d7+UBypHJ5saM', 0);
 
-
-    --
-    -- Data for Name: cwd_webhook; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
-
-
-    --
-    -- Data for Name: hibernate_unique_key; Type: TABLE DATA; Schema: public; Owner: crowd
-    --
-
     INSERT INTO public.hibernate_unique_key VALUES (18);
-
-
-    --
-    -- Name: cwd_app_dir_operation cwd_app_dir_operation_pkey; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_app_dir_operation
         ADD CONSTRAINT cwd_app_dir_operation_pkey PRIMARY KEY (app_dir_mapping_id, operation_type);
 
-
-    --
-    -- Name: cwd_application_address cwd_application_address_pkey; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_application_address
         ADD CONSTRAINT cwd_application_address_pkey PRIMARY KEY (application_id, remote_address);
-
-
-    --
-    -- Name: cwd_application_attribute cwd_application_attribute_pkey; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_application_attribute
         ADD CONSTRAINT cwd_application_attribute_pkey PRIMARY KEY (application_id, attribute_name);
 
-
-    --
-    -- Name: cwd_directory_attribute cwd_directory_attribute_pkey; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_directory_attribute
         ADD CONSTRAINT cwd_directory_attribute_pkey PRIMARY KEY (directory_id, attribute_name);
-
-
-    --
-    -- Name: cwd_directory_operation cwd_directory_operation_pkey; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_directory_operation
         ADD CONSTRAINT cwd_directory_operation_pkey PRIMARY KEY (directory_id, operation_type);
 
-
-    --
-    -- Name: cwd_property cwd_property_pkey; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_property
         ADD CONSTRAINT cwd_property_pkey PRIMARY KEY (property_key, property_name);
-
-
-    --
-    -- Name: cwd_app_dir_default_groups pk_cwd_app_dir_default_groups; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_app_dir_default_groups
         ADD CONSTRAINT pk_cwd_app_dir_default_groups PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_app_dir_group_mapping pk_cwd_app_dir_group_mapping; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_app_dir_group_mapping
         ADD CONSTRAINT pk_cwd_app_dir_group_mapping PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_app_dir_mapping pk_cwd_app_dir_mapping; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_app_dir_mapping
         ADD CONSTRAINT pk_cwd_app_dir_mapping PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_app_licensed_user pk_cwd_app_licensed_user; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_app_licensed_user
         ADD CONSTRAINT pk_cwd_app_licensed_user PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_app_licensing pk_cwd_app_licensing; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_app_licensing
         ADD CONSTRAINT pk_cwd_app_licensing PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_app_licensing_dir_info pk_cwd_app_licensing_dir_info; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_app_licensing_dir_info
         ADD CONSTRAINT pk_cwd_app_licensing_dir_info PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_application pk_cwd_application; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_application
         ADD CONSTRAINT pk_cwd_application PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_application_alias pk_cwd_application_alias; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_application_alias
         ADD CONSTRAINT pk_cwd_application_alias PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_application_saml_config pk_cwd_application_saml_config; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_application_saml_config
         ADD CONSTRAINT pk_cwd_application_saml_config PRIMARY KEY (application_id);
 
-
-    --
-    -- Name: cwd_audit_log_changeset pk_cwd_audit_log_changeset; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_audit_log_changeset
         ADD CONSTRAINT pk_cwd_audit_log_changeset PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_audit_log_entity pk_cwd_audit_log_entity; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_audit_log_entity
         ADD CONSTRAINT pk_cwd_audit_log_entity PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_audit_log_entry pk_cwd_audit_log_entry; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_audit_log_entry
         ADD CONSTRAINT pk_cwd_audit_log_entry PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_cluster_heartbeat pk_cwd_cluster_heartbeat; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_cluster_heartbeat
         ADD CONSTRAINT pk_cwd_cluster_heartbeat PRIMARY KEY (node_id);
 
-
-    --
-    -- Name: cwd_cluster_info pk_cwd_cluster_info; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_cluster_info
         ADD CONSTRAINT pk_cwd_cluster_info PRIMARY KEY (node_id);
-
-
-    --
-    -- Name: cwd_cluster_job pk_cwd_cluster_job; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_cluster_job
         ADD CONSTRAINT pk_cwd_cluster_job PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_cluster_lock pk_cwd_cluster_lock; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_cluster_lock
         ADD CONSTRAINT pk_cwd_cluster_lock PRIMARY KEY (lock_name);
-
-
-    --
-    -- Name: cwd_cluster_message pk_cwd_cluster_message; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_cluster_message
         ADD CONSTRAINT pk_cwd_cluster_message PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_cluster_safety pk_cwd_cluster_safety; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_cluster_safety
         ADD CONSTRAINT pk_cwd_cluster_safety PRIMARY KEY (entry_key);
-
-
-    --
-    -- Name: cwd_databasechangeloglock pk_cwd_databasechangeloglock; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_databasechangeloglock
         ADD CONSTRAINT pk_cwd_databasechangeloglock PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_directory pk_cwd_directory; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_directory
         ADD CONSTRAINT pk_cwd_directory PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_expirable_user_token pk_cwd_expirable_user_token; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_expirable_user_token
         ADD CONSTRAINT pk_cwd_expirable_user_token PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_granted_perm pk_cwd_granted_perm; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_granted_perm
         ADD CONSTRAINT pk_cwd_granted_perm PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_group pk_cwd_group; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_group
         ADD CONSTRAINT pk_cwd_group PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_group_admin_group pk_cwd_group_admin_group; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_group_admin_group
         ADD CONSTRAINT pk_cwd_group_admin_group PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_group_admin_user pk_cwd_group_admin_user; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_group_admin_user
         ADD CONSTRAINT pk_cwd_group_admin_user PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_group_attribute pk_cwd_group_attribute; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_group_attribute
         ADD CONSTRAINT pk_cwd_group_attribute PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_membership pk_cwd_membership; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_membership
         ADD CONSTRAINT pk_cwd_membership PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_remember_me_token pk_cwd_remember_me_token; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_remember_me_token
         ADD CONSTRAINT pk_cwd_remember_me_token PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_saml_trust_entity_idp pk_cwd_saml_trust_entity_idp; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_saml_trust_entity_idp
         ADD CONSTRAINT pk_cwd_saml_trust_entity_idp PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_synchronisation_status pk_cwd_synchronisation_status; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_synchronisation_status
         ADD CONSTRAINT pk_cwd_synchronisation_status PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_synchronisation_token pk_cwd_synchronisation_token; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_synchronisation_token
         ADD CONSTRAINT pk_cwd_synchronisation_token PRIMARY KEY (directory_id);
 
-
-    --
-    -- Name: cwd_token pk_cwd_token; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_token
         ADD CONSTRAINT pk_cwd_token PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_tombstone pk_cwd_tombstone; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_tombstone
         ADD CONSTRAINT pk_cwd_tombstone PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_user pk_cwd_user; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_user
         ADD CONSTRAINT pk_cwd_user PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_user_attribute pk_cwd_user_attribute; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_user_attribute
         ADD CONSTRAINT pk_cwd_user_attribute PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_user_credential_record pk_cwd_user_credential_record; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_user_credential_record
         ADD CONSTRAINT pk_cwd_user_credential_record PRIMARY KEY (id);
-
-
-    --
-    -- Name: cwd_webhook pk_cwd_webhook; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_webhook
         ADD CONSTRAINT pk_cwd_webhook PRIMARY KEY (id);
 
-
-    --
-    -- Name: cwd_application_alias uk_alias_app_l_alias; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_application_alias
         ADD CONSTRAINT uk_alias_app_l_alias UNIQUE (application_id, lower_alias_name);
-
-
-    --
-    -- Name: cwd_application_alias uk_alias_app_l_username; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_application_alias
         ADD CONSTRAINT uk_alias_app_l_username UNIQUE (application_id, lower_user_name);
 
-
-    --
-    -- Name: cwd_app_dir_mapping uk_app_dir; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_app_dir_mapping
         ADD CONSTRAINT uk_app_dir UNIQUE (application_id, directory_id);
-
-
-    --
-    -- Name: cwd_app_dir_group_mapping uk_app_dir_group; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_app_dir_group_mapping
         ADD CONSTRAINT uk_app_dir_group UNIQUE (app_dir_mapping_id, group_name);
 
-
-    --
-    -- Name: cwd_application uk_app_l_name; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_application
         ADD CONSTRAINT uk_app_l_name UNIQUE (lower_application_name);
-
-
-    --
-    -- Name: cwd_app_dir_default_groups uk_appmapping_groupname; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_app_dir_default_groups
         ADD CONSTRAINT uk_appmapping_groupname UNIQUE (application_mapping_id, group_name);
 
-
-    --
-    -- Name: cwd_directory uk_dir_l_name; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_directory
         ADD CONSTRAINT uk_dir_l_name UNIQUE (lower_directory_name);
-
-
-    --
-    -- Name: cwd_expirable_user_token uk_expirable_user_token; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_expirable_user_token
         ADD CONSTRAINT uk_expirable_user_token UNIQUE (token);
 
-
-    --
-    -- Name: cwd_group_admin_group uk_group_and_target_group; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_group_admin_group
         ADD CONSTRAINT uk_group_and_target_group UNIQUE (group_id, target_group_id);
-
-
-    --
-    -- Name: cwd_group_attribute uk_group_name_attr_lval; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_group_attribute
         ADD CONSTRAINT uk_group_name_attr_lval UNIQUE (group_id, attribute_name, attribute_lower_value);
 
-
-    --
-    -- Name: cwd_group uk_group_name_dir_id; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_group
         ADD CONSTRAINT uk_group_name_dir_id UNIQUE (lower_group_name, directory_id);
-
-
-    --
-    -- Name: cwd_membership uk_mem_parent_child_type; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_membership
         ADD CONSTRAINT uk_mem_parent_child_type UNIQUE (parent_id, child_id, membership_type);
 
-
-    --
-    -- Name: cwd_remember_me_token uk_rmt_token_and_series; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_remember_me_token
         ADD CONSTRAINT uk_rmt_token_and_series UNIQUE (token, series);
-
-
-    --
-    -- Name: cwd_token uk_token_id_hash; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_token
         ADD CONSTRAINT uk_token_id_hash UNIQUE (identifier_hash);
 
-
-    --
-    -- Name: cwd_group_admin_user uk_user_and_target_group; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_group_admin_user
         ADD CONSTRAINT uk_user_and_target_group UNIQUE (user_id, target_group_id);
-
-
-    --
-    -- Name: cwd_user_attribute uk_user_attr_name_lval; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_user_attribute
         ADD CONSTRAINT uk_user_attr_name_lval UNIQUE (user_id, attribute_name, attribute_lower_value);
 
-
-    --
-    -- Name: cwd_user uk_user_name_dir_id; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_user
         ADD CONSTRAINT uk_user_name_dir_id UNIQUE (lower_user_name, directory_id);
-
-
-    --
-    -- Name: cwd_webhook uk_webhook_url_app; Type: CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_webhook
         ADD CONSTRAINT uk_webhook_url_app UNIQUE (endpoint_url, application_id);
 
-
-    --
-    -- Name: idx_admin_group; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_admin_group ON public.cwd_group_admin_group USING btree (group_id);
-
-
-    --
-    -- Name: idx_admin_user; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_admin_user ON public.cwd_group_admin_user USING btree (user_id);
 
-
-    --
-    -- Name: idx_app_active; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_app_active ON public.cwd_application USING btree (active);
-
-
-    --
-    -- Name: idx_app_dir_group_group_dir; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_app_dir_group_group_dir ON public.cwd_app_dir_group_mapping USING btree (directory_id, group_name);
 
-
-    --
-    -- Name: idx_app_id; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_app_id ON public.cwd_app_licensing USING btree (application_id);
-
-
-    --
-    -- Name: idx_app_id_subtype_version; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE UNIQUE INDEX idx_app_id_subtype_version ON public.cwd_app_licensing USING btree (application_id, application_subtype, version);
 
-
-    --
-    -- Name: idx_app_type; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_app_type ON public.cwd_application USING btree (application_type);
-
-
-    --
-    -- Name: idx_audit_authid; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_audit_authid ON public.cwd_audit_log_changeset USING btree (author_id);
 
-
-    --
-    -- Name: idx_audit_authname; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_audit_authname ON public.cwd_audit_log_changeset USING btree (author_name);
-
-
-    --
-    -- Name: idx_audit_authtype; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_audit_authtype ON public.cwd_audit_log_changeset USING btree (author_type);
 
-
-    --
-    -- Name: idx_audit_entid; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_audit_entid ON public.cwd_audit_log_entity USING btree (entity_id);
-
-
-    --
-    -- Name: idx_audit_entname; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_audit_entname ON public.cwd_audit_log_entity USING btree (entity_name);
 
-
-    --
-    -- Name: idx_audit_enttype_id; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_audit_enttype_id ON public.cwd_audit_log_entity USING btree (entity_type, entity_id);
-
-
-    --
-    -- Name: idx_audit_enttype_name; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_audit_enttype_name ON public.cwd_audit_log_entity USING btree (entity_type, entity_name);
 
-
-    --
-    -- Name: idx_audit_ip; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_audit_ip ON public.cwd_audit_log_changeset USING btree (ip_address);
-
-
-    --
-    -- Name: idx_audit_propname; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_audit_propname ON public.cwd_audit_log_entry USING btree (property_name);
 
-
-    --
-    -- Name: idx_audit_source; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_audit_source ON public.cwd_audit_log_changeset USING btree (event_source);
-
-
-    --
-    -- Name: idx_audit_timestamp; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_audit_timestamp ON public.cwd_audit_log_changeset USING btree (audit_timestamp);
 
-
-    --
-    -- Name: idx_auth_eventtype; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_auth_eventtype ON public.cwd_audit_log_changeset USING btree (event_type);
-
-
-    --
-    -- Name: idx_changeset_entity; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_changeset_entity ON public.cwd_audit_log_entity USING btree (changeset_id);
 
-
-    --
-    -- Name: idx_dir_active; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_dir_active ON public.cwd_directory USING btree (active);
-
-
-    --
-    -- Name: idx_dir_id; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_dir_id ON public.cwd_app_licensing_dir_info USING btree (directory_id);
 
-
-    --
-    -- Name: idx_dir_l_impl_class; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_dir_l_impl_class ON public.cwd_directory USING btree (lower_impl_class);
-
-
-    --
-    -- Name: idx_dir_type; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_dir_type ON public.cwd_directory USING btree (directory_type);
 
-
-    --
-    -- Name: idx_directory_id; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_directory_id ON public.cwd_synchronisation_status USING btree (directory_id);
-
-
-    --
-    -- Name: idx_entry_changeset; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_entry_changeset ON public.cwd_audit_log_entry USING btree (changeset_id);
 
-
-    --
-    -- Name: idx_external_id; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_external_id ON public.cwd_user USING btree (external_id);
-
-
-    --
-    -- Name: idx_group_active; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_group_active ON public.cwd_group USING btree (active, directory_id);
 
-
-    --
-    -- Name: idx_group_attr_dir_name_lval; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_group_attr_dir_name_lval ON public.cwd_group_attribute USING btree (directory_id, attribute_name, attribute_lower_value);
-
-
-    --
-    -- Name: idx_group_attr_group_id; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_group_attr_group_id ON public.cwd_group_attribute USING btree (group_id);
 
-
-    --
-    -- Name: idx_group_dir_id; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_group_dir_id ON public.cwd_group USING btree (directory_id);
-
-
-    --
-    -- Name: idx_group_external_id; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_group_external_id ON public.cwd_group USING btree (external_id);
 
-
-    --
-    -- Name: idx_group_target_group; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_group_target_group ON public.cwd_group_admin_group USING btree (target_group_id);
-
-
-    --
-    -- Name: idx_hb_timestamp; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_hb_timestamp ON public.cwd_cluster_heartbeat USING btree (hearbeat_timestamp);
 
-
-    --
-    -- Name: idx_mem_dir_child; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_mem_dir_child ON public.cwd_membership USING btree (directory_id, lower_child_name, membership_type);
-
-
-    --
-    -- Name: idx_mem_dir_parent; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_mem_dir_parent ON public.cwd_membership USING btree (directory_id, lower_parent_name, membership_type);
 
-
-    --
-    -- Name: idx_mem_dir_parent_child; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_mem_dir_parent_child ON public.cwd_membership USING btree (directory_id, lower_parent_name, lower_child_name, membership_type);
-
-
-    --
-    -- Name: idx_rmt_created_date; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_rmt_created_date ON public.cwd_remember_me_token USING btree (created_date);
 
-
-    --
-    -- Name: idx_rmt_directory_id; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_rmt_directory_id ON public.cwd_remember_me_token USING btree (directory_id);
-
-
-    --
-    -- Name: idx_rmt_used_date; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_rmt_used_date ON public.cwd_remember_me_token USING btree (used_date);
 
-
-    --
-    -- Name: idx_rmt_username; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_rmt_username ON public.cwd_remember_me_token USING btree (username);
-
-
-    --
-    -- Name: idx_summary_id; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_summary_id ON public.cwd_app_licensing_dir_info USING btree (licensing_summary_id);
 
-
-    --
-    -- Name: idx_sync_end; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_sync_end ON public.cwd_synchronisation_status USING btree (sync_end);
-
-
-    --
-    -- Name: idx_sync_status_node_id; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_sync_status_node_id ON public.cwd_synchronisation_status USING btree (node_id);
 
-
-    --
-    -- Name: idx_token_dir_id; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_token_dir_id ON public.cwd_token USING btree (directory_id);
-
-
-    --
-    -- Name: idx_token_key; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_token_key ON public.cwd_token USING btree (random_hash);
 
-
-    --
-    -- Name: idx_token_last_access; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_token_last_access ON public.cwd_token USING btree (last_accessed_date);
-
-
-    --
-    -- Name: idx_token_name_dir_id; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_token_name_dir_id ON public.cwd_token USING btree (directory_id, entity_name);
 
-
-    --
-    -- Name: idx_tombstone_type_timestamp; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_tombstone_type_timestamp ON public.cwd_tombstone USING btree (tombstone_type, tombstone_timestamp);
-
-
-    --
-    -- Name: idx_user_active; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_user_active ON public.cwd_user USING btree (active, directory_id);
 
-
-    --
-    -- Name: idx_user_attr_dir_name_lval; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_user_attr_dir_name_lval ON public.cwd_user_attribute USING btree (directory_id, attribute_name, attribute_lower_value);
-
-
-    --
-    -- Name: idx_user_attr_nval; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_user_attr_nval ON public.cwd_user_attribute USING btree (attribute_name, attribute_numeric_value);
 
-
-    --
-    -- Name: idx_user_attr_user_id; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_user_attr_user_id ON public.cwd_user_attribute USING btree (user_id);
-
-
-    --
-    -- Name: idx_user_lower_display_name; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_user_lower_display_name ON public.cwd_user USING btree (lower_display_name, directory_id);
 
-
-    --
-    -- Name: idx_user_lower_email_address; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_user_lower_email_address ON public.cwd_user USING btree (lower_email_address, directory_id);
-
-
-    --
-    -- Name: idx_user_lower_first_name; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_user_lower_first_name ON public.cwd_user USING btree (lower_first_name, directory_id);
 
-
-    --
-    -- Name: idx_user_lower_last_name; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_user_lower_last_name ON public.cwd_user USING btree (lower_last_name, directory_id);
-
-
-    --
-    -- Name: idx_user_name_dir_id; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX idx_user_name_dir_id ON public.cwd_user USING btree (directory_id);
 
-
-    --
-    -- Name: idx_user_target_group; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX idx_user_target_group ON public.cwd_group_admin_user USING btree (target_group_id);
-
-
-    --
-    -- Name: nextRunTime_idx; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX "nextRunTime_idx" ON public.cwd_cluster_job USING btree (next_run_timestamp);
 
-
-    --
-    -- Name: runnerKey_idx; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX "runnerKey_idx" ON public.cwd_cluster_job USING btree (runner_key);
-
-
-    --
-    -- Name: sender_node_id_idx; Type: INDEX; Schema: public; Owner: crowd
-    --
 
     CREATE INDEX sender_node_id_idx ON public.cwd_cluster_message USING btree (sender_node_id);
 
-
-    --
-    -- Name: timestamp_idx; Type: INDEX; Schema: public; Owner: crowd
-    --
-
     CREATE INDEX timestamp_idx ON public.cwd_cluster_message USING btree (msg_timestamp);
-
-
-    --
-    -- Name: cwd_group_admin_group fk_admin_group; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_group_admin_group
         ADD CONSTRAINT fk_admin_group FOREIGN KEY (group_id) REFERENCES public.cwd_group(id);
 
-
-    --
-    -- Name: cwd_group_admin_user fk_admin_user; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_group_admin_user
         ADD CONSTRAINT fk_admin_user FOREIGN KEY (user_id) REFERENCES public.cwd_user(id) ON DELETE CASCADE;
-
-
-    --
-    -- Name: cwd_application_alias fk_alias_app_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_application_alias
         ADD CONSTRAINT fk_alias_app_id FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
 
-
-    --
-    -- Name: cwd_app_dir_mapping fk_app_dir_app; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_app_dir_mapping
         ADD CONSTRAINT fk_app_dir_app FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
-
-
-    --
-    -- Name: cwd_app_dir_mapping fk_app_dir_dir; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_app_dir_mapping
         ADD CONSTRAINT fk_app_dir_dir FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
 
-
-    --
-    -- Name: cwd_app_dir_group_mapping fk_app_dir_group_app; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_app_dir_group_mapping
         ADD CONSTRAINT fk_app_dir_group_app FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
-
-
-    --
-    -- Name: cwd_app_dir_group_mapping fk_app_dir_group_dir; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_app_dir_group_mapping
         ADD CONSTRAINT fk_app_dir_group_dir FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
 
-
-    --
-    -- Name: cwd_app_dir_group_mapping fk_app_dir_group_mapping; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_app_dir_group_mapping
         ADD CONSTRAINT fk_app_dir_group_mapping FOREIGN KEY (app_dir_mapping_id) REFERENCES public.cwd_app_dir_mapping(id);
-
-
-    --
-    -- Name: cwd_app_dir_operation fk_app_dir_mapping; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_app_dir_operation
         ADD CONSTRAINT fk_app_dir_mapping FOREIGN KEY (app_dir_mapping_id) REFERENCES public.cwd_app_dir_mapping(id);
 
-
-    --
-    -- Name: cwd_app_licensing fk_app_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_app_licensing
         ADD CONSTRAINT fk_app_id FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
-
-
-    --
-    -- Name: cwd_app_dir_default_groups fk_app_mapping; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_app_dir_default_groups
         ADD CONSTRAINT fk_app_mapping FOREIGN KEY (application_mapping_id) REFERENCES public.cwd_app_dir_mapping(id);
 
-
-    --
-    -- Name: cwd_application_saml_config fk_app_sso_config; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_application_saml_config
         ADD CONSTRAINT fk_app_sso_config FOREIGN KEY (application_id) REFERENCES public.cwd_application(id) ON DELETE CASCADE;
-
-
-    --
-    -- Name: cwd_application_address fk_application_address; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_application_address
         ADD CONSTRAINT fk_application_address FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
 
-
-    --
-    -- Name: cwd_application_attribute fk_application_attribute; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_application_attribute
         ADD CONSTRAINT fk_application_attribute FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
-
-
-    --
-    -- Name: cwd_audit_log_entity fk_changeset_entity; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_audit_log_entity
         ADD CONSTRAINT fk_changeset_entity FOREIGN KEY (changeset_id) REFERENCES public.cwd_audit_log_changeset(id) ON DELETE CASCADE;
 
-
-    --
-    -- Name: cwd_directory_attribute fk_directory_attribute; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_directory_attribute
         ADD CONSTRAINT fk_directory_attribute FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
-
-
-    --
-    -- Name: cwd_group fk_directory_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_group
         ADD CONSTRAINT fk_directory_id FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
 
-
-    --
-    -- Name: cwd_directory_operation fk_directory_operation; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_directory_operation
         ADD CONSTRAINT fk_directory_operation FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
-
-
-    --
-    -- Name: cwd_audit_log_entry fk_entry_changeset; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_audit_log_entry
         ADD CONSTRAINT fk_entry_changeset FOREIGN KEY (changeset_id) REFERENCES public.cwd_audit_log_changeset(id) ON DELETE CASCADE;
 
-
-    --
-    -- Name: cwd_granted_perm fk_granted_perm_dir_mapping; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_granted_perm
         ADD CONSTRAINT fk_granted_perm_dir_mapping FOREIGN KEY (app_dir_mapping_id) REFERENCES public.cwd_app_dir_mapping(id);
-
-
-    --
-    -- Name: cwd_group_attribute fk_group_attr_dir_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_group_attribute
         ADD CONSTRAINT fk_group_attr_dir_id FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
 
-
-    --
-    -- Name: cwd_group_attribute fk_group_attr_id_group_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_group_attribute
         ADD CONSTRAINT fk_group_attr_id_group_id FOREIGN KEY (group_id) REFERENCES public.cwd_group(id);
-
-
-    --
-    -- Name: cwd_group_admin_group fk_group_target_group; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_group_admin_group
         ADD CONSTRAINT fk_group_target_group FOREIGN KEY (target_group_id) REFERENCES public.cwd_group(id) ON DELETE CASCADE;
 
-
-    --
-    -- Name: cwd_app_licensed_user fk_licensed_user_dir_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_app_licensed_user
         ADD CONSTRAINT fk_licensed_user_dir_id FOREIGN KEY (directory_id) REFERENCES public.cwd_app_licensing_dir_info(id);
-
-
-    --
-    -- Name: cwd_app_licensing_dir_info fk_licensing_dir_dir_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_app_licensing_dir_info
         ADD CONSTRAINT fk_licensing_dir_dir_id FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
 
-
-    --
-    -- Name: cwd_app_licensing_dir_info fk_licensing_dir_summary_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_app_licensing_dir_info
         ADD CONSTRAINT fk_licensing_dir_summary_id FOREIGN KEY (licensing_summary_id) REFERENCES public.cwd_app_licensing(id);
-
-
-    --
-    -- Name: cwd_membership fk_membership_dir; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_membership
         ADD CONSTRAINT fk_membership_dir FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
 
-
-    --
-    -- Name: cwd_remember_me_token fk_rmt_directory_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_remember_me_token
         ADD CONSTRAINT fk_rmt_directory_id FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id) ON DELETE CASCADE;
-
-
-    --
-    -- Name: cwd_synchronisation_status fk_sync_status_dir; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_synchronisation_status
         ADD CONSTRAINT fk_sync_status_dir FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
 
-
-    --
-    -- Name: cwd_synchronisation_token fk_sync_token_dir; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_synchronisation_token
         ADD CONSTRAINT fk_sync_token_dir FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
-
-
-    --
-    -- Name: cwd_user_attribute fk_user_attr_dir_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_user_attribute
         ADD CONSTRAINT fk_user_attr_dir_id FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
 
-
-    --
-    -- Name: cwd_user_attribute fk_user_attribute_id_user_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_user_attribute
         ADD CONSTRAINT fk_user_attribute_id_user_id FOREIGN KEY (user_id) REFERENCES public.cwd_user(id);
-
-
-    --
-    -- Name: cwd_user_credential_record fk_user_cred_user; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_user_credential_record
         ADD CONSTRAINT fk_user_cred_user FOREIGN KEY (user_id) REFERENCES public.cwd_user(id);
 
-
-    --
-    -- Name: cwd_user fk_user_dir_id; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_user
         ADD CONSTRAINT fk_user_dir_id FOREIGN KEY (directory_id) REFERENCES public.cwd_directory(id);
-
-
-    --
-    -- Name: cwd_group_admin_user fk_user_target_group; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
 
     ALTER TABLE ONLY public.cwd_group_admin_user
         ADD CONSTRAINT fk_user_target_group FOREIGN KEY (target_group_id) REFERENCES public.cwd_group(id) ON DELETE CASCADE;
 
-
-    --
-    -- Name: cwd_webhook fk_webhook_app; Type: FK CONSTRAINT; Schema: public; Owner: crowd
-    --
-
     ALTER TABLE ONLY public.cwd_webhook
         ADD CONSTRAINT fk_webhook_app FOREIGN KEY (application_id) REFERENCES public.cwd_application(id);
-
-
-    --
-    -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: crowd
-    --
 
     REVOKE ALL ON SCHEMA public FROM postgres;
     REVOKE ALL ON SCHEMA public FROM PUBLIC;
     GRANT ALL ON SCHEMA public TO {{ include "umbrella.databaseUser" . }};
     GRANT ALL ON SCHEMA public TO PUBLIC;
-
-
-    --
-    -- PostgreSQL database dump complete
-    --
+{{ end }}

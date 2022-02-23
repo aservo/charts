@@ -164,7 +164,7 @@ Return PostgreSQL password
   imagePullPolicy: IfNotPresent
   resources: {}
   volumeMounts:
-    - name: dump-config
+    - name: server-config
       mountPath: /tmp/restore-db.sh
       subPath: restore-db.sh
     - name: dump-config
@@ -188,13 +188,17 @@ Return PostgreSQL password
 {{- end }}
 {{ include "jira.volumes.sharedHome" . }}
 # -- Volume with additional dump file for SQL import to the database
-- name: dump-config
+- name: server-config
   configMap:
-    name: {{ include "jira.fullname" . }}-dump-config
+    name: {{ include "jira.fullname" . }}-server-config
     items:
     - key: restore-db.sh
       path: restore-db.sh
       mode: 0755
+- name: dump-config
+  configMap:
+    name: {{ include "jira.fullname" . }}-dump-config
+    items:
     - key: db.dump
       path: db.dump
 {{- with .Values.volumes.additional }}
