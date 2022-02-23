@@ -1,3 +1,6 @@
+umbrella:
+  initDB: true
+
 confluence:
   confluence:
     resources:

@@ -217,7 +217,7 @@ Return PostgreSQL password
   imagePullPolicy: IfNotPresent
   resources: {}
   volumeMounts:
-    - name: dump-config
+    - name: server-config
       mountPath: /tmp/restore-db.sh
       subPath: restore-db.sh
     - name: dump-config
@@ -251,14 +251,14 @@ Return PostgreSQL password
     - key: confluence.cfg.xml
       path: confluence.cfg.xml
       mode: 0755
+    - key: restore-db.sh
+      path: restore-db.sh
+      mode: 0755
 # -- Volume with additional dump file for SQL import to the database
 - name: dump-config
   configMap:
     name: {{ include "confluence.fullname" . }}-dump-config
     items:
-    - key: restore-db.sh
-      path: restore-db.sh
-      mode: 0755
     - key: db.dump
       path: db.dump
 # -- Volume with additional dump file for SQL import to the database part2.

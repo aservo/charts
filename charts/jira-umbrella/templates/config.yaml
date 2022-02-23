@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "jira.fullname" .Subcharts.jira }}-dump-config
+  name: {{ include "jira.fullname" .Subcharts.jira }}-server-config
   labels:
   {{- include "umbrella.labels" . | nindent 4 }}
 data:
@@ -9,13 +9,24 @@ data:
     #! /bin/bash -xe
     until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/{{ include "umbrella.databaseHost" . }}/{{ include "umbrella.databasePort" . }}'; do echo "WAITING: db host {{ include "umbrella.databaseHost" . }} port {{ include "umbrella.databasePort" . }}"; sleep 1; done
     psql -h {{ include "umbrella.databaseHost" . }} -p {{ include "umbrella.databasePort" . }} -U {{ include "umbrella.databaseUser" . }} -d {{ include "umbrella.databaseName" . }} -c 'SELECT 1 FROM cwd_user' && exit 0
+    {{- if .Values.umbrella.initDB }}
     psql -h {{ include "umbrella.databaseHost" . }} -p {{ include "umbrella.databasePort" . }} -U {{ include "umbrella.databaseUser" . }} -d {{ include "umbrella.databaseName" . }} < /tmp/db.dump
+    {{- end }}
     unset PGPASSWORD
 
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "jira.fullname" .Subcharts.jira }}-dump-config
+  labels:
+  {{- include "umbrella.labels" . | nindent 4 }}
+data:
   db.dump: |-
     -- Dumped from database version 11.12
     -- Dumped by pg_dump version 11.12
 
+{{- if .Values.umbrella.initDB }}
     SET statement_timeout = 0;
     SET lock_timeout = 0;
     SET idle_in_transaction_session_timeout = 0;
@@ -8449,3 +8460,4 @@ data:
     REVOKE ALL ON SCHEMA public FROM PUBLIC;
     GRANT ALL ON SCHEMA public TO {{ include "umbrella.databaseUser" . }};
     GRANT ALL ON SCHEMA public TO PUBLIC;
+{{- end }}

@@ -5,6 +5,17 @@ metadata:
   labels:
   {{- include "umbrella.labels" . | nindent 4 }}
 data:
+  restore-db.sh: |-
+    #! /bin/bash -xe
+    until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/{{ include "umbrella.databaseHost" . }}/{{ include "umbrella.databasePort" . }}'; do echo "WAITING: db host {{ include "umbrella.databaseHost" . }} port {{ include "umbrella.databasePort" . }}"; sleep 1; done
+    psql -h {{ include "umbrella.databaseHost" . }} -p {{ include "umbrella.databasePort" . }} -U {{ include "umbrella.databaseUser" . }} -d {{ include "umbrella.databaseName" . }} -c 'SELECT 1 FROM cwd_user' && exit 0
+    {{- if .Values.umbrella.initDB }}
+    psql -h {{ include "umbrella.databaseHost" . }} -p {{ include "umbrella.databasePort" . }} -U {{ include "umbrella.databaseUser" . }} -d {{ include "umbrella.databaseName" . }} < /tmp/db.dump
+    echo "Import dump part 2"
+    psql -h {{ include "umbrella.databaseHost" . }} -p {{ include "umbrella.databasePort" . }} -U {{ include "umbrella.databaseUser" . }} -d {{ include "umbrella.databaseName" . }} < /tmp/db.dump2
+    {{- end }}
+    unset PGPASSWORD
+
   confluence.cfg.xml: |-
     <?xml version="1.0" encoding="UTF-8"?>
     <confluence-configuration>
@@ -53,19 +64,11 @@ metadata:
   labels:
   {{- include "umbrella.labels" . | nindent 4 }}
 data:
-  restore-db.sh: |-
-    #! /bin/bash -xe
-    until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/{{ include "umbrella.databaseHost" . }}/{{ include "umbrella.databasePort" . }}'; do echo "WAITING: db host {{ include "umbrella.databaseHost" . }} port {{ include "umbrella.databasePort" . }}"; sleep 1; done
-    psql -h {{ include "umbrella.databaseHost" . }} -p {{ include "umbrella.databasePort" . }} -U {{ include "umbrella.databaseUser" . }} -d {{ include "umbrella.databaseName" . }} -c 'SELECT 1 FROM cwd_user' && exit 0
-    psql -h {{ include "umbrella.databaseHost" . }} -p {{ include "umbrella.databasePort" . }} -U {{ include "umbrella.databaseUser" . }} -d {{ include "umbrella.databaseName" . }} < /tmp/db.dump
-    echo "Import dump part 2"
-    psql -h {{ include "umbrella.databaseHost" . }} -p {{ include "umbrella.databasePort" . }} -U {{ include "umbrella.databaseUser" . }} -d {{ include "umbrella.databaseName" . }} < /tmp/db.dump2
-    unset PGPASSWORD
-
   db.dump: |-
     -- Dumped from database version 11.12
     -- Dumped by pg_dump version 11.12
 
+{{- if .Values.umbrella.initDB }}
     SET statement_timeout = 0;
     SET lock_timeout = 0;
     SET idle_in_transaction_session_timeout = 0;
@@ -7319,6 +7322,7 @@ data:
     INSERT INTO public."AO_6384AB_FEATURE_METADATA_AO" VALUES ('com.atlassian.analytics.analytics-client', 4458, '2021-08-11 22:08:14.968', 'analytics-rest-filter');
     INSERT INTO public."AO_6384AB_FEATURE_METADATA_AO" VALUES ('confluence.renderer.components', 4459, '2021-08-11 22:08:14.968', 'superscript');
     INSERT INTO public."AO_6384AB_FEATURE_METADATA_AO" VALUES ('com.atlassian.confluence.plugins.recently-viewed-plugin', 4460, '2021-08-11 22:08:14.968', 'main-resources');
+{{- end }}
 
 ---
 apiVersion: v1
@@ -7329,6 +7333,9 @@ metadata:
   {{- include "umbrella.labels" . | nindent 4 }}
 data:
   db.dump2: |-
+    -- Part 2 of the dump
+
+{{- if .Values.umbrella.initDB }}
     INSERT INTO public."AO_6384AB_FEATURE_METADATA_AO" VALUES ('com.atlassian.confluence.plugins.confluence-like', 4461, '2021-08-11 22:08:14.968', 'like-email-soy-templates-2');
     INSERT INTO public."AO_6384AB_FEATURE_METADATA_AO" VALUES ('com.atlassian.crowd.embedded.admin', 4462, '2021-08-11 22:08:14.968', 'confluence-ldap-additional-config');
     INSERT INTO public."AO_6384AB_FEATURE_METADATA_AO" VALUES ('com.atlassian.troubleshooting.plugin-confluence', 4463, '2021-08-11 22:08:14.968', 'openFilesHealthCheck');
@@ -10890,3 +10897,4 @@ data:
     REVOKE ALL ON SCHEMA public FROM PUBLIC;
     GRANT ALL ON SCHEMA public TO {{ include "umbrella.databaseUser" . }};
     GRANT ALL ON SCHEMA public TO PUBLIC;
+{{- end }}

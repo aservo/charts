@@ -7,6 +7,7 @@ global:
     servicePort: ""
 
 umbrella:
+  initDB: false
   serverId: ""
   licenseKey: ""
 
