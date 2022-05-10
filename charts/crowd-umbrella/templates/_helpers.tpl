@@ -207,7 +207,7 @@ Return PostgreSQL password
           key: postgresql-password
   args: ['/tmp/restore-db.sh']
 - name: plugins
-  image: ghcr.io/aservo/mapi:latest
+  image: ghcr.io/aservo/mapi:0.0.3
   imagePullPolicy: Always
   resources: {}
   volumeMounts:
