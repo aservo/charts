@@ -1,7 +1,7 @@
 apiVersion: v2
 name: confluence-umbrella
-version: 1.0.0
-appVersion: 7.13.0-jdk11
+version: 1.0.2
+appVersion: 7.18-jdk11
 description: Helm chart for Confluence with Postgresql, plugins and parametrization
 type: application
 sources:
