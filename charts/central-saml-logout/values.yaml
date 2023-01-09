@@ -1,0 +1,269 @@
+fullnameOverride: ""
+nameOverride: ""
+
+replicas: 1
+
+image:
+  repository: ghcr.io/aservo/central-saml-logout
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+hostAliases: []
+
+enableServiceLinks: true
+
+# Pod management policy. One of `Parallel` or `OrderedReady`
+podManagementPolicy: Parallel
+
+# StatefulSet's update strategy
+updateStrategy: RollingUpdate
+
+# Pod restart policy. One of `Always`, `OnFailure`, or `Never`
+restartPolicy: Always
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+  # Additional annotations for the ServiceAccount
+  annotations: {}
+  # Additional labels for the ServiceAccount
+  labels: {}
+  # Image pull secrets that are attached to the ServiceAccount
+  imagePullSecrets: []
+
+# SecurityContext for the entire Pod. Every container running in the Pod will inherit this SecurityContext. This might be relevant when other components of the environment inject additional containers into running Pods (service meshes are the most prominent example for this)
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  runAsUser: 1000
+  runAsNonRoot: true
+
+# Additional init containers, e.g. for providing custom themes
+extraInitContainers: ""
+
+# Additional sidecar containers, e.g. for a database proxy
+extraContainers: ""
+
+lifecycleHooks: |
+#  postStart:
+#    exec:
+#      command:
+#        - /bin/sh
+#        - -c
+#        - ls
+
+# Termination grace period in seconds for the service shutdown.
+terminationGracePeriodSeconds: 10
+
+## Overrides the default entrypoint
+# command: []
+
+## Overrides the default args
+# args: []
+
+# The port used inside the container.
+containerPort: "8080"
+
+# The non-internal URL to access the service.
+baseUrl: https://central-saml-logout.domain.tld
+
+# An optional prefix for the service path.
+pathPrefix: '/slo'
+
+# The life span of the cookie based session.
+sessionMaxAge: 86400
+
+# A local file path or URL directed to the IdP metadata.
+idpMetadata: /opt/idp-metadata.xml
+
+## The IdP metadata directly as XML content
+# idpMetadataContent: <md:EntityDescriptor>...</md:EntityDescriptor>
+
+## The SAML issuer. The default is the callback URL of the service
+# issuer: 'my-sp-id'
+
+## An optional list of cookies that are cleared on logout. See https://github.com/aservo/central-saml-logout#readme
+# cookiesToClear:
+#   - domain: "sp1.domain.tld"
+#     name: "MY_SESSION_ID"
+#     xss: true
+#   - domain: "domain.tld"
+#     path: "/sp2"
+#     name: "MY_SESSION_ID"
+#     xss: false
+
+## The fallback URL if no URL is specified in the query string of the logout call.
+# fallbackLogoutUrl: https://landingpage.domain.tld/logout-message
+
+## An alternative page to signal login success.
+# loginSuccessUrl: https://landingpage.domain.tld/success-message
+
+## An alternative page to signal login failure.
+# loginFailureUrl: https://landingpage.domain.tld/failure-message
+
+# Additional environment variables
+extraEnv: ""
+
+# Additional environment variables mapped from Secret or ConfigMap
+extraEnvFrom: ""
+
+#  Pod priority class name
+priorityClassName: ""
+
+# Topology spread constraints template
+topologySpreadConstraints:
+
+# Node labels for Pod assignment
+nodeSelector: {}
+
+# Node taints to tolerate
+tolerations: []
+
+# Additional Pod labels
+podLabels: {}
+
+# Additional Pod annotations
+podAnnotations: {}
+
+# Liveness probe configuration
+livenessProbe: |
+  httpGet:
+    path: /slo/status
+    port: http
+  initialDelaySeconds: 0
+  timeoutSeconds: 5
+
+# Readiness probe configuration
+readinessProbe: |
+  httpGet:
+    path: /slo/status
+    port: http
+  initialDelaySeconds: 30
+  timeoutSeconds: 1
+
+# Startup probe configuration
+startupProbe: |
+  httpGet:
+    path: /slo/status
+    port: http
+  initialDelaySeconds: 30
+  timeoutSeconds: 1
+  failureThreshold: 60
+  periodSeconds: 5
+
+# Pod resource requests and limits
+resources: {}
+  # requests:
+  #   cpu: "500m"
+  #   memory: "1024Mi"
+  # limits:
+  #   cpu: "500m"
+  #   memory: "1024Mi"
+
+# Add additional volumes, e.g. for custom themes
+extraVolumes: ""
+
+# Add additional volumes mounts, e.g. for custom themes
+extraVolumeMounts: ""
+
+# Annotations for the StatefulSet
+statefulsetAnnotations: {}
+
+# Additional labels for the StatefulSet
+statefulsetLabels: {}
+
+# Configuration for secrets that should be created
+secrets: {}
+  # mysecret:
+  #   type: {}
+  #   annotations: {}
+  #   labels: {}
+  #   stringData: {}
+  #   data: {}
+
+service:
+  # Annotations for headless and HTTP Services
+  annotations: {}
+  # Additional labels for headless and HTTP Services
+  labels: {}
+  # key: value
+  # The Service type
+  type: ClusterIP
+  # Optional IP for the load balancer. Used for services of type LoadBalancer only
+  loadBalancerIP: ""
+  # The http Service port
+  httpPort: 80
+  # The HTTP Service node port if type is NodePort
+  httpNodePort: null
+  # The HTTPS Service port
+  httpsPort: 8443
+  # The HTTPS Service node port if type is NodePort
+  httpsNodePort: null
+  # Additional Service ports, e.g. for custom admin console
+  extraPorts: []
+  # When using Service type LoadBalancer, you can restrict source ranges allowed
+  # to connect to the LoadBalancer, e.g. will result in Security Groups
+  # (or equivalent) with inbound source ranges allowed to connect
+  loadBalancerSourceRanges: []
+  # When using Service type LoadBalancer, you can preserve the source IP seen in the container
+  # by changing the default (Cluster) to be Local.
+  # See https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  externalTrafficPolicy: "Cluster"
+  # Session affinity
+  # See https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-userspace
+  sessionAffinity: ""
+  # Session affinity config
+  sessionAffinityConfig: {}
+
+ingress:
+  # If `true`, an Ingress is created
+  enabled: false
+  # The name of the Ingress Class associated with this ingress
+  ingressClassName: ""
+  # The Service port targeted by the Ingress
+  servicePort: http
+  # Ingress annotations
+  annotations: {}
+
+  # Additional Ingress labels
+  labels: {}
+   # List of rules for the Ingress
+  rules:
+    -
+      # Ingress host
+      host: '{{ .Release.Name }}.central-saml-logout.domain.tld'
+      # Paths for the host
+      paths:
+        - path: /
+          pathType: Prefix
+  # TLS configuration
+  tls:
+    - hosts:
+        - central-saml-logout.domain.tld
+      secretName: ""
+
+route:
+  # If `true`, an OpenShift Route is created
+  enabled: false
+  # Path for the Route
+  path: /
+  # Route annotations
+  annotations: {}
+  # Additional Route labels
+  labels: {}
+  # Host name for the Route
+  host: ""
+  # TLS configuration
+  tls:
+    # If `true`, TLS is enabled for the Route
+    enabled: true
+    # Insecure edge termination policy of the Route. Can be `None`, `Redirect`, or `Allow`
+    insecureEdgeTerminationPolicy: Redirect
+    # TLS termination of the route. Can be `edge`, `passthrough`, or `reencrypt`
+    termination: edge
