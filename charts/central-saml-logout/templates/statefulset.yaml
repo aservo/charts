@@ -78,7 +78,7 @@ spec:
               containerPort: {{ .Values.containerPort }}
               protocol: TCP
             - name: https
-              containerPort: {{ .Values.containerPort }}
+              containerPort: {{ .Values.containerSslPort }}
               protocol: TCP
           {{- with .Values.livenessProbe }}
           livenessProbe:

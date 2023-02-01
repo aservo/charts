@@ -15,5 +15,5 @@ metadata:
   {{- printf "%s: %s" $key (tpl $value $ | quote) | nindent 4 }}
   {{- end }}
 data:
-  idp-metadata.xml: '{{ .Values.idpMetadataContent }}'
+  idp-metadata.xml: '{{ tpl .Values.idpMetadataContent . }}'
 {{- end }}

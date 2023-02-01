@@ -1,9 +1,10 @@
-{{- if .Values.ingress.enabled -}}
-apiVersion: v1
+{{- $ingress := .Values.ingress -}}
+{{- if $ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "central-saml-logout.fullname" . }}
-  {{- with .Values.ingress.annotations }}
+  {{- with $ingress.annotations }}
   annotations:
     {{- range $key, $value := . }}
     {{- printf "%s: %s" $key (tpl $value $ | quote) | nindent 4 }}
@@ -11,16 +12,16 @@ metadata:
   {{- end }}
   labels:
     {{- include "central-saml-logout.labels" . | nindent 4 }}
-    {{- range $key, $value := .Values.ingress.labels }}
+    {{- range $key, $value := $ingress.labels }}
     {{- printf "%s: %s" $key (tpl $value $ | quote) | nindent 4 }}
     {{- end }}
 spec:
-{{- if .Values.ingress.ingressClassName }}
-  ingressClassName: {{ .Values.ingress.ingressClassName }}
+{{- if $ingress.ingressClassName }}
+  ingressClassName: {{ $ingress.ingressClassName }}
 {{- end }}
-{{- if .Values.ingress.tls }}
+{{- if $ingress.tls }}
   tls:
-    {{- range .Values.ingress.tls }}
+    {{- range $ingress.tls }}
     - hosts:
       {{- range .hosts }}
         - {{ tpl . $ | quote }}
@@ -31,7 +32,7 @@ spec:
     {{- end }}
 {{- end }}
   rules:
-    {{- range .Values.ingress.rules }}
+    {{- range $ingress.rules }}
     -
       {{- if .host }}
       host: {{ tpl .host $ | quote }}
@@ -45,7 +46,7 @@ spec:
               service:
                 name: {{ include "central-saml-logout.fullname" $ }}-http
                 port:
-                  name: {{ .Values.ingress.servicePort }}
+                  name: {{ $ingress.servicePort }}
           {{- end }}
     {{- end }}
 {{- end -}}

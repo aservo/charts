@@ -70,6 +70,9 @@ terminationGracePeriodSeconds: 10
 # The port used inside the container.
 containerPort: "8080"
 
+# The https port used inside the container.
+containerSslPort: "8443"
+
 # The non-internal URL to access the service.
 baseUrl: https://central-saml-logout.domain.tld
 
