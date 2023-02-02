@@ -18,6 +18,8 @@ tmp/
 .idea_modules/
 target/
 out/
+.project
+.settings/
 
 # Helm
 Chart.lock

@@ -1,0 +1,18 @@
+apiVersion: v2
+name: central-saml-logout
+version: 0.1.0  # the chart version
+appVersion: 1.0.1
+description: A dedicated service to perform a SAML 2.0 Single Logout (SLO)
+type: application
+sources:
+  - https://github.com/aservo/charts
+  - https://github.com/aservo/charts/central-saml-logout
+  - https://github.com/aservo/central-saml-logout
+keywords:
+  - saml
+  - sso
+  - slo
+maintainers:
+  - name: ASERVO Software GmbH
+    email: opensource@aservo.com
+engine: gotpl
