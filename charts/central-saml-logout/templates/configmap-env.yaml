@@ -30,6 +30,9 @@ data:
   {{- with .Values.issuer }}
   ISSUER: '{{ . }}'
   {{- end }}
+  {{- with .Values.redirects }}
+  REDIRECTS: '{{ . | toJson }}'
+  {{- end }}
   {{- with .Values.cookiesToClear }}
   COOKIES_TO_CLEAR: '{{ . | toJson }}'
   {{- end }}

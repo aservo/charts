@@ -91,6 +91,13 @@ idpMetadata: /opt/idp-metadata.xml
 ## The SAML issuer. The default is the callback URL of the service
 # issuer: 'my-sp-id'
 
+## This list allows to map a service provider name (client ID) to a redirect URL
+# redirects:
+#   - clientKey: "sp1-name"
+#     target: "https://sp1.domain.tld/login"
+#   - clientKey: "sp2-name"
+#     target: "https://sp2.domain.tld/login"
+
 ## An optional list of cookies that are cleared on logout. See https://github.com/aservo/central-saml-logout#readme
 # cookiesToClear:
 #   - domain: "sp1.domain.tld"
