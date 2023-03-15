@@ -2,6 +2,27 @@ apiVersion: v1
 entries:
   central-saml-logout:
   - apiVersion: v2
+    appVersion: 1.1.0
+    created: "2023-03-15T11:33:03.945714775Z"
+    description: A dedicated service to perform a SAML 2.0 Single Logout (SLO)
+    digest: 705fab2b73f459b5ba97094ec8dd25f6819da6a571d480aa962f3629686d0f06
+    keywords:
+    - saml
+    - sso
+    - slo
+    maintainers:
+    - email: opensource@aservo.com
+      name: ASERVO Software GmbH
+    name: central-saml-logout
+    sources:
+    - https://github.com/aservo/charts
+    - https://github.com/aservo/charts/central-saml-logout
+    - https://github.com/aservo/central-saml-logout
+    type: application
+    urls:
+    - https://github.com/aservo/charts/releases/download/central-saml-logout-0.1.1/central-saml-logout-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
     appVersion: 1.0.1
     created: "2023-02-02T11:24:44.722595958Z"
     description: A dedicated service to perform a SAML 2.0 Single Logout (SLO)
@@ -1013,4 +1034,4 @@ entries:
     urls:
     - https://github.com/aservo/charts/releases/download/util-0.0.1/util-0.0.1.tgz
     version: 0.0.1
-generated: "2023-02-02T11:24:44.722706459Z"
+generated: "2023-03-15T11:33:03.945866675Z"
