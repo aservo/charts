@@ -1018,6 +1018,18 @@ entries:
     urls:
     - https://github.com/aservo/charts/releases/download/keycloak-umbrella-15.1.0/keycloak-umbrella-15.1.0.tgz
     version: 15.1.0
+  raw:
+  - apiVersion: v1
+    appVersion: 0.2.3
+    created: "2023-04-05T12:19:50.688617967Z"
+    description: A place for all the Kubernetes resources which don't already have
+      a home.
+    digest: b862c711665b1635ebe47d22e1d2cdc2cd7c5817b8d6d1c2d7329a10c9935bea
+    home: https://github.com/aservo/charts/blob/master/charts/raw
+    name: raw
+    urls:
+    - https://github.com/aservo/charts/releases/download/raw-0.2.5/raw-0.2.5.tgz
+    version: 0.2.5
   util:
   - apiVersion: v2
     appVersion: 0.0.0
@@ -1034,4 +1046,4 @@ entries:
     urls:
     - https://github.com/aservo/charts/releases/download/util-0.0.1/util-0.0.1.tgz
     version: 0.0.1
-generated: "2023-03-15T11:33:03.945866675Z"
+generated: "2023-04-05T12:19:50.688702668Z"
