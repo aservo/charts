@@ -4,28 +4,29 @@ on: pull_request
 
 jobs:
   tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     strategy:
       matrix:
         kubernetes_version:
-          # - "v1.22.2"
-          - "v1.21.2"
-          - "v1.20.7"
-          - "v1.19.11"
-          - "v1.18.19"
+          - "v1.26.3"   # EOL 2024-02-24
+          - "v1.25.8"   # EOL 2023-10-27
+          - "v1.24.12"  # EOL 2023-07-28
+          - "v1.23.17"  # EOL 2023-02-28
+          - "v1.22.17"  # EOL 2022-10-28
+          - "v1.21.14"  # EOL 2022-06-28
       fail-fast: false
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.0.1
+        uses: helm/chart-testing-action@v2.4.0
         with:
-          version: v3.4.0
+          version: v3.8.0
 
       - name: List changed charts
         id: list-changed
@@ -40,10 +41,10 @@ jobs:
         run: ct lint --config ct.yaml
 
       - name: Create kind cluster
-        uses: helm/kind-action@v1.2.0
+        uses: helm/kind-action@v1.5.0
         if: steps.list-changed.outputs.changed == 'true'
         with:
-          version: v0.11.1
+          version: v0.17.0
           node_image: kindest/node:${{ matrix.kubernetes_version }}
 
       - name: Run chart-testing (install)
