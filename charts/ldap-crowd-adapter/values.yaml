@@ -1,0 +1,249 @@
+fullnameOverride: ""
+nameOverride: ""
+
+replicas: 1
+
+image:
+  repository: ghcr.io/aservo/ldap-crowd-adapter
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+hostAliases: []
+
+enableServiceLinks: true
+
+# Pod management policy. One of `Parallel` or `OrderedReady`
+podManagementPolicy: Parallel
+
+# StatefulSet's update strategy
+updateStrategy: RollingUpdate
+
+# Pod restart policy. One of `Always`, `OnFailure`, or `Never`
+restartPolicy: Always
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+  # Additional annotations for the ServiceAccount
+  annotations: {}
+  # Additional labels for the ServiceAccount
+  labels: {}
+  # Image pull secrets that are attached to the ServiceAccount
+  imagePullSecrets: []
+
+# SecurityContext for the entire Pod. Every container running in the Pod will inherit this SecurityContext. This might be relevant when other components of the environment inject additional containers into running Pods (service meshes are the most prominent example for this)
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  runAsUser: 1000
+  runAsNonRoot: true
+
+# Additional init containers, e.g. for providing custom themes
+extraInitContainers: ""
+
+# Additional sidecar containers, e.g. for a database proxy
+extraContainers: ""
+
+lifecycleHooks: |
+#  postStart:
+#    exec:
+#      command:
+#        - /bin/sh
+#        - -c
+#        - ls
+
+# Termination grace period in seconds for the service shutdown.
+terminationGracePeriodSeconds: 10
+
+## Overrides the default entrypoint
+# command: []
+
+## Overrides the default args
+# args: []
+
+# The LDAP ports used inside the container.
+containerDefaultPort: 1389
+containerSecurePort: 1636
+
+# Additional environment variables
+extraEnv: ""
+
+# Additional environment variables mapped from Secret or ConfigMap
+extraEnvFrom: ""
+
+#  Pod priority class name
+priorityClassName: ""
+
+# Topology spread constraints template
+topologySpreadConstraints:
+
+# Node labels for Pod assignment
+nodeSelector: {}
+
+# Node taints to tolerate
+tolerations: []
+
+# Additional Pod labels
+podLabels: {}
+
+# Additional Pod annotations
+podAnnotations: {}
+
+# Liveness probe configuration
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  timeoutSeconds: 3
+  successThreshold: 1
+  failureThreshold: 4
+
+# Readiness probe configuration
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  timeoutSeconds: 3
+  successThreshold: 1
+  failureThreshold: 16
+
+# Startup probe configuration
+startupProbe:
+  enabled: true
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 16
+
+# Pod resource requests and limits
+resources: {}
+  # requests:
+  #   cpu: 500m
+  #   memory: 1G
+  # limits:
+  #   cpu: 2000m
+  #   memory: 3G
+
+# Add additional volumes, e.g. for custom themes
+extraVolumes: ""
+
+# Add additional volumes mounts, e.g. for custom themes
+extraVolumeMounts: ""
+
+# Annotations for the StatefulSet
+statefulsetAnnotations: {}
+
+# Additional labels for the StatefulSet
+statefulsetLabels: {}
+
+# Configuration for configmaps that should be created
+configmaps: {}
+  # name:
+  #   annotations: {}
+  #   labels: {}
+  #   data: {}
+
+# Configuration for secrets that should be created
+secrets: {}
+  # name:
+  #   type: {}
+  #   annotations: {}
+  #   labels: {}
+  #   stringData: {}
+  #   data: {}
+
+service:
+  annotations: {}
+  labels: {}
+  # key: value
+  # The Service type
+  type: ClusterIP
+  # Optional IP for the load balancer. Used for services of type LoadBalancer only
+  loadBalancerIP: ""
+  # The LDAP Service port
+  ldapPort: 389
+  # The LDAPS Service port
+  ldapsPort: 636
+  # The LDAP(S) Service node port if type is NodePort
+  nodePort: null
+  # Additional Service ports, e.g. for custom admin console
+  extraPorts: []
+  # When using Service type LoadBalancer, you can restrict source ranges allowed
+  # to connect to the LoadBalancer, e.g. will result in Security Groups
+  # (or equivalent) with inbound source ranges allowed to connect
+  loadBalancerSourceRanges: []
+  # When using Service type LoadBalancer, you can preserve the source IP seen in the container
+  # by changing the default (Cluster) to be Local.
+  # See https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  externalTrafficPolicy: "Cluster"
+  # Session affinity
+  # See https://kubernetes.io/docs/concepts/services-networking/service/#proxy-mode-userspace
+  sessionAffinity: ""
+  # Session affinity config
+  sessionAffinityConfig: {}
+
+# Application configuration
+
+ssl:
+  enabled: false
+
+jvmMemory: {}
+  # xms: 1G
+  # xmx: 3G
+
+server:
+  cacheDirectory: './tmp/cache'  # cache directory for ApacheDS
+  flattening: false  # enable support for flattening of nested-groups
+  response:
+    maxSizeLimit: 50000  # maximum number of entities delivered by a LDAP query
+    maxTimeLimit: 1000  # maximum time in seconds before an operation is aborted
+  connection:
+    backlog: 100  # number of incoming requests queued when all the threads are busy
+    activeThreads: 20  # number of threads to handle the incoming requests
+  attribute:
+    snAbbreviate: false  # abbreviate attribute names (surname or sn)
+    gnAbbreviate: false  # abbreviate attribute names (givenName or gn)
+  directoryBackend: {}
+
+crowd:
+  applicationName: ldap-crowd-adapter
+  applicationPassword: password
+  serverUrl: http://localhost:8095/crowd/services/  # URL for application API
+  sessionValidationInterval: 0
+
+backend:
+  crowd:
+    readinessCheck: false  # check connection to backend at startup time
+    adminRest:
+      username: my-admin-user
+      userPassword: password
+      baseUrl: http://localhost:8095/crowd  # URL for administration API
+  mirror:
+    sync:
+      pageSize: 2000  # number of transferred entities per synchronization page
+    auditLog:
+      pageSize: 20  # number of transferred entries of the audit log
+      pageLimit: 3  # maximum number of downloaded audit log pages before a full sync is performed
+    forceFullSyncOnBoot: true  # force a complete synchronization at application boot time
+  db:
+    connection:
+      jdbcDriver: org.h2.Driver  # do not use H2 DBMS for production use
+      url: my-db-user
+      # user:
+      # password:
+      minIdle: 5
+      maxIdle: 10
+      maxTotal: 30
+      maxOpenPreparedStatements: 200
+      isolationLevel: REPEATABLE_READ  # only change if the impact is really known
+    transactionTimeout: 60000  # application based transaction timeout in milliseconds
+    applyNativeSql: false  # allow to apply native SQL queries
+    useMaterializedViews: false  # use materialized views to increase performance (requires PostgreSQL)
+    passActiveUsersOnly: true  # pass only active users to clients
