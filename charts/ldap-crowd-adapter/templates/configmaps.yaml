@@ -1,0 +1,22 @@
+{{- range $nameSuffix, $values := .Values.configmaps }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ldap-crowd-adapter.fullname" $ }}-{{ $nameSuffix }}
+  {{- with $values.annotations }}
+  annotations:
+  {{- range $key, $value := . }}
+  {{- printf "%s: %s" $key (tpl $value $ | quote) | nindent 4 }}
+  {{- end }}
+  {{- end }}
+  labels:
+  {{- include "ldap-crowd-adapter.labels" $ | nindent 4 }}
+  {{- range $key, $value := $values.labels }}
+  {{- printf "%s: %s" $key (tpl $value $ | quote) | nindent 4 }}
+  {{- end }}
+{{- with $values.data }}
+data:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end -}}

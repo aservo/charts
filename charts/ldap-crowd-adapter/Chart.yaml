@@ -1,0 +1,18 @@
+apiVersion: v2
+name: ldap-crowd-adapter
+version: 0.1.0  # the chart version
+appVersion: 7.1.0
+description: A LDAP server that delegates request to Atlassian Crowd
+type: application
+sources:
+  - https://github.com/aservo/charts
+  - https://github.com/aservo/charts/ldap-crowd-adapter
+  - https://github.com/aservo/ldap-crowd-adapter
+keywords:
+  - ldap
+  - authentication
+  - authorization
+maintainers:
+  - name: ASERVO Software GmbH
+    email: opensource@aservo.com
+engine: gotpl

@@ -1,0 +1,65 @@
+fullnameOverride: "ldap-adapter"
+nameOverride: "ldap-adapter"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 500M
+
+jvmMemory:
+  xms: 500M
+  xmx: 500M
+
+server:
+  directoryBackend:
+    permanent: 'de.aservo.ldap.adapter.backend.JsonDirectoryBackend'
+
+extraVolumes: |
+  - name: test-data
+    configMap:
+      name: ldap-adapter-test-data-config
+      defaultMode: 0555
+      items:
+        - key: test-data.json
+          path: test-data.json
+
+extraVolumeMounts: |
+  - name: test-data
+    mountPath: /opt/test-data.json
+    subPath: test-data.json
+    readOnly: true
+
+extraEnvFrom: |
+  - configMapRef:
+      name: ldap-adapter-test-env-config
+
+configmaps:
+  test-env-config:
+    data:
+      JAVA_OPTS: -Ddb-uri=file:///opt/test-data.json
+  test-data-config:
+    data:
+      test-data.json: |-
+        {
+          "groups": [
+            {
+              "name": "GroupA",
+              "description": "Description of GroupA.",
+              "group_members": [],
+              "user_members": [
+                "UserA"
+              ]
+            }
+          ],
+          "users": [
+            {
+              "username": "UserA",
+              "first_name": "FirstNameOfUserA",
+              "last_name": "LastNameOfUserA",
+              "display_name": "DisplayNameOfUserA",
+              "email": "a.user@email.com",
+              "password": "pw-user-a",
+              "active": true
+            }
+          ]
+        }

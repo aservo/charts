@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ldap-crowd-adapter.fullname" . }}-config-env
+  {{- with .Values.annotations }}
+  annotations:
+  {{- range $key, $value := . }}
+  {{- printf "%s: %s" $key (tpl $value $ | quote) | nindent 4 }}
+  {{- end }}
+  {{- end }}
+  labels:
+  {{- include "ldap-crowd-adapter.labels" $ | nindent 4 }}
+  {{- range $key, $value := .Values.labels }}
+  {{- printf "%s: %s" $key (tpl $value $ | quote) | nindent 4 }}
+  {{- end }}
+data:
+  {{- with .Values.logLevel }}
+  LOGLEVEL: '{{ . }}'
+  {{- end }}
+  {{- with .Values.jvmMemory.xms }}
+  XMS: '{{ . }}'
+  {{- end }}
+  {{- with .Values.jvmMemory.xmx }}
+  XMX: '{{ . }}'
+  {{- end }}
+  {{- with .Values.jvmMemory.xss }}
+  XSS: '{{ . }}'
+  {{- end }}
+  SERVER_SSL_ENABLED: '{{ default "false" .Values.ssl.enabled }}'
+  {{- with .Values.ssl.keyStoreFile }}
+  SERVER_SSL_KEY_STORE_FILE: '{{ . }}'
+  {{- end }}
+  {{- with .Values.server.cacheDirectory }}
+  SERVER_CACHE_DIR: '{{ . }}'
+  {{- end }}
+  SERVER_BIND_ADDRESS: '0.0.0.0:{{ include "ldap-crowd-adapter.containerPort" . }}'
+  {{- with .Values.server.directoryBackend.permanent }}
+  SERVER_DIRECTORY_BACKEND_PERMANENT: '{{ . }}'
+  {{- end }}
+  {{- with .Values.server.directoryBackend.session }}
+  SERVER_DIRECTORY_BACKEND_SESSION: '{{ . }}'
+  {{- end }}
+  SERVER_MODE_FLATTENING: '{{ .Values.server.flattening }}'
+  SERVER_RESPONSE_MAX_SIZE_LIMIT: '{{ .Values.server.response.maxSizeLimit }}'
+  SERVER_RESPONSE_MAX_TIME_LIMIT: '{{ .Values.server.response.maxTimeLimit }}'
+  SERVER_CONNECTION_BACK_LOG: '{{ .Values.server.connection.backlog }}'
+  SERVER_RESPONSE_ACTIVE_THREADS: '{{ .Values.server.connection.activeThreads }}'
+  SERVER_ABBREVIATE_SN_ATTRIBUTE: '{{ .Values.server.attribute.snAbbreviate }}'
+  SERVER_ABBREVIATE_GN_ATTRIBUTE: '{{ .Values.server.attribute.gnAbbreviate }}'
+  CROWD_APP_NAME: '{{ .Values.crowd.applicationName }}'
+  CROWD_SERVER_URL: '{{ .Values.crowd.serverUrl }}'
+  CROWD_VALIDATION_INTERVAL: '{{ .Values.crowd.sessionValidationInterval }}'
+  BACKEND_READINESS_CHECK: '{{ default "false" .Values.backend.crowd.readinessCheck }}'
+  BACKEND_REST_BASE_URL: '{{ .Values.backend.crowd.adminRest.baseUrl }}'
+  BACKEND_MIRROR_SYNC_PAGE_SIZE: '{{ .Values.backend.mirror.sync.pageSize }}'
+  BACKEND_MIRROR_AUDIT_LOG_PAGE_SIZE: '{{ .Values.backend.mirror.auditLog.pageSize }}'
+  BACKEND_MIRROR_AUDIT_LOG_PAGE_LIMIT: '{{ .Values.backend.mirror.auditLog.pageLimit }}'
+  BACKEND_MIRROR_FORCE_FULL_SYNC_ON_BOOT: '{{ .Values.backend.mirror.forceFullSyncOnBoot }}'
+  BACKEND_JDBC_DRIVER: '{{ .Values.backend.db.connection.jdbcDriver }}'
+  BACKEND_JDBC_URL: '{{ .Values.backend.db.connection.url }}'
+  BACKEND_JDBC_CON_MIN_IDLE: '{{ .Values.backend.db.connection.minIdle }}'
+  BACKEND_JDBC_CON_MAX_IDLE: '{{ .Values.backend.db.connection.maxIdle }}'
+  BACKEND_JDBC_CON_MAX_TOTAL: '{{ .Values.backend.db.connection.maxTotal }}'
+  BACKEND_JDBC_CON_MAX_OPEN_STMT: '{{ .Values.backend.db.connection.maxOpenPreparedStatements }}'
+  BACKEND_JDBC_ISO_LEVEL: '{{ .Values.backend.db.connection.isolationLevel }}'
+  BACKEND_TRANSACTION_TIMEOUT: '{{ .Values.backend.db.transactionTimeout }}'
+  BACKEND_APPLY_NATIVE_SQL: '{{ .Values.backend.db.applyNativeSql }}'
+  BACKEND_USE_MATERIALIZED_VIEWS: '{{ .Values.backend.db.useMaterializedViews }}'
+  BACKEND_PASS_ACTIVE_USERS_ONLY: '{{ .Values.backend.db.passActiveUsersOnly }}'
+  WAIT_DATABASE: '{{ default "false" .Values.waitDatabase }}'
