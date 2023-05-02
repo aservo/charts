@@ -1018,6 +1018,28 @@ entries:
     urls:
     - https://github.com/aservo/charts/releases/download/keycloak-umbrella-15.1.0/keycloak-umbrella-15.1.0.tgz
     version: 15.1.0
+  ldap-crowd-adapter:
+  - apiVersion: v2
+    appVersion: 7.1.0
+    created: "2023-05-02T14:57:58.725760993Z"
+    description: A LDAP server that delegates request to Atlassian Crowd
+    digest: 8b4b22bd3b44f6b29447b933d7f239f8a2df331ee2dd52742c03f65408f6a0ef
+    keywords:
+    - ldap
+    - authentication
+    - authorization
+    maintainers:
+    - email: opensource@aservo.com
+      name: ASERVO Software GmbH
+    name: ldap-crowd-adapter
+    sources:
+    - https://github.com/aservo/charts
+    - https://github.com/aservo/charts/ldap-crowd-adapter
+    - https://github.com/aservo/ldap-crowd-adapter
+    type: application
+    urls:
+    - https://github.com/aservo/charts/releases/download/ldap-crowd-adapter-0.1.0/ldap-crowd-adapter-0.1.0.tgz
+    version: 0.1.0
   raw:
   - apiVersion: v1
     appVersion: 0.2.3
@@ -1046,4 +1068,4 @@ entries:
     urls:
     - https://github.com/aservo/charts/releases/download/util-0.0.1/util-0.0.1.tgz
     version: 0.0.1
-generated: "2023-04-05T12:19:50.688702668Z"
+generated: "2023-05-02T14:57:58.725938495Z"
