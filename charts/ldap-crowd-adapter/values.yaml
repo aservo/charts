@@ -228,6 +228,10 @@ backend:
   mirror:
     sync:
       pageSize: 2000  # number of transferred entities per synchronization page
+      initialDelay: 3  # initial delay for synchronization job in seconds
+      period: 4  # period to wait for next synchronization job in seconds
+      useLocking: false  # use database locking for any synchronization
+      lockId: 123456  # lock ID must be shared betwenn all replicas
     auditLog:
       pageSize: 20  # number of transferred entries of the audit log
       pageLimit: 3  # maximum number of downloaded audit log pages before a full sync is performed
@@ -247,3 +251,5 @@ backend:
     applyNativeSql: false  # allow to apply native SQL queries
     useMaterializedViews: false  # use materialized views to increase performance (requires PostgreSQL)
     passActiveUsersOnly: true  # pass only active users to clients
+    lockWaitTime: 5  # time to wait to get the database lock in seconds
+    lockRecheckTime: 1  # time to wait between two tries in seconds to get the database lock
