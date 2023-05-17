@@ -1,7 +1,7 @@
 apiVersion: v2
 name: ldap-crowd-adapter
-version: 0.1.0  # the chart version
-appVersion: 7.1.0
+version: 0.2.0  # the chart version
+appVersion: 7.2.0
 description: A LDAP server that delegates request to Atlassian Crowd
 type: application
 sources:
