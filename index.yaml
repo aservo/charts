@@ -1020,6 +1020,27 @@ entries:
     version: 15.1.0
   ldap-crowd-adapter:
   - apiVersion: v2
+    appVersion: 7.2.0
+    created: "2023-05-17T07:53:18.020598483Z"
+    description: A LDAP server that delegates request to Atlassian Crowd
+    digest: 27a05ab8c198165cb58bc7354544a4acd87ed200978a2074f0b14552428631f1
+    keywords:
+    - ldap
+    - authentication
+    - authorization
+    maintainers:
+    - email: opensource@aservo.com
+      name: ASERVO Software GmbH
+    name: ldap-crowd-adapter
+    sources:
+    - https://github.com/aservo/charts
+    - https://github.com/aservo/charts/ldap-crowd-adapter
+    - https://github.com/aservo/ldap-crowd-adapter
+    type: application
+    urls:
+    - https://github.com/aservo/charts/releases/download/ldap-crowd-adapter-0.2.0/ldap-crowd-adapter-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
     appVersion: 7.1.0
     created: "2023-05-02T14:57:58.725760993Z"
     description: A LDAP server that delegates request to Atlassian Crowd
@@ -1068,4 +1089,4 @@ entries:
     urls:
     - https://github.com/aservo/charts/releases/download/util-0.0.1/util-0.0.1.tgz
     version: 0.0.1
-generated: "2023-05-02T14:57:58.725938495Z"
+generated: "2023-05-17T07:53:18.020736383Z"
